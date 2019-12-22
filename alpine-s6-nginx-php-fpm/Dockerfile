@@ -6,18 +6,19 @@ ARG PHP_VERSION=7.3
 ARG PHP_PACKAGE=php7
 ARG NGINX_VERSION=1.16
 
+ENV PHP_VERSION=${PHP_VERSION} \
+	PHP_PACKAGE=${PHP_PACKAGE} \
+	NGINX_VERSION=${NGINX_VERSION}
+
 RUN apk add --no-cache \
 		${PHP_PACKAGE}=~${PHP_VERSION} ${PHP_PACKAGE}-fpm=~${PHP_VERSION} \
 		nginx=~${NGINX_VERSION} \
 		curl
 
-RUN echo "PHP_PACKAGE=\"${PHP_PACKAGE}\"" > /etc/php-package
-
 COPY ./etc/cont-init.d /etc/cont-init.d
 COPY ./etc/nginx /etc/nginx
 COPY ./etc/${PHP_PACKAGE} /etc/${PHP_PACKAGE}
 COPY ./etc/services.d /etc/services.d
-COPY ./html /var/www/html
 
 ENTRYPOINT ["/init"]
 
