@@ -1,15 +1,13 @@
 #!/usr/bin/env sh
 
 case "${DOCKER_TAG}" in
-	php7|php7.3)
+	3.10.3|alpine3.10.3)
 		ALPINE_VERSION=3.10.3
-		PHP_VERSION=7.3
-		PHP_PACKAGE=php7
+		NGINX_VERSION=1.16
 		;;
-	php5|php5.6)
+	3.7.3|alpine3.7.3)
 		ALPINE_VERSION=3.7.3
-		PHP_VERSION=5.6
-		PHP_PACKAGE=php5
+		NGINX_VERSION=1.12
 		;;
 esac
 
@@ -19,12 +17,8 @@ if [ ! -z "${ALPINE_VERSION}" ]; then
 	arg_string="${arg_string} --build-arg ALPINE_VERSION=${ALPINE_VERSION}"
 fi
 
-if [ ! -z "${PHP_VERSION}" ]; then
-    arg_string="${arg_string} --build-arg PHP_VERSION=${PHP_VERSION}"
-fi
-
-if [ ! -z "${PHP_PACKAGE}" ]; then
-    arg_string="${arg_string} --build-arg PHP_PACKAGE=${PHP_PACKAGE}"
+if [ ! -z "${NGINX_VERSION}" ]; then
+    arg_string="${arg_string} --build-arg NGINX_VERSION=${NGINX_VERSION}"
 fi
 
 echo "docker build ${arg_string} -t ${IMAGE_NAME} ."

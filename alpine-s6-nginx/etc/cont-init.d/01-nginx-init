@@ -1,0 +1,22 @@
+#!/usr/bin/with-contenv /bin/sh
+
+# set PUID and PGID for www-data user/group
+#
+PUID=${PUID:-1000}
+PGID=${PGID:-1000}
+
+echo "[${0##*/}] uid: ${PUID}, gid: ${PGID}"
+
+groupmod -o -g "$PGID" www-data
+usermod -o -u "$PUID" -g "$PGID" www-data
+
+
+# enable logging of 200 and 300 HTTP codes
+#
+if [ ! -z ${NGINX_LOG_ALL+set} ]; then
+	case $NGINX_LOG_ALL in
+		true|True|TRUE|on|On|On)
+			sed -i 's!/dev/stdout combined if=$loggable;!/dev/stdout main;!' /etc/nginx/nginx.conf
+			;;
+	esac
+fi

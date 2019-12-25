@@ -1,16 +1,6 @@
 ARG ALPINE_VERSION=3.10.3
 
-FROM moonbuggy2000/alpine-s6:$ALPINE_VERSION
-
-ARG PYTHON_VERSION=3.7.5
-ARG NGINX_VERSION=1.16
-
-ENV PYTHON_VERSION=${PYTHON_VERSION} \
-	NGINX_VERSION=${NGINX_VERSION}
-
-RUN apk add --no-cache \
-		nginx=~${NGINX_VERSION} \
-		curl
+FROM moonbuggy2000/alpine-s6-nginx:${ALPINE_VERSION}
 
 COPY ./etc /etc
 
