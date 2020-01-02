@@ -9,7 +9,8 @@ ENV PHP_VERSION=${PHP_VERSION} \
 	PHP_PACKAGE=${PHP_PACKAGE} 
 
 RUN apk add --no-cache \
-		${PHP_PACKAGE}=~${PHP_VERSION} ${PHP_PACKAGE}-fpm=~${PHP_VERSION}
+		${PHP_PACKAGE}=~${PHP_VERSION} \
+		${PHP_PACKAGE}-fpm=~${PHP_VERSION}
 
 COPY ./etc/cont-init.d /etc/cont-init.d
 COPY ./etc/nginx /etc/nginx
@@ -19,4 +20,4 @@ COPY ./etc/services.d /etc/services.d
 ENTRYPOINT ["/init"]
 
 HEALTHCHECK --start-period=10s --timeout=10s \
-	CMD wget --quiet --tries=1 --spider http://127.0.0.1:8080/fpm-ping || exit 1
+	CMD wget --quiet --tries=1 --spider http://127.0.0.1:8080/fpm-ping && echo 'okay' || exit 1

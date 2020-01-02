@@ -1,0 +1,14 @@
+#!/usr/bin/env sh
+
+case "${DOCKER_TAG}" in
+	3.6-alpine3.11|3.6|latest)
+		PYPY_PYTHON_VERSION=3.6
+		ALPINE_VERSION=3.11
+		;;
+	2.7-alpine3.11|2.7)
+		PYPY_PYTHON_VERSION=2.7
+		ALPINE_VERSION=3.11
+		;;
+esac
+
+docker build --build-arg PYPY_PYTHON_VERSION=${PYPY_PYTHON_VERSION} --build-arg ALPINE_VERSION=${ALPINE_VERSION} -t ${IMAGE_NAME} .

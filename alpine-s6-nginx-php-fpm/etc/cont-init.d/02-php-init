@@ -6,7 +6,7 @@ function log() {
     echo "[${0##*/}] $1" >&2
 }
 
-#
+
 #	ocnfigure services.d file for php-fpm
 #
 mkdir -p $SERVICES_D
@@ -24,11 +24,10 @@ esac
 echo "${PHP_EXECUTABLE} -F" >> ${SERVICES_D}/run
 chmod a+x ${SERVICES_D}/run
 
-#
+
 #	configure timezone
 #
 if [ ! -z ${TZ+set} ]; then
 	log "Setting date.timezone: ${TZ}"
     sed -e "s|^;\?\s*date\.timezone.*|date.timezone = ${TZ}|" -i /etc/${PHP_PACKAGE}/php.ini
 fi
-

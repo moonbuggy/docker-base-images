@@ -8,7 +8,11 @@ PGID=${PGID:-1000}
 echo "[${0##*/}] uid: ${PUID}, gid: ${PGID}"
 
 groupmod -o -g "$PGID" www-data
-usermod -o -u "$PUID" -g "$PGID" www-data
+usermod -o -u "$PUID" -g "$PGID" www-data >/dev/null 2>&1
+
+chown -R ${PUID}:${PGID} $WEB_ROOT
+#find ${WEB_ROOT}/ -type d -exec chmod 755 -- {} +
+#find ${WEB_ROOT}/ -type f -exec chmod 644 -- {} +
 
 
 # enable logging of 200 and 300 HTTP codes
@@ -16,7 +20,7 @@ usermod -o -u "$PUID" -g "$PGID" www-data
 if [ ! -z ${NGINX_LOG_ALL+set} ]; then
 	case $NGINX_LOG_ALL in
 		true|True|TRUE|on|On|On)
-			sed -i 's!/dev/stdout combined if=$loggable;!/dev/stdout main;!' /etc/nginx/nginx.conf
+			sed -i 's|/dev/stdout combined if=$loggable;|/dev/stdout main;|' /etc/nginx/nginx.conf
 			;;
 	esac
 fi
