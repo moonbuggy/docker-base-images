@@ -1,0 +1,8 @@
+#!/usr/bin/with-contenv /bin/sh
+
+#	configure timezone
+#
+if [ ! -z ${TZ+set} ]; then
+	echo "[${0##*/}] date.timezone: ${TZ}" >&2
+    sed -e "s|^;\?\s*date\.timezone.*|date.timezone = ${TZ}|" -i /etc/${PHP_PACKAGE}/php.ini
+fi

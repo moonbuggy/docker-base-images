@@ -11,9 +11,6 @@ groupmod -o -g "$PGID" www-data
 usermod -o -u "$PUID" -g "$PGID" www-data >/dev/null 2>&1
 
 chown -R ${PUID}:${PGID} $WEB_ROOT
-#find ${WEB_ROOT}/ -type d -exec chmod 755 -- {} +
-#find ${WEB_ROOT}/ -type f -exec chmod 644 -- {} +
-
 
 # enable logging of 200 and 300 HTTP codes
 #

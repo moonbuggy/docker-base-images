@@ -5,10 +5,10 @@ FROM moonbuggy2000/alpine-s6:$ALPINE_VERSION
 ARG ALPINE_VERSION
 ARG NGINX_VERSION=1.16
 
-ENV NGINX_VERSION=${NGINX_VERSION} \
-	WEB_ROOT=/var/www/html
+ENV	WEB_ROOT=/var/www/html
 
-RUN apk add --no-cache \
+RUN add-contenv NGINX_VERSION=${NGINX_VERSION} \
+	&& apk add --no-cache \
 		nginx=~${NGINX_VERSION} \
 		shadow \
 	&& adduser -DH -G www-data www-data \

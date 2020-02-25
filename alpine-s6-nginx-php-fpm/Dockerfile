@@ -5,16 +5,16 @@ FROM moonbuggy2000/alpine-s6-nginx:$ALPINE_VERSION
 ARG PHP_VERSION=7.3
 ARG PHP_PACKAGE=php7
 
-ENV PHP_VERSION=${PHP_VERSION} \
-	PHP_PACKAGE=${PHP_PACKAGE} 
-
-RUN apk add --no-cache \
+RUN add-contenv \
+		PHP_VERSION=${PHP_VERSION} \
+		PHP_PACKAGE=${PHP_PACKAGE} \
+	&& apk add --no-cache \
 		${PHP_PACKAGE}=~${PHP_VERSION} \
 		${PHP_PACKAGE}-fpm=~${PHP_VERSION}
 
-COPY ./etc/cont-init.d /etc/cont-init.d
 COPY ./etc/nginx /etc/nginx
 COPY ./etc/${PHP_PACKAGE} /etc/${PHP_PACKAGE}
+COPY ./etc/cont-init.d /etc/cont-init.d
 COPY ./etc/services.d /etc/services.d
 
 ENTRYPOINT ["/init"]
