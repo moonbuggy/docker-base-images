@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+## configure before including common code
+#
+# this is the latest release of Alpine
+latest='buster'
+
+. hooks/post_push.inc
+
+push_tags

@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+. hooks/config.alpine.inc
+
+latest=$latest_alpine
+
+. hooks/post_push.inc
+
+# these are the last releases for a minor version
+case "${image_tag}" in
+	$latest_alpine_minor)
+		tags+=("${image_tag%.*}")
+		;;
+esac
+
+push_tags

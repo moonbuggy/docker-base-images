@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+## configure before including common code
+#
+# this is the latest Alpine PHP package
+latest='7.3'
+
+. hooks/post_push.inc
+
+## generate extra tags to apply to the image
+#
+tags+=("php${image_tag}")
+
+# these are the last releases for the major versions
+case "${image_tag}" in
+	5.6|7.3)
+		tags+=("${image_tag%.*}" "php${image_tag%.*}")
+		;;
+esac
+
+push_tags

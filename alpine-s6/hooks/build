@@ -1,7 +1,8 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
-if [ "$DOCKER_TAG" = "latest" ]; then
-	docker build -t ${IMAGE_NAME} .
-else
-	docker build --build-arg ALPINE_VERSION="${DOCKER_TAG}" -t ${IMAGE_NAME} .
-fi
+## construct and execute the build command
+#
+build_cmd=(docker build --build-arg ALPINE_VERSION=${DOCKER_TAG} -t ${IMAGE_NAME} .)
+
+printf '\n---\n%s\n---\n\n' "${build_cmd[*]}"
+"${build_cmd[@]}"

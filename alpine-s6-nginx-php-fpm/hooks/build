@@ -1,32 +1,21 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
+## set the PHP package string
+#
 case "${DOCKER_TAG}" in
-	php7|php7.3)
-		ALPINE_VERSION=3.10.3
-		PHP_VERSION=7.3
-		PHP_PACKAGE=php7
-		;;
-	php5|php5.6)
-		ALPINE_VERSION=3.7.3
-		PHP_VERSION=5.6
+	5*)
 		PHP_PACKAGE=php5
+		ALPINE_VERSION=3.7.3
+		;;
+	7*)
+		PHP_PACKAGE=php7
+		ALPINE_VERSION=3.12.0
 		;;
 esac
 
-arg_string=''
+## construct and execute the build command
+#
+build_cmd=(docker build --build-arg ALPINE_VERSION=${ALPINE_VERSION} --build-arg PHP_VERSION=${DOCKER_TAG} --build-arg PHP_PACKAGE=${PHP_PACKAGE} -t ${IMAGE_NAME} .)
 
-if [ ! -z "${ALPINE_VERSION}" ]; then
-	arg_string="${arg_string} --build-arg ALPINE_VERSION=${ALPINE_VERSION}"
-fi
-
-if [ ! -z "${PHP_VERSION}" ]; then
-    arg_string="${arg_string} --build-arg PHP_VERSION=${PHP_VERSION}"
-fi
-
-if [ ! -z "${PHP_PACKAGE}" ]; then
-    arg_string="${arg_string} --build-arg PHP_PACKAGE=${PHP_PACKAGE}"
-fi
-
-echo "docker build ${arg_string} -t ${IMAGE_NAME} ."
-
-docker build ${arg_string} -t ${IMAGE_NAME} .
+printf '\n---\n%s\n---\n\n' "${build_cmd[*]}"
+"${build_cmd[@]}"

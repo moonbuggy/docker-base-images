@@ -1,0 +1,23 @@
+#!/bin/sh
+
+## copy common files
+#
+# symlinks outside of build contexts are problematic for Docker
+# easest solution is to copy common/ to subfolders before committing
+#
+source_files=$(find .common/ -type f -printf "%P\n")
+
+for DIR in */ ; do
+	case "$DIR" in
+		.common*)
+			# do nothing here, these are excluded paths
+			;;
+		*)
+			for file in $source_files; do
+				if [ -f $DIR/$file ]; then
+					cp -u .common/$file $DIR$file
+				fi
+			done
+			;;
+	esac
+done

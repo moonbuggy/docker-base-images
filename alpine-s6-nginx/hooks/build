@@ -1,26 +1,14 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
-case "${DOCKER_TAG}" in
-	3.10.3|alpine3.10.3)
-		ALPINE_VERSION=3.10.3
-		NGINX_VERSION=1.16
-		;;
-	3.7.3|alpine3.7.3)
-		ALPINE_VERSION=3.7.3
-		NGINX_VERSION=1.12
-		;;
-esac
+. hooks/config.alpine.inc
 
-arg_string=''
+## set the Nginx version
+#
+getNginxVersion ${DOCKER_TAG}
 
-if [ ! -z "${ALPINE_VERSION}" ]; then
-	arg_string="${arg_string} --build-arg ALPINE_VERSION=${ALPINE_VERSION}"
-fi
+## construct and execute the build command
+#
+build_cmd=(docker build --build-arg ALPINE_VERSION=${DOCKER_TAG} --build-arg NGINX_VERSION=${NGINX_VERSION} -t ${IMAGE_NAME} .)
 
-if [ ! -z "${NGINX_VERSION}" ]; then
-    arg_string="${arg_string} --build-arg NGINX_VERSION=${NGINX_VERSION}"
-fi
-
-echo "docker build ${arg_string} -t ${IMAGE_NAME} ."
-
-docker build ${arg_string} -t ${IMAGE_NAME} .
+printf '\n---\n%s\n---\n\n' "${build_cmd[*]}"
+"${build_cmd[@]}"
