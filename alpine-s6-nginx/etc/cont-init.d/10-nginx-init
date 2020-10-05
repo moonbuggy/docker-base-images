@@ -14,10 +14,14 @@ chown -R ${PUID}:${PGID} $WEB_ROOT
 
 # enable logging of 200 and 300 HTTP codes
 #
-if [ ! -z ${NGINX_LOG_ALL+set} ]; then
-	case $NGINX_LOG_ALL in
-		true|True|TRUE|on|On|On)
+if [ ! -z "${NGINX_LOG_ALL+set}" ]; then
+	case $(echo $NGINX_LOG_ALL | tr [A-Z] [a-z]) in
+		true|on|yes)
 			sed -i 's|/dev/stdout combined if=$loggable;|/dev/stdout main;|' /etc/nginx/nginx.conf
 			;;
 	esac
 fi
+
+[ ! -z "${NGINX_PORT}" ] && sed -r "s|^(\s+listen\D+)(\d+)(\D.*)$|\1${NGINX_PORT}\3|g" -i /etc/nginx/conf.d/default.conf
+[ ! -z "${NGINX_INDEX}" ] && sed -r "s|^\s+index.*$|\tindex\t\t${NGINX_INDEX};|g" -i /etc/nginx/conf.d/default.conf
+[ ! -z "${WEB_ROOT}" ] && sed -r "s|^\s+root.*$|\troot\t\t${WEB_ROOT};|g" -i /etc/nginx/conf.d/default.conf
