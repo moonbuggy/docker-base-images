@@ -6,10 +6,12 @@ ARG BUILD_DIR=/build
 
 WORKDIR ${BUILD_DIR}
 
-RUN apk add --no-cache \
+RUN apk -U add --no-cache \
 		alpine-sdk \
+		autoconf \
 		bison \
 		flex \
+		sudo \
 	&& adduser -D -h /build/ -G abuild builder \
 	&& chown -R builder:abuild /build \
 	&& chgrp abuild /var/cache/distfiles/ \

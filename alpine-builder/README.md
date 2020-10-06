@@ -5,8 +5,10 @@ This is an Alpine container for building from source, for use as part of a multi
 ## Installed Packages
 
 * alpine-sdk (includes build-base and more)
+* autoconf
 * bison
 * flex
+* sudo
 
 ## Links
 
