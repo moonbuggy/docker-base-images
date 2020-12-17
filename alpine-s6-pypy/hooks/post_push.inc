@@ -20,9 +20,9 @@ fi
 push_tags()	{
 	for tag in ${tags[@]}; do
 		echo '---'
-		echo "Adding tag: ${image_repo}:${tag}"
-		echo '---'
+		printf 'Adding tag: %s:%s\n' "${image_repo}" "${tag}"
 		docker tag $IMAGE_NAME ${image_repo}:${tag}
-		docker push ${image_repo}:${tag}
+		docker push ${image_repo}:${tag} | grep digest
 	done
+	echo '---'
 }

@@ -9,7 +9,7 @@ case "${DOCKER_TAG}" in
 		;;
 	7*)
 		PHP_PACKAGE=php7
-		ALPINE_VERSION=3.12.0
+		ALPINE_VERSION=3.12.3
 		;;
 esac
 

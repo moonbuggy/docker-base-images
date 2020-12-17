@@ -1,10 +1,10 @@
 shopt -s extglob
 
 # the most recent Alpine version
-latest_alpine='3.12.0'
+latest_alpine='3.12.3'
 
 # the most recent Alpine minor versions
-latest_alpine_minor='+(3.7.3|3.8.5|3.9.6|3.10.5|3.11.6|3.12.0)'
+latest_alpine_minor='+(3.7.3|3.8.5|3.9.6|3.10.5|3.11.6|3.12.3)'
 
 # the Nginx Alpine package versions
 function getNginxVersion() {
@@ -27,17 +27,9 @@ function getNginxVersion() {
 # add tags for most recent Nginx versions
 function setNginxTag() {
 	case ${1} in
-		3.7.3)
-			tags+=('nginx1.12')
-			;;
-		3.9.6)
-			tags+=('nginx1.14')
-			;;
-		3.11.6)
-			tags+=('nginx1.12')
-			;;
-		3.12.0)
-			tags+=('nginx1.14')
+		3.7.3|3.9.6|3.11.6|${latest_alpine})
+			getNginxVersion ${1}
+			tags+=( "nginx${NGINX_VERSION}" )
 			;;
 	esac
 }
