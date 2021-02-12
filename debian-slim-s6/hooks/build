@@ -1,0 +1,34 @@
+#! /usr/bin/env bash
+
+. hooks/env
+
+LATEST_S6_TAG="$(echo "$(get_api_data ${S6_REPO} "releases/latest")" | sed -rn 's/.*"tag_name"\W+"([^"]+)".*/\1/p')"
+LATEST_QEMU_TAG="$(echo "$(get_api_data ${QEMU_REPO} "releases/latest")" | sed -rn 's/.*"tag_name"\W+"([^"]+)".*/\1/p')"
+
+echo '--- build ---'
+printf '%-20s%-8s\n' 'latest S6: ' "${LATEST_S6_TAG}"
+printf '%-20s%-8s\n' 'latest QEMU: ' "${LATEST_QEMU_TAG}"
+printf '\n'
+
+## construct and execute the build command
+#
+arg_string=''
+
+[ ! -z "${DEB_RELEASE}" ] && arg_string="${arg_string} --build-arg DEB_RELEASE=${DEB_RELEASE}"
+[ ! -z "${LATEST_S6_TAG}" ] && arg_string="${arg_string} --build-arg S6_VERSION=${LATEST_S6_TAG}"
+[ ! -z "${S6_ARCH}" ] && arg_string="${arg_string} --build-arg S6_ARCH=${S6_ARCH}"
+
+arg_string="${arg_string} --build-arg SOURCE_IMAGE=${SOURCE_ARCH}/debian:${DEB_RELEASE}-slim"
+
+if [ ! -z "${QEMU_ARCH}" ]; then
+	arg_string="${arg_string} --build-arg QEMU_ARCH=${QEMU_ARCH}"
+	arg_string="${arg_string} -f Dockerfile.${DOCKERFILE_EXT}"
+fi
+
+build_cmd=(docker build ${arg_string} -t ${IMAGE_NAME} .)
+
+pretty_build_cmd=$(echo "${build_cmd[*]}" | sed -r -e "s/(--build-arg|-f|-t)/\\\ \n\t\1/g")
+echo '--- build command ---'
+printf '%s\n\n' "$pretty_build_cmd"
+
+"${build_cmd[@]}"

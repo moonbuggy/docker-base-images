@@ -4,10 +4,13 @@ FROM moonbuggy2000/alpine-s6:$ALPINE_VERSION
 
 ARG ALPINE_VERSION
 ARG NGINX_VERSION=1.18
+ARG NGINX_PORT=8080
 
-ENV	WEB_ROOT=/var/www/html
+ENV	NGINX_PORT=${NGINX_PORT} \
+		WEB_ROOT=/var/www/html
 
-RUN add-contenv NGINX_VERSION=${NGINX_VERSION} \
+RUN add-contenv \
+		NGINX_VERSION=${NGINX_VERSION} \
 	&& apk add --no-cache \
 		nginx=~${NGINX_VERSION} \
 		shadow \
@@ -17,7 +20,7 @@ RUN add-contenv NGINX_VERSION=${NGINX_VERSION} \
 
 COPY ./etc /etc
 
-EXPOSE 8080
+EXPOSE ${NGINX_PORT}
 
 ENTRYPOINT ["/init"]
 

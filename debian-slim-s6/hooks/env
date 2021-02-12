@@ -1,0 +1,71 @@
+S6_REPO="just-containers/s6-overlay"
+QEMU_REPO="multiarch/qemu-user-static"
+MANIFEST_TOOL_REPO="estesp/manifest-tool"
+
+## parse Docker environment variables
+#
+DEB_RELEASE="$(echo ${DOCKER_TAG} | cut -d'-' -f1)"
+BUILD_ARCH="$(echo ${DOCKER_TAG} | grep -oP '(?<=\-)([[:alnum:]]*)$')"
+
+## get_api_data <repo> <request>
+#
+get_api_data () {
+	local temp_data="$(curl -s -w "%{http_code}\n" "https://api.github.com/repos/${1}/${2}")"
+	local http_code="$(echo "$temp_data" | tail -n1)"
+	if [ "$http_code" != "200" ]; then
+		echo "HTTP Error: $http_code"
+		return 1
+	fi
+	echo "$temp_data" | sed '$d'
+}
+
+## determine build perameters
+#
+case ${BUILD_ARCH} in
+	arm*)
+		DOCKERFILE_EXT="qemu"
+		;;&
+	armv5)
+		PLATFORM_ARCH="arm"
+		PLATFORM_VARIANT="v5"
+		QEMU_ARCH="arm"
+		S6_ARCH="arm"
+		SOURCE_ARCH="arm32v5"
+		;;
+	armv7)
+		PLATFORM_ARCH="arm"
+		PLATFORM_VARIANT="v7"
+		QEMU_ARCH="arm"
+		S6_ARCH="armhf"
+		SOURCE_ARCH="arm32v7"
+		;;
+	arm64v8)
+		PLATFORM_ARCH="arm64"
+		PLATFORM_VARIANT="v8"
+		QEMU_ARCH="aarch64"
+		S6_ARCH="aarch64"
+		SOURCE_ARCH="arm64v8"
+		;;
+	amd64|*)
+		PLATFORM_ARCH="amd64"
+		unset PLATFORM_VARIANT
+		unset QEMU_ARCH
+		S6_ARCH="amd64"
+		SOURCE_ARCH="amd64"
+		;;
+esac
+
+PLATFORMS="linux/amd64,linux/arm/v5,linux/arm/v7"
+[ "${DEB_RELEASE}" = "jessie" ] || PLATFORMS="${PLATFORMS},linux/arm64/v8"
+
+echo '--- env ---'
+printf '%-20s %-8s\n' 'debian release:' "${DEB_RELEASE}"
+printf '%-20s %-8s\n' 'build arch:' "${BUILD_ARCH}"
+printf '%-20s %-8s\n' 'platform arch:' "${PLATFORM_ARCH}"
+printf '%-20s %-8s\n' 'platform variant:' "${PLATFORM_VARIANT}"
+printf '%-20s %-8s\n' 'QEMU arch:' "${QEMU_ARCH}"
+printf '%-20s %-8s\n' 'S6 arch:' "${S6_ARCH}"
+printf '%-20s %-8s\n' 'source arch:' "${SOURCE_ARCH}"
+printf '%-20s %-8s\n' 'dockerfile ext:' "${DOCKERFILE_EXT}"
+printf '%-20s %-8s\n' 'manifest platforms:' "${PLATFORMS}"
+printf '\n'
