@@ -6,3 +6,9 @@ if [ ! -z ${TZ+set} ]; then
 	echo "[${0##*/}] date.timezone: ${TZ}" >&2
     sed -e "s|^;\?\s*date\.timezone.*|date.timezone = ${TZ}|" -i /etc/${PHP_PACKAGE}/php.ini
 fi
+
+NGINX_INDEX=${NGINX_INDEX:-index.php index.html index.htm}
+
+sed -r \
+	-e "s|^\s+index.*$|\tindex\t\t${NGINX_INDEX};|g" \
+	-i /etc/nginx/conf.d/default.conf

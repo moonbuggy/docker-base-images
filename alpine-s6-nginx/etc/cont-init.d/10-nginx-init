@@ -12,6 +12,18 @@ usermod -o -u "$PUID" -g "$PGID" www-data >/dev/null 2>&1
 
 chown -R ${PUID}:${PGID} $WEB_ROOT
 
+# server configuration
+#
+NGINX_PORT=${NGINX_PORT:-8080}
+NGINX_INDEX=${NGINX_INDEX:-index.html index.htm}
+WEB_ROOT=${WEB_ROOT:-/var/www/html}
+
+sed -r \
+	-e "s|^(\s+listen\D+)(\d+)(\D.*)$|\1${NGINX_PORT}\3|g" \
+	-e "s|^\s+index.*$|\tindex\t\t${NGINX_INDEX};|g" \
+	-e "s|^\s+root.*$|\troot\t\t${WEB_ROOT};|g" \
+	-i /etc/nginx/conf.d/default.conf
+
 # enable logging of 200 and 300 HTTP codes
 #
 if [ ! -z "${NGINX_LOG_ALL+set}" ]; then
@@ -21,7 +33,3 @@ if [ ! -z "${NGINX_LOG_ALL+set}" ]; then
 			;;
 	esac
 fi
-
-[ ! -z "${NGINX_PORT}" ] && sed -r "s|^(\s+listen\D+)(\d+)(\D.*)$|\1${NGINX_PORT}\3|g" -i /etc/nginx/conf.d/default.conf
-[ ! -z "${NGINX_INDEX}" ] && sed -r "s|^\s+index.*$|\tindex\t\t${NGINX_INDEX};|g" -i /etc/nginx/conf.d/default.conf
-[ ! -z "${WEB_ROOT}" ] && sed -r "s|^\s+root.*$|\troot\t\t${WEB_ROOT};|g" -i /etc/nginx/conf.d/default.conf

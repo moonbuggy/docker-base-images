@@ -1,0 +1,20 @@
+ARG ALPINE_VERSION="3.13.2"
+ARG SOURCE_TAG="${ALPINE_VERSION}"
+ARG FROM_IMAGE="alpine:${ALPINE_VERSION}"
+
+ARG QEMU_ARCH="arm"
+
+## build the image
+#
+FROM multiarch/qemu-user-static:x86_64-${QEMU_ARCH} AS qemu
+FROM ${FROM_IMAGE}
+
+ARG QEMU_ARCH
+COPY --from=qemu /usr/bin/qemu-${QEMU_ARCH}-static /usr/bin
+
+RUN apk add --no-cache \ 
+		curl \
+		git \
+		jq
+	
+CMD ["/bin/ash"]
