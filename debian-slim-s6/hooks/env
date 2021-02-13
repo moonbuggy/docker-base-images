@@ -4,8 +4,8 @@ MANIFEST_TOOL_REPO="estesp/manifest-tool"
 
 ## parse Docker environment variables
 #
-DEB_RELEASE="$(echo ${DOCKER_TAG} | cut -d'-' -f1)"
-BUILD_ARCH="$(echo ${DOCKER_TAG} | grep -oP '(?<=\-)([[:alnum:]]*)$')"
+DEB_RELEASE="$(echo "${DOCKER_TAG}" | cut -d'-' -f1)"
+BUILD_ARCH="$(echo "${DOCKER_TAG}" | grep -oP '(?<=\-)([[:alnum:]]*)$')"
 
 ## get_api_data <repo> <request>
 #
@@ -19,53 +19,51 @@ get_api_data () {
 	echo "$temp_data" | sed '$d'
 }
 
-## determine build perameters
+## format parameter printing
 #
-case ${BUILD_ARCH} in
-	arm*)
-		DOCKERFILE_EXT="qemu"
-		;;&
-	armv5)
-		PLATFORM_ARCH="arm"
-		PLATFORM_VARIANT="v5"
-		QEMU_ARCH="arm"
-		S6_ARCH="arm"
-		SOURCE_ARCH="arm32v5"
-		;;
-	armv7)
-		PLATFORM_ARCH="arm"
-		PLATFORM_VARIANT="v7"
-		QEMU_ARCH="arm"
-		S6_ARCH="armhf"
-		SOURCE_ARCH="arm32v7"
-		;;
-	arm64v8)
-		PLATFORM_ARCH="arm64"
-		PLATFORM_VARIANT="v8"
-		QEMU_ARCH="aarch64"
-		S6_ARCH="aarch64"
-		SOURCE_ARCH="arm64v8"
-		;;
-	amd64|*)
-		PLATFORM_ARCH="amd64"
-		unset PLATFORM_VARIANT
-		unset QEMU_ARCH
-		S6_ARCH="amd64"
-		SOURCE_ARCH="amd64"
-		;;
-esac
+print_param () {
+	printf '%-20s %-8s\n' "${1}" "${2}"
+}
 
-PLATFORMS="linux/amd64,linux/arm/v5,linux/arm/v7"
-[ "${DEB_RELEASE}" = "jessie" ] || PLATFORMS="${PLATFORMS},linux/arm64/v8"
+## parse YAML configuration
+#
+#function parse_yaml {
+parse_yaml () {
+	local prefix=$2
+	local s='[[:space:]]*' w='[a-zA-Z0-9_]*' fs=$(echo @|tr @ '\034')
+	sed -ne "s|^\($s\):|\1|" \
+		-e "s|^\($s\)\($w\)$s:$s[\"']\(.*\)[\"']$s\$|\1$fs\2$fs\3|p" \
+		-e "s|^\($s\)\($w\)$s:$s\(.*\)$s\$|\1$fs\2$fs\3|p" "${1}" |
+		awk -F"${fs}" '{
+			indent = length($1)/2;
+			vname[indent] = $2;
+			for (i in vname) {if (i > indent) {delete vname[i]}}
+			if (length($3) > 0) {
+				vn=""; for (i=0; i<indent; i++) {vn=(vn)(vname[i])("_")}
+				printf("%s%s%s=%s\n", "'"$prefix"'",vn, $2, $3);
+			}
+		}'
+}
 
-echo '--- env ---'
-printf '%-20s %-8s\n' 'debian release:' "${DEB_RELEASE}"
-printf '%-20s %-8s\n' 'build arch:' "${BUILD_ARCH}"
-printf '%-20s %-8s\n' 'platform arch:' "${PLATFORM_ARCH}"
-printf '%-20s %-8s\n' 'platform variant:' "${PLATFORM_VARIANT}"
-printf '%-20s %-8s\n' 'QEMU arch:' "${QEMU_ARCH}"
-printf '%-20s %-8s\n' 'S6 arch:' "${S6_ARCH}"
-printf '%-20s %-8s\n' 'source arch:' "${SOURCE_ARCH}"
-printf '%-20s %-8s\n' 'dockerfile ext:' "${DOCKERFILE_EXT}"
-printf '%-20s %-8s\n' 'manifest platforms:' "${PLATFORMS}"
-printf '\n'
+## prepare build perameters
+#
+echo 'Parsing config..'
+while read -r line; do declare "${line}"; done < <(parse_yaml builds.yaml)
+
+## only build a specific arch if specified in the tag
+#
+[ -n "${BUILD_ARCH}" ] && [[ "${arches}" == *"${BUILD_ARCH}"* ]] && arches="${BUILD_ARCH}"
+
+## prepare platforms for manifest push
+#
+PLATFORMS=''
+for arch in ${arches}; do
+	excluded="${arch}_EXCLUDE_RELEASE"
+	[[ ! "${!excluded}" == *"${DEB_RELEASE}"* ]] && \
+		platform_string="${arch}_PLATFORM" && \
+		PLATFORMS="${PLATFORMS},${!platform_string}"
+done
+
+PLATFORMS="${PLATFORMS:1}"
+
+echo

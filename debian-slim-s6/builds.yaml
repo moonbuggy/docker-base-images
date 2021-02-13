@@ -1,0 +1,34 @@
+arches: armv5 armv7 arm64v8 amd64
+available_keys: TARGET_TAG QEMU_ARCH S6_ARCH SOURCE_ARCH DOCKERFILE_EXT EXCLUDE_RELEASE
+arm64v8:
+  TARGET_TAG: arm64v8
+  QEMU_ARCH: aarch64
+  S6_ARCH: aarch64
+  SOURCE_ARCH: arm64v8
+  DOCKERFILE_EXT: qemu
+  EXCLUDE_RELEASE: jessie
+  PLATFORM: linux/arm64/v8
+amd64:
+  TARGET_TAG: amd64
+  QEMU_ARCH:
+  S6_ARCH: amd64
+  SOURCE_ARCH: amd64
+  DOCKERFILE_EXT:
+  EXCLUDE_RELEASE:
+  PLATFORM: linux/amd64
+armv5:
+  TARGET_TAG: armv5
+  QEMU_ARCH: arm
+  S6_ARCH: arm
+  SOURCE_ARCH: arm32v5
+  DOCKERFILE_EXT: qemu
+  EXCLUDE_RELEASE:
+  PLATFORM: linux/arm/v5
+armv7:
+  TARGET_TAG: armv7
+  QEMU_ARCH: arm
+  S6_ARCH: armhf
+  SOURCE_ARCH: arm32v7
+  DOCKERFILE_EXT: qemu
+  EXCLUDE_RELEASE:
+  PLATFORM: linux/arm/v7

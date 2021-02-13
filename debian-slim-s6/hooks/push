@@ -1,0 +1,9 @@
+#! /usr/bin/env bash
+
+. hooks/env
+
+for arch in ${arches}; do
+	image="${DOCKER_REPO}:${DEB_RELEASE}-${arch}"
+	printf '*** Pushing: %s\n' "${image}"
+	docker push "${image}" | grep digest
+done

@@ -5,11 +5,9 @@
 LATEST_MANIFEST_TOOL="$(echo "$(get_api_data ${MANIFEST_TOOL_REPO} "releases/latest")" | sed -rn 's/.*"tag_name"\W+"([^"]+)".*/\1/p')"
 MANIFEST_TOOL_URL="https://github.com/${MANIFEST_TOOL_REPO}/releases/download/${LATEST_MANIFEST_TOOL}/manifest-tool-linux-amd64"
 
-curl -sLo manifest-tool "${MANIFEST_TOOL_URL}"
-chmod +x manifest-tool
+curl -sLo manifest-tool "${MANIFEST_TOOL_URL}" && chmod +x manifest-tool
 
 manifest_cmd=(./manifest-tool push from-args ${manifest_args} --platforms ${PLATFORMS} --template moonbuggy2000/debian-slim-s6:${DEB_RELEASE}-ARCHVARIANT --target moonbuggy2000/debian-slim-s6:${DEB_RELEASE})
 
 printf '\n--- manifest command ---\n%s\n' "${manifest_cmd[*]}"
-"${manifest_cmd[@]}" || \
-	{ echo "*** Could not push manifest. Continuing.."; exit 0; }
+"${manifest_cmd[@]}" || { echo "*** Could not push manifest."; exit 0; }
