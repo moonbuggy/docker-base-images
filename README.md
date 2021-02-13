@@ -25,5 +25,6 @@ Docker Hub:
 * https://hub.docker.com/r/moonbuggy2000/alpine-s6-nginx-php-fpm
 * https://hub.docker.com/r/moonbuggy2000/alpine-s6-nginx-uwsgi
 * https://hub.docker.com/r/moonbuggy2000/alpine-s6-pypy
+* https://hub.docker.com/r/moonbuggy2000/debian-slim-s6
 * https://hub.docker.com/r/moonbuggy2000/minideb-s6
 * https://hub.docker.com/r/moonbuggy2000/minideb-s6-python
