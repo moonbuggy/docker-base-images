@@ -3,7 +3,11 @@
 . hooks/env
 
 echo '--- post_checkout ---'
-get_manifest_tool
+#get_manifest_tool
+
+[ ! -f "source.manifest" ] && \
+	echo "Getting source manifest (${SOURCE_IMAGE}).." && echo && \
+	docker manifest inspect -v "${SOURCE_IMAGE}" > source.manifest
 
 cat "${ARCH_YAML}" > "${CONFIG_YAML}"
 
@@ -14,10 +18,33 @@ while read -r line; do declare "${line}"; done < <(parse_yaml "${ARCH_YAML}")
 configured_arches="$(sed -En 's/(^\w*):\s*$/\1/p' "${ARCH_YAML}" | tr '\n' ' ')"
 add_print_param 'configured_arches' "${configured_arches}" 'Configured arches'
 
-source_arches=$(manifest-tool inspect "${SOURCE_IMAGE}" | \
-	sed -En 'N;s/^.*Arch:\s*(\w*)\n[^\n\r]*(Variant:\W*(\w*)?)$/\1\3/p' | \
-	sed 's/^386/i386/' | \
-	tr '\n' ' ')
+#source_arches=$(manifest-tool inspect "${SOURCE_IMAGE}" | \
+#	sed -En 'N;s/^.*Arch:\s*(\w*)\n[^\n\r]*(Variant:\W*(\w*)?)$/\1\3/p' | \
+#	sed 's/^386/i386/' | \
+#	tr '\n' ' ')
+
+#source_arches=$(docker run --rm mplatform/mquery "${SOURCE_IMAGE}" | \
+#	sed -En 's/^\s*-\s*([\w\/]*)/\1/p' | \
+#	tr '\n' ' ')
+
+#source_arches=$(cat source.manifest | sed -En 's/.*"architecture"\W+"([^"]+)".*/\1/p' | tr '\n' ' ')
+
+#source_arches=$(cat source.manifest | \
+#	sed -En 'N;s/.*"architecture"\W+"([^"]+)"(.*\n)\{2\}[^\n\r]*"variant"\W+"([^"]+)"/found: \1\3/p' | tr '\n' ' ')
+
+#manifest_platforms="$(sed '/"platform":\s*{/{:1; /}/!{N; b1}; /.*/p}; d' source.manifest | xargs | sed -En 's/}?\s?platform:\s/}\n/gp')"
+
+source_arches=''
+while read -r line; do
+	while read -r parameter; do
+		declare "${parameter}"
+	done < <(echo "$line" | sed -En 's/.*architecture\W+(\w*)\W*os\W*(\w*)(\W+variant\W*(\w*))?\W+/arch=\1\nos=\2\nvariant=\4/p')
+	
+	[ ! -z "$arch" ] && source_arches="${source_arches}${arch}${variant} "
+	unset arch os variant
+
+done < <(sed '/"platform":\s*{/{:1; /}/!{N; b1}; /.*/p}; d' source.manifest | xargs | sed -En 's/}?\s?platform:\s/}\n/gp')
+
 add_print_param 'source_arches' "${source_arches}" "Source arches"
 
 available_arches="$(comm -12 <(printf '%s\n' ${configured_arches} | LC_ALL=C sort) <(printf '%s\n' ${source_arches} | LC_ALL=C sort) | tr '\n' ' ')"

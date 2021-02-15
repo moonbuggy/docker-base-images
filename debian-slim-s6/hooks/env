@@ -65,7 +65,6 @@ parse_yaml () {
 get_manifest_tool () {
 	if [ ! -f "manifest-tool" ]; then
 		echo "Fetching manifest-tool.." && echo
-#		LATEST_MANIFEST_TOOL="$(echo "$(get_api_data ${MANIFEST_TOOL_REPO} "releases/latest")" | sed -rn 's/.*"tag_name"\W+"([^"]+)".*/\1/p')"
 		LATEST_MANIFEST_TOOL="$(get_api_data ${MANIFEST_TOOL_REPO} "releases/latest" | sed -rn 's/.*"tag_name"\W+"([^"]+)".*/\1/p')"
 		curl -sLo "manifest-tool" "https://github.com/${MANIFEST_TOOL_REPO}/releases/download/${LATEST_MANIFEST_TOOL}/manifest-tool-linux-amd64"
 	fi
