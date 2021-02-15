@@ -1,5 +1,5 @@
-ARG DEB_RELEASE="buster"
-ARG SOURCE_IMAGE="debian:${DEB_RELEASE}-slim"
+ARG SOURCE_TAG="buster-slim"
+ARG FROM_IMAGE="debian:${SOURCE_TAG}"
 
 ## get s6 overlay
 #
@@ -13,13 +13,13 @@ RUN mkdir /s6/ \
 
 ## build the image
 #
-FROM ${SOURCE_IMAGE}
+FROM ${FROM_IMAGE}
 
 COPY ./root /
 COPY --from=fetcher /s6/ /
 
-ARG DEB_RELEASE
+ARG TARGET_TAG
 
-RUN add-contenv DEB_RELEASE=${DEB_RELEASE}
+RUN add-contenv DEB_RELEASE=${TARGET_TAG}
 
 ENTRYPOINT ["/init"]

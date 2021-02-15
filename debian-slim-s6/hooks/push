@@ -2,9 +2,12 @@
 
 . hooks/env
 
+echo '--- push ---'
+
 for arch in ${valid_arches}; do
-	TARGET_TAG="${arch}_TARGET_TAG"
-	image="${DOCKER_REPO}:${DEB_RELEASE}-${!TARGET_TAG}"
-	printf '*** Pushing: %s\n' "${image}"
+	TARGET_ARCH_TAG="${arch}_TARGET_ARCH_TAG"
+	image="${DOCKER_REPO}:${TARGET_TAG}-${!TARGET_ARCH_TAG}"
+	printf 'Pushing: %s\n' "${image}"
 	docker push "${image}" | grep digest
+	echo
 done

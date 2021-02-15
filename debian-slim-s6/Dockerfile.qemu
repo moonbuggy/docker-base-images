@@ -1,7 +1,7 @@
-ARG QEMU_ARCH="arm"
+ARG SOURCE_TAG="buster-slim"
+ARG FROM_IMAGE="debian:${SOURCE_TAG}"
 
-ARG DEB_RELEASE="buster"
-ARG SOURCE_IMAGE="debian:${DEB_RELEASE}-slim"
+ARG QEMU_ARCH="arm"
 
 ## get s6 overlay
 #
@@ -13,17 +13,20 @@ ARG S6_ARCH=amd64
 RUN mkdir /s6/ \
 	&& wget --no-check-certificate -qO- https://github.com/just-containers/s6-overlay/releases/download/${S6_VERSION}/s6-overlay-${S6_ARCH}.tar.gz | tar xzf - -C /s6/
 
+ARG FROM_IMAGE
+RUN echo "Building from: ${FROM_IMAGE}"
+
 ## build the image
 #
 FROM multiarch/qemu-user-static:x86_64-${QEMU_ARCH} AS qemu
-FROM ${SOURCE_IMAGE}
+FROM ${FROM_IMAGE}
 
 COPY ./root /
 
 ARG QEMU_ARCH="arm"
 COPY --from=qemu /usr/bin/qemu-${QEMU_ARCH}-static /usr/bin
 
-ARG DEB_RELEASE
-RUN add-contenv DEB_RELEASE=${DEB_RELEASE}
+ARG TARGET_TAG
+RUN add-contenv DEB_RELEASE=${TARGET_TAG}
 
 ENTRYPOINT ["/init"]

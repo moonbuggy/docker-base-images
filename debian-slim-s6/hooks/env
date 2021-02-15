@@ -1,21 +1,38 @@
-S6_REPO="just-containers/s6-overlay"
+SOURCE_REPO="debian"
+
 QEMU_REPO="multiarch/qemu-user-static"
+S6_REPO="just-containers/s6-overlay"
 MANIFEST_TOOL_REPO="estesp/manifest-tool"
+
+ARCH_YAML="arch.yaml"
+CONFIG_YAML="config.yaml"
 
 ## parse Docker environment variables
 #
-DEB_RELEASE="$(echo "${DOCKER_TAG}" | cut -d'-' -f1)"
+TARGET_TAG="$(echo "${DOCKER_TAG}" | cut -d'-' -f1)"
 BUILD_ARCH="$(echo "${DOCKER_TAG}" | grep -oP '(?<=\-)([[:alnum:]]*)$')"
 
-## format parameter printing
+SOURCE_TAG="${TARGET_TAG}-slim"
+SOURCE_IMAGE="${SOURCE_REPO}:${SOURCE_TAG}"
+
+#echo '--- env ---'
+
+## handling writing and printing of parameters
 #
+add_param () { echo "${1}: ${2}" >> "${CONFIG_YAML}"; }
 print_param () { printf '%-20s %-8s\n' "${1}" "${2}"; }
+
+add_print_param () {
+	add_param "${1}" "${2}"
+	[ -n "${3}" ] && desc="${3}" || desc="${1}"
+	print_param "${desc}" "${2}"
+}
 
 ## get_api_data <repo> <request>
 #
 get_api_data () {
-	local temp_data="$(curl -s -w "%{http_code}\n" "https://api.github.com/repos/${1}/${2}")"
-	local http_code="$(echo "$temp_data" | tail -n1)"
+	local temp_data && temp_data="$(curl -s -w "%{http_code}\n" "https://api.github.com/repos/${1}/${2}")"
+	local http_code && http_code="$(echo "$temp_data" | tail -n1)"
 	if [ "$http_code" != "200" ]; then
 		echo "HTTP Error: $http_code"
 		return 1
@@ -26,8 +43,9 @@ get_api_data () {
 ## parse YAML configuration
 #
 parse_yaml () {
-	local prefix=$2
-	local s='[[:space:]]*' w='[a-zA-Z0-9_]*' fs=$(echo @|tr @ '\034')
+	local prefix && prefix=$2
+	local s && s='[[:space:]]*' w='[a-zA-Z0-9_]*'
+	local fs && fs=$(echo @|tr @ '\034')
 	sed -ne "s|^\($s\):|\1|" \
 		-e "s|^\($s\)\($w\)$s:$s[\"']\(.*\)[\"']$s\$|\1$fs\2$fs\3|p" \
 		-e "s|^\($s\)\($w\)$s:$s\(.*\)$s\$|\1$fs\2$fs\3|p" "${1}" |
@@ -42,38 +60,28 @@ parse_yaml () {
 		}'
 }
 
-## prepare build perameters
+## get manifest-tool
 #
-echo '--- env ---'
-while read -r line; do declare "${line}"; done < <(parse_yaml builds.yaml)
-
-arches="$(sed -En 's/(^\w*):\s*$/\1/p' builds.yaml | tr '\n' ' ')"
-print_param 'Found arches' "${arches}"
-
-## only build a specific arch if specified in the tag
-#
-[ -n "${BUILD_ARCH}" ] && [[ "${arches}" == *"${BUILD_ARCH}"* ]] && arches="${BUILD_ARCH}"
-
-## validate architectures
-#
-#platforms=''
-#valid_arches=''
-#excluded_list=''
-for arch in ${arches}; do
-	excluded="${arch}_EXCLUDE_RELEASE"
-	[[ "${!excluded}" == *"${DEB_RELEASE}"* ]] && excluded_list="${excluded_list}${arch} "
-	if [[ ! "${!excluded}" == *"${DEB_RELEASE}"* ]]; then
-		platform_string="${arch}_PLATFORM"
-		platforms="${platforms},${!platform_string}"
-		valid_arches="${valid_arches}${arch} "
+get_manifest_tool () {
+	if [ ! -f "manifest-tool" ]; then
+		echo "Fetching manifest-tool.." && echo
+#		LATEST_MANIFEST_TOOL="$(echo "$(get_api_data ${MANIFEST_TOOL_REPO} "releases/latest")" | sed -rn 's/.*"tag_name"\W+"([^"]+)".*/\1/p')"
+		LATEST_MANIFEST_TOOL="$(get_api_data ${MANIFEST_TOOL_REPO} "releases/latest" | sed -rn 's/.*"tag_name"\W+"([^"]+)".*/\1/p')"
+		curl -sLo "manifest-tool" "https://github.com/${MANIFEST_TOOL_REPO}/releases/download/${LATEST_MANIFEST_TOOL}/manifest-tool-linux-amd64"
 	fi
-done
+	chmod +x "manifest-tool"
+}
 
-[ -n "${excluded_list}" ] && print_param 'Excluded' "${excluded_list}"
+## read and declare variables from arch.yaml
+#
+get_arch_config () {
+	echo "getting arch config: ${1}"
+	parse_yaml "${ARCH_YAML}"
+	for key in ${available_keys}; do
+		var="${1}_${key}"
+		declare "${key}=${!var}"
+		echo "${key}=${!var}"
+	done
+}
 
-platforms="${platforms:1}"
-#arches="${valid_arches}"
-
-print_param 'Valid arches' "${valid_arches}"
-print_param 'Platforms' "${platforms}"
-echo
+[ -f ${CONFIG_YAML} ] && while read -r line; do declare "${line}"; done < <(parse_yaml "${CONFIG_YAML}")

@@ -1,0 +1,61 @@
+#! /usr/bin/env bash
+
+. hooks/env
+
+echo '--- post_checkout ---'
+get_manifest_tool
+
+cat "${ARCH_YAML}" > "${CONFIG_YAML}"
+
+## parse arch config
+#
+while read -r line; do declare "${line}"; done < <(parse_yaml "${ARCH_YAML}")
+
+configured_arches="$(sed -En 's/(^\w*):\s*$/\1/p' "${ARCH_YAML}" | tr '\n' ' ')"
+add_print_param 'configured_arches' "${configured_arches}" 'Configured arches'
+
+source_arches=$(manifest-tool inspect "${SOURCE_IMAGE}" | \
+	sed -En 'N;s/^.*Arch:\s*(\w*)\n[^\n\r]*(Variant:\W*(\w*)?)$/\1\3/p' | \
+	sed 's/^386/i386/' | \
+	tr '\n' ' ')
+add_print_param 'source_arches' "${source_arches}" "Source arches"
+
+available_arches="$(comm -12 <(printf '%s\n' ${configured_arches} | LC_ALL=C sort) <(printf '%s\n' ${source_arches} | LC_ALL=C sort) | tr '\n' ' ')"
+add_print_param 'available_arches' "${available_arches}" 'Available arches'
+
+## validate architectures
+#
+valid_arches=''
+exluded_list=''
+platforms=''
+
+# only build a specific arch if specified in the tag
+if [ -n "${BUILD_ARCH}" ] && [[ "${available_arches}" == *"${BUILD_ARCH}"* ]]; then
+	valid_arches="${BUILD_ARCH}"
+# otherwise build all that are available
+else
+	for arch in ${available_arches}; do
+		excluded="${arch}_EXCLUDE_RELEASE"
+		[[ "${!excluded}" == *"${TARGET_TAG}"* ]] && excluded_list="${excluded_list}${arch} "
+		if [[ ! "${!excluded}" == *"${TARGET_TAG}"* ]]; then
+			platform_string="${arch}_PLATFORM"
+			platforms="${platforms},${!platform_string}"
+			valid_arches="${valid_arches}${arch} "
+		fi
+	done
+fi
+add_print_param 'valid_arches' "${valid_arches}" 'Valid arches'
+
+[ -n "${excluded_list}" ] && \
+	add_print_param 'excluded_list' "${excluded_list}" 'Excluded'
+
+add_print_param 'platforms' "${platforms:1}" 'Platforms'
+print_param 'Source image' "${SOURCE_IMAGE}" 
+
+LATEST_QEMU_TAG="$(get_api_data "${QEMU_REPO}" "releases/latest" | sed -rn 's/.*"tag_name"\W+"([^"]+)".*/\1/p')"
+add_print_param 'LATEST_QEMU_TAG' "${LATEST_QEMU_TAG}" 'Latest QEMU tag'
+
+LATEST_S6_TAG="$(get_api_data ${S6_REPO} "releases/latest" | sed -rn 's/.*"tag_name"\W+"([^"]+)".*/\1/p')"
+add_print_param 'LATEST_S6_TAG' "${LATEST_S6_TAG}" 'Latest S6 tag'
+
+echo
