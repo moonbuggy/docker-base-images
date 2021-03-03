@@ -1,20 +1,24 @@
-ARG MINIDEB_RELEASE=buster
+ARG MINIDEB_RELEASE="buster"
+ARG FROM_IMAGE="bitnami/minideb:${MINIDEB_RELEASE}"
 
-FROM bitnami/minideb:$MINIDEB_RELEASE
+## build the image
+#
+FROM ${FROM_IMAGE}
 
-ARG S6_VERSION=v2.1.0.2
-ARG S6_ARCH=amd64
+COPY ./root /
 
-ARG MINIDEB_RELEASE
-
-COPY ./etc /etc
-COPY ./usr /usr
+ARG DEBIAN_RELEASE="${DEBIAN_RELEASE}"
+ARG S6_VERSION="v2.2.0.3"
+ARG S6_ARCH="amd64"
 
 RUN add-contenv MINIDEB_RELEASE=${MINIDEB_RELEASE} \
 	&& apt-get update \
-	&& BUILD_PACKAGES="curl ca-certificates" \
+	&& BUILD_PACKAGES="wget" \
 	&& apt-get install -qy --no-install-recommends $BUILD_PACKAGES \
-	&& curl -L -s https://github.com/just-containers/s6-overlay/releases/download/$S6_VERSION/s6-overlay-$S6_ARCH.tar.gz | tar xzf - -C / \
+	&& wget --no-check-certificate -qO /installer "https://github.com/just-containers/s6-overlay/releases/download/${S6_VERSION}/s6-overlay-${S6_ARCH}-installer" \
+	&& chmod a+x /installer \
+	&& /installer / >/dev/null 2>&1 \
+	&& rm -rf /installer \
 	&& apt-get remove --purge -qy $BUILD_PACKAGES $(apt-mark showauto) \
 	&& rm -rf /var/lib/apt/lists/*
 

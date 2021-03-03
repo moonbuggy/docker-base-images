@@ -1,0 +1,37 @@
+ARG ALPINE_VERSION="3.13.2"
+ARG SOURCE_TAG="${ALPINE_VERSION}"
+ARG FROM_IMAGE="moonbuggy2000/alpine-s6-nginx:${SOURCE_TAG}"
+
+ARG QEMU_ARCH="arm"
+
+## build the image
+#
+FROM multiarch/qemu-user-static:x86_64-${QEMU_ARCH} AS qemu
+FROM "${FROM_IMAGE}"
+
+ARG QEMU_ARCH
+COPY --from=qemu /usr/bin/qemu-${QEMU_ARCH}-static /usr/bin
+
+ARG ALPINE_VERSION
+ARG PHP_VERSION=7.3
+ARG PHP_PACKAGE=php7
+
+ARG NGINX_INDEX="index.php index.html index.htm"
+ENV NGINX_INDEX="${NGINX_INDEX}"
+
+RUN add-contenv \
+		PHP_VERSION=${PHP_VERSION} \
+		PHP_PACKAGE=${PHP_PACKAGE} \
+	&& apk add --no-cache \
+		${PHP_PACKAGE}=~${PHP_VERSION} \
+		${PHP_PACKAGE}-fpm=~${PHP_VERSION}
+
+COPY ./etc/nginx /etc/nginx
+COPY ./etc/${PHP_PACKAGE} /etc/${PHP_PACKAGE}
+COPY ./etc/cont-init.d /etc/cont-init.d
+COPY ./etc/services.d /etc/services.d
+
+ENTRYPOINT ["/init"]
+
+HEALTHCHECK --start-period=10s --timeout=10s \
+	CMD wget --quiet --tries=1 --spider http://127.0.0.1:8080/fpm-ping && echo 'okay' || exit 1

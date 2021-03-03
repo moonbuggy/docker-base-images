@@ -1,16 +1,18 @@
-ARG ALPINE_VERSION=3.12.3
+ARG ALPINE_VERSION="3.13.2"
+ARG SOURCE_TAG="${ALPINE_VERSION}"
+ARG FROM_IMAGE="moonbuggy2000/alpine-s6:${SOURCE_TAG}"
 
-FROM moonbuggy2000/alpine-s6:$ALPINE_VERSION
+## build the image
+#
+FROM ${FROM_IMAGE}
 
-ARG ALPINE_VERSION
 ARG NGINX_VERSION=1.18
 ARG NGINX_PORT=8080
 
 ENV	NGINX_PORT=${NGINX_PORT} \
 		WEB_ROOT=/var/www/html
 
-RUN add-contenv \
-		NGINX_VERSION=${NGINX_VERSION} \
+RUN add-contenv NGINX_VERSION=${NGINX_VERSION} \
 	&& apk add --no-cache \
 		nginx=~${NGINX_VERSION} \
 		shadow \

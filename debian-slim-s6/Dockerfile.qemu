@@ -1,14 +1,15 @@
-ARG QEMU_ARCH="arm"
+ARG PYPY_VERSION="3.7"
+ARG DEBIAN_RELEASE="buster"
+ARG FROM_IMAGE="pypy:${PYPY_VERSION}-${DEBIAN_RELEASE}-slim"
 
-ARG DEB_RELEASE="buster"
-ARG SOURCE_IMAGE="debian:${DEB_RELEASE}-slim"
+ARG QEMU_ARCH="arm"
 
 ## get s6 overlay
 #
 FROM moonbuggy2000/fetcher:latest AS fetcher
 
-ARG S6_VERSION=v2.2.0.1
-ARG S6_ARCH=amd64
+ARG S6_VERSION="v2.3.0.2"
+ARG S6_ARCH="amd64"
 
 RUN mkdir /s6/ \
 	&& wget --no-check-certificate -qO- https://github.com/just-containers/s6-overlay/releases/download/${S6_VERSION}/s6-overlay-${S6_ARCH}.tar.gz | tar xzf - -C /s6/
@@ -16,14 +17,16 @@ RUN mkdir /s6/ \
 ## build the image
 #
 FROM multiarch/qemu-user-static:x86_64-${QEMU_ARCH} AS qemu
-FROM ${SOURCE_IMAGE}
+FROM ${FROM_IMAGE}
 
-COPY ./root /
-
-ARG QEMU_ARCH="arm"
+ARG QEMU_ARCH
 COPY --from=qemu /usr/bin/qemu-${QEMU_ARCH}-static /usr/bin
 
-ARG DEB_RELEASE
-RUN add-contenv DEB_RELEASE=${DEB_RELEASE}
+COPY --from=fetcher /s6/ /
+COPY ./root /
+
+ARG DEBIAN_RELEASE
+
+RUN add-contenv DEB_RELEASE=${DEBIAN_RELEASE}
 
 ENTRYPOINT ["/init"]

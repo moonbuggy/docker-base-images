@@ -1,5 +1,1 @@
-.git*
-.dockerignore
-*.md
-Dockerfile*
-hooks/
+../.common/.dockerignore
