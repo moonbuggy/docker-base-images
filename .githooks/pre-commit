@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# don't run for now
+exit
+
 ## copy common files
 #
 # symlinks outside of build contexts are problematic for Docker

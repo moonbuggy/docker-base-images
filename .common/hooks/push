@@ -20,8 +20,8 @@ for arch in ${build_arches}; do
 	TARGET_ARCH_TAG="${arch}_TARGET_ARCH_TAG"
 	EXTRA_ARCH_TAGS="${arch}_EXTRA_ARCH_TAGS"
 
-	arch_tags=("${!TARGET_ARCH_TAG}")
-	[ -n "${!EXTRA_ARCH_TAGS}" ] && arch_tags+=("${!EXTRA_ARCH_TAGS}")
+	arch_tags=(${!TARGET_ARCH_TAG})
+	[ -n "${!EXTRA_ARCH_TAGS}" ] && arch_tags+=(${!EXTRA_ARCH_TAGS})
 
 	echo "--- push (${arch_tags[*]}) ---"
 

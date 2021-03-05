@@ -1,7 +1,6 @@
+ARG PYPY_VERSION="3.7"
 ARG DEBIAN_RELEASE="buster"
-ARG FROM_IMAGE="debian:${DEBIAN_RELEASE}-slim"
-
-ARG QEMU_ARCH="arm"
+ARG FROM_IMAGE="pypy:${PYPY_VERSION}-${DEBIAN_RELEASE}-slim"
 
 ## get s6 overlay
 #
@@ -15,17 +14,14 @@ RUN mkdir /s6/ \
 
 ## build the image
 #
-FROM multiarch/qemu-user-static:x86_64-${QEMU_ARCH} AS qemu
 FROM ${FROM_IMAGE}
-
-ARG QEMU_ARCH
-COPY --from=qemu /usr/bin/qemu-${QEMU_ARCH}-static /usr/bin
 
 COPY --from=fetcher /s6/ /
 COPY ./root /
 
 ARG DEBIAN_RELEASE
+ARG PYPY_VERSION
 
-RUN add-contenv DEB_RELEASE=${DEBIAN_RELEASE}
+RUN add-contenv DEB_RELEASE="${DEBIAN_RELEASE}" PYPY_VERSION="${PYPY_VERSION}"
 
 ENTRYPOINT ["/init"]
