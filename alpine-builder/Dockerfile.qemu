@@ -7,20 +7,21 @@ ARG QEMU_ARCH="arm"
 ## build the image
 #
 FROM multiarch/qemu-user-static:x86_64-${QEMU_ARCH} AS qemu
-FROM ${FROM_IMAGE}
+FROM "${FROM_IMAGE}"
 
 ARG QEMU_ARCH
 COPY --from=qemu /usr/bin/qemu-${QEMU_ARCH}-static /usr/bin
 
-ARG BUILD_DIR=/build
+ARG BUILD_DIR="/build"
 
-WORKDIR ${BUILD_DIR}
+WORKDIR "${BUILD_DIR}"
 
 RUN apk -U add --no-cache \
 		alpine-sdk \
 		autoconf \
 		bison \
 		flex \
+		git \
 		sudo \
 	&& adduser -D -h /build/ -G abuild builder \
 	&& chown -R builder:abuild /build \

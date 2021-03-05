@@ -1,6 +1,15 @@
 #!/bin/sh
 
-# don't run for now
+chmod 664 \
+	*/Dockerfile* \
+	*/README.md \
+	*/repo.conf \
+	*/*.yaml \
+	*/*/*.yaml
+
+chmod 664 */repo.conf */Dockerfile* */*.yaml */*/*.yaml
+
+# don't run anything else for now
 exit
 
 ## copy common files
