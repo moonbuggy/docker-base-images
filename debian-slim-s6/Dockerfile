@@ -5,7 +5,7 @@ ARG FROM_IMAGE="debian:${DEBIAN_RELEASE}-slim"
 #
 FROM moonbuggy2000/fetcher:latest AS fetcher
 
-ARG S6_VERSION="v2.2.0.1"
+ARG S6_VERSION="v2.2.0.3"
 ARG S6_ARCH="amd64"
 
 RUN mkdir /s6/ \

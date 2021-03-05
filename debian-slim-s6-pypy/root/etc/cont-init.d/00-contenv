@@ -1,0 +1,10 @@
+#!/bin/sh
+
+ENV_FILE=/etc/contenv_extra
+
+if [ -f "$ENV_FILE" ]; then
+	while IFS="=" read -r name value; do
+		echo "[${0##*/}] ${name}=${value}" >&2
+		echo -n "${value}" > /var/run/s6/container_environment/${name}
+	done < $ENV_FILE
+fi

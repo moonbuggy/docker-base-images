@@ -12,7 +12,7 @@ amd64:
   QEMU_ARCH:
   S6_ARCH: amd64
   QEMU_PREFIX: amd64
-  DOCKER_FILE:
+  DOCKER_FILE: Dockerfile
   PLATFORM: linux/amd64
 
 armv5:
