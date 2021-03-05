@@ -4,17 +4,18 @@ ARG FROM_IMAGE="alpine:${ALPINE_VERSION}"
 
 ## build the image
 #
-FROM ${FROM_IMAGE}
+FROM "${FROM_IMAGE}"
 
 ARG BUILD_DIR=/build
 
-WORKDIR ${BUILD_DIR}
+WORKDIR "${BUILD_DIR}"
 
 RUN apk -U add --no-cache \
 		alpine-sdk \
 		autoconf \
 		bison \
 		flex \
+		git \
 		sudo \
 	&& adduser -D -h /build/ -G abuild builder \
 	&& chown -R builder:abuild /build \

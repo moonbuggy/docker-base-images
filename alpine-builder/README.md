@@ -8,6 +8,7 @@ This is an Alpine container for building from source, for use as part of a multi
 * autoconf
 * bison
 * flex
+* git
 * sudo
 
 ## Links
