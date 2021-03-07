@@ -26,8 +26,7 @@ case "${DOCKER_TAG##*-}" in
 esac
 
 ## parse 'latest' tag
-#
-if [ "${TARGET_TAG}" = "latest" ]; then
+if [ "${TARGET_TAG}" = 'latest' ]; then
 	[ -z "${SOURCE_LATEST}" ] && \
 		echo "Getting latest source tag.." && \
 		SOURCE_LATEST="$(docker_api_latest "${SOURCE_REPO}")"
@@ -81,7 +80,7 @@ else
 	if [ -n "${EXCLUDED_ARCHES+set}" ]; then
 		print_param "${EXCLUDED_ARCHES}" 'Excluded arches'
 		for excluded in ${EXCLUDED_ARCHES}; do
-			configured_arches="echo ${configured_arches//${excluded}/} | xargs"
+			configured_arches="$(echo ${configured_arches//${excluded}/} | sort -u | xargs)"
 		done
 	fi
 
