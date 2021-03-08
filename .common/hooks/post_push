@@ -17,9 +17,9 @@ push_platforms () {
 #	pretty_manifest_cmd="$(echo "${manifest_cmd[*]}" | sed -r -e "s/(--)/\\\ \n\t\1/g")"
 #	echo '--- manifest command ---' && printf '%s\n' "${pretty_manifest_cmd}"
 
-	printf '%s: ' "${1}"
+	printf '%-20s ' "${1}:"
 
-	[ -n "${NOOP+set}" ] && printf '[NOOP]\n' && return 0
+	[[ -n "${NOOP+set}" || -n "${NOPUSH+set}" ]] && printf '[NOOP]\n' && return 0
 	"${manifest_cmd[@]}" || { echo "*** Could not push manifest."; return 1; }
 }
 

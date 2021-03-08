@@ -32,7 +32,7 @@ for arch in ${build_arches}; do
 			target_tag="${tag}-${arch_tag}"
 			target_image="${DOCKER_REPO}:${target_tag}"
 
-			[ -n "${NOOP+set}" ] && { printf '%s [NOOP]\n' "${target_tag}: "; } && continue
+			[[ -n "${NOOP+set}" || -n "${NOPUSH+set}" ]] && { printf '%-20s [NOOP]\n' "${target_tag}: "; } && continue
 
 			[ "${target_image}" != "${base_image}" ] && docker tag "${base_image}" "${target_image}"
 			docker push "${target_image}" | grep digest

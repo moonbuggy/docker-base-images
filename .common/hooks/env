@@ -58,7 +58,7 @@ docker_api_tags () {
 }
 
 # docker_api_tag_names <repo>
-docker_api_tag_names () { docker_api_tags "${1}" | sed 's/,/,\n/g' | sed -En 's|.*"name"\W+"([[:digit:]][^"]+)".*|\1|p' | sort -uV; }
+docker_api_tag_names () { docker_api_tags "${1}" | sed 's/,/,\n/g' | sed -En 's|.*"name"\W+"([^"]*)".*|\1|p' | sort -uV; }
 
 # docker_api_latest <repo>
 docker_api_latest () { docker_api_tag_names "${1}" | grep '\.' | cut -d'-' -f1 | sort -uV | tail -n1; }
@@ -112,7 +112,6 @@ ifFuncSetVar () {
 }
 
 ## read any existing config
-#
 [ -f "${CONFIG_YAML}" ] \
 	&& while read -r line; do declare "${line}"; done < <(parse_yaml "${CONFIG_YAML}")
 
