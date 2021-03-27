@@ -4,12 +4,12 @@ DATA_DIR="./.build_data"
 ARCH_YAML="arch.yaml"
 CONFIG_YAML="${DATA_DIR}/config.${DOCKER_TAG}.yaml"
 
-CACHE_EXPIRY=14400
+CACHE_EXPIRY=86400
 
 [ ! -d "${DATA_DIR}" ] && mkdir -p "${DATA_DIR}"
 
 ## import config for this repo
-. "repo.conf" || { echo 'No repo.conf!'; exit 1; }
+. "build.conf" || { echo 'No build.conf!'; exit 1; }
 
 ## handling writing and printing of parameters
 #	add_param       <value> <key>
@@ -30,7 +30,7 @@ get_url () {
 	if [ -f "${cache_file}" ] && [ "$(( $(date +"%s") - $(date -r "${cache_file}" +"%s") ))" -lt "${CACHE_EXPIRY}" ]; then
 		cat "${cache_file}"
 	else
-		page_data="$(curl -s -w "%{http_code}\n" "${1}")"
+		page_data="$(curl -sL -w "%{http_code}\n" "${1}")"
 		http_code="${page_data:(-3)}"
 		if [ "${http_code}" = "200" ]; then
 			echo "${page_data%???}" | tee "${cache_file}"
@@ -51,14 +51,14 @@ git_api_element () { git_api_data "${1}" "${2}" | sed -En 's|.*"'"${3}"'"\W+"([^
 git_latest_release () { git_api_element "${1}" 'releases/latest' "${2:-tag_name}"; }
 
 # docker_api_tags <repo>
-docker_api_tags () { 
+docker_api_tags () {
 	local repo && repo="${1}"
 	[[ "${repo}" != *"/"* ]] && repo="library/${repo}"
 	get_url "https://registry.hub.docker.com/v2/repositories/${repo}/tags?page_size=100"
 }
 
 # docker_api_tag_names <repo>
-docker_api_tag_names () { docker_api_tags "${1}" | sed 's/,/,\n/g' | sed -En 's|.*"name"\W+"([[:digit:]][^"]+)".*|\1|p' | sort -uV; }
+docker_api_tag_names () { docker_api_tags "${1}" | sed 's/,/,\n/g' | sed -En 's|.*"name"\W+"([^"]*)".*|\1|p' | sort -uV; }
 
 # docker_api_latest <repo>
 docker_api_latest () { docker_api_tag_names "${1}" | grep '\.' | cut -d'-' -f1 | sort -uV | tail -n1; }
@@ -111,9 +111,9 @@ ifFuncSetVar () {
 	if [ -n "${value}" ]; then declare -g "${var}=${value}"; else false; fi
 }
 
-## read any existing config
-#
+## read any valid existing config
 [ -f "${CONFIG_YAML}" ] \
+	&& [ "$(( $(date +"%s") - $(date -r "${CONFIG_YAML}" +"%s") ))" -lt "${CACHE_EXPIRY}" ] \
 	&& while read -r line; do declare "${line}"; done < <(parse_yaml "${CONFIG_YAML}")
 
 ifFuncExec env_end

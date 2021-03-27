@@ -3,11 +3,9 @@
 chmod 664 \
 	*/Dockerfile* \
 	*/README.md \
-	*/repo.conf \
+	*/build.conf \
 	*/*.yaml \
 	*/*/*.yaml
-
-chmod 664 */repo.conf */Dockerfile* */*.yaml */*/*.yaml
 
 # don't run anything else for now
 exit

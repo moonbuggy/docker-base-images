@@ -1,10 +1,9 @@
-.build_data
+.build_data/
 .git*
 .dockerignore
 *.md
 Dockerfile*
 hooks/
-manifest*
 arch.yaml
-config.yaml
 build.sh
+build.conf

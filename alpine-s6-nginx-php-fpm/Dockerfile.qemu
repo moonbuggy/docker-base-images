@@ -13,8 +13,8 @@ ARG QEMU_ARCH
 COPY --from=qemu /usr/bin/qemu-${QEMU_ARCH}-static /usr/bin
 
 ARG ALPINE_VERSION
-ARG PHP_VERSION=7.3
-ARG PHP_PACKAGE=php7
+ARG PHP_VERSION="7.4"
+ARG PHP_PACKAGE="php7"
 
 ARG NGINX_INDEX="index.php index.html index.htm"
 ENV NGINX_INDEX="${NGINX_INDEX}"

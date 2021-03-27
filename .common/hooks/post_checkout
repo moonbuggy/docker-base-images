@@ -15,19 +15,18 @@ while read -r line; do declare "${line}"; done < <(parse_yaml "${ARCH_YAML}")
 ## parse Docker environment variables
 #
 case "${DOCKER_TAG##*-}" in
-	386|amd64|armv*|arm64*|ppc64*|s390x)
+	i386|amd64|armv*|arm64*|ppc64*|s390x)
 		TARGET_TAG="${DOCKER_TAG%-*}"
 		add_param "${DOCKER_TAG##*-}" 'BUILD_ARCH'
 		;;
 	*)
-		TARGET_TAG="${DOCKER_TAG}"
-		unset BUILD_ARCH
+		[ -z "${TARGET_TAG+set}" ] && \
+			TARGET_TAG="${DOCKER_TAG}"
 		;;
 esac
 
 ## parse 'latest' tag
-#
-if [ "${TARGET_TAG}" = "latest" ]; then
+if [ "${TARGET_TAG}" = 'latest' ]; then
 	[ -z "${SOURCE_LATEST}" ] && \
 		echo "Getting latest source tag.." && \
 		SOURCE_LATEST="$(docker_api_latest "${SOURCE_REPO}")"
@@ -37,10 +36,10 @@ if [ "${TARGET_TAG}" = "latest" ]; then
 		TARGET_TAG="${SOURCE_LATEST}"
 fi
 
-##	get TARGET_TAG from get_target_tag, if set in repo.conf
+##	get TARGET_TAG from get_target_tag, if set in build.conf
 ifFuncSetVar TARGET_TAG get_target_tag
 
-##	get SOURCE_TAG from get_source_tag, if set in repo.conf
+##	get SOURCE_TAG from get_source_tag, if set in build.conf
 ifFuncSetVar SOURCE_TAG get_source_tag || SOURCE_TAG="${TARGET_TAG}"
 add_param "${SOURCE_TAG}" 'SOURCE_TAG'
 
@@ -81,7 +80,7 @@ else
 	if [ -n "${EXCLUDED_ARCHES+set}" ]; then
 		print_param "${EXCLUDED_ARCHES}" 'Excluded arches'
 		for excluded in ${EXCLUDED_ARCHES}; do
-			configured_arches="echo ${configured_arches//${excluded}/} | xargs"
+			configured_arches="$(echo ${configured_arches//${excluded}/} | sort -u | xargs)"
 		done
 	fi
 
@@ -113,7 +112,7 @@ available_keys="$(comm -12 <(printf '%s\n' ${arch_yaml_keys} \
 	| LC_ALL=C sort) <(printf '%s\n' ${ARCH_KEYS} | LC_ALL=C sort) | xargs)"
 add_param "${available_keys}" 'available_keys'
 
-##	call any post_checkout_end() from repo.conf
+##	call any post_checkout_end() from build.conf
 #
 ifFunc post_checkout_end && post_checkout_end
 
