@@ -12,11 +12,16 @@ cat "${ARCH_YAML}" > "${CONFIG_YAML}"
 #
 while read -r line; do declare "${line}"; done < <(parse_yaml "${ARCH_YAML}")
 
+##	call any post_checkout_start() from build.conf
+#
+ifFunc post_checkout_start && post_checkout_start
+
 ## parse Docker environment variables
 #
 case "${DOCKER_TAG##*-}" in
 	i386|amd64|armv*|arm64*|ppc64*|s390x)
-		TARGET_TAG="${DOCKER_TAG%-*}"
+		[ -z "${TARGET_TAG+set}" ] && \
+			TARGET_TAG="${DOCKER_TAG%-*}"
 		add_param "${DOCKER_TAG##*-}" 'BUILD_ARCH'
 		;;
 	*)
@@ -26,6 +31,7 @@ case "${DOCKER_TAG##*-}" in
 esac
 
 ## parse 'latest' tag
+#
 if [ "${TARGET_TAG}" = 'latest' ]; then
 	[ -z "${SOURCE_LATEST}" ] && \
 		echo "Getting latest source tag.." && \
@@ -40,7 +46,9 @@ fi
 ifFuncSetVar TARGET_TAG get_target_tag
 
 ##	get SOURCE_TAG from get_source_tag, if set in build.conf
-ifFuncSetVar SOURCE_TAG get_source_tag || SOURCE_TAG="${TARGET_TAG}"
+ifFuncSetVar SOURCE_TAG get_source_tag
+
+[ -z ${SOURCE_TAG+set} ] && SOURCE_TAG="${TARGET_TAG}"
 add_param "${SOURCE_TAG}" 'SOURCE_TAG'
 
 SOURCE_IMAGE="${SOURCE_REPO}:${SOURCE_TAG}"

@@ -28,8 +28,10 @@ get_url () {
 	cache_file="${DATA_DIR}/$(echo "${1}" | md5sum | cut -d' ' -f1)"
 
 	if [ -f "${cache_file}" ] && [ "$(( $(date +"%s") - $(date -r "${cache_file}" +"%s") ))" -lt "${CACHE_EXPIRY}" ]; then
+#		>&2 echo "Using cache: ${cache_file}"
 		cat "${cache_file}"
 	else
+#		>&2 echo "Downloading: ${1}"
 		page_data="$(curl -sL -w "%{http_code}\n" "${1}")"
 		http_code="${page_data:(-3)}"
 		if [ "${http_code}" = "200" ]; then
@@ -50,18 +52,24 @@ git_api_element () { git_api_data "${1}" "${2}" | sed -En 's|.*"'"${3}"'"\W+"([^
 # git_latest_release <repo> <tag_name>
 git_latest_release () { git_api_element "${1}" 'releases/latest' "${2:-tag_name}"; }
 
-# docker_api_tags <repo>
-docker_api_tags () {
+docker_api_get_repo () {
 	local repo && repo="${1}"
 	[[ "${repo}" != *"/"* ]] && repo="library/${repo}"
-	get_url "https://registry.hub.docker.com/v2/repositories/${repo}/tags?page_size=100"
+
+	URL="https://registry.hub.docker.com/v2/repositories/${repo}/tags?page_size=100"
+	while [ -n "${URL}" ]; do
+#		>&2 echo "Getting: ${URL}"
+		page="$(get_url "${URL}")"
+		URL="$(echo -e "${page}" | grep -oP '(?<=next":")[^"]*(?=")')"
+		echo -e "${page}" | sed 's/,/,\n/g'
+	done
 }
 
-# docker_api_tag_names <repo>
-docker_api_tag_names () { docker_api_tags "${1}" | sed 's/,/,\n/g' | sed -En 's|.*"name"\W+"([^"]*)".*|\1|p' | sort -uV; }
+# docker_api_repo_tags <repo>
+docker_api_repo_tags () { docker_api_get_repo "${1}" | sed -En 's|.*"name"\W+"([^"]*)".*|\1|p' | sort -uV; }
 
 # docker_api_latest <repo>
-docker_api_latest () { docker_api_tag_names "${1}" | grep '\.' | cut -d'-' -f1 | sort -uV | tail -n1; }
+docker_api_latest () { docker_api_repo_tags "${1}" | grep '\.' | cut -d'-' -f1 | sort -uV | tail -n1; }
 
 ## parse YAML configuration
 #

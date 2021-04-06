@@ -19,8 +19,9 @@ push_platforms () {
 
 	printf '%-20s ' "${1}:"
 
-	[[ -n "${NOOP+set}" || -n "${NOPUSH+set}" ]] && printf '[NOOP]\n' && return 0
+	[[ -n "${NOOP+set}" || -n "${NOPUSH+set}" ]] && echo '[NOOP]' && return 0
 	"${manifest_cmd[@]}" || { echo "*** Could not push manifest."; return 1; }
+	echo
 }
 
 manifest_tags=()

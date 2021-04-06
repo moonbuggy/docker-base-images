@@ -1,0 +1,29 @@
+aarch64:
+  TARGET_ARCH_TAG: aarch64
+  S6_ARCH: aarch64
+  DOCKER_FILE: Dockerfile
+
+amd64:
+  TARGET_ARCH_TAG: amd64
+  S6_ARCH: amd64
+  DOCKER_FILE: Dockerfile
+
+arm:
+  TARGET_ARCH_TAG: arm
+  S6_ARCH: arm
+  DOCKER_FILE: Dockerfile
+
+armhf:
+  TARGET_ARCH_TAG: armhf
+  S6_ARCH: armhf
+  DOCKER_FILE: Dockerfile
+
+x86:
+  TARGET_ARCH_TAG: x86
+  S6_ARCH: x86
+  DOCKER_FILE: Dockerfile
+
+ppc64le:
+  TARGET_ARCH_TAG: ppc64le
+  S6_ARCH: ppc64le
+  DOCKER_FILE: Dockerfile

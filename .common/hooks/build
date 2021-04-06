@@ -28,10 +28,10 @@ for arch in ${build_arches}; do
 	print_param "${TARGET_TAG}" 'Target tag'
 	print_param "${QEMU_ARCH}" 'QEMU arch'
 
-	if [ -n "${DOCKERFILE_OVERRIDE+set}" ]; then
+	[ -n "${DOCKERFILE_OVERRIDE+set}" ] && \
 		DOCKER_FILE="${DOCKERFILE_OVERRIDE}"
-		[ -n "${QEMU_ARCH}" ] && DOCKER_FILE="${DOCKER_FILE}.qemu"
-	fi
+	[ -n "${QEMU_ARCH}" ] && [ -f "${DOCKER_FILE}.qemu" ] && \
+		DOCKER_FILE="${DOCKER_FILE}.qemu"
 	print_param "${DOCKER_FILE}" 'Dockerfile'
 
 	# prepare the build command
