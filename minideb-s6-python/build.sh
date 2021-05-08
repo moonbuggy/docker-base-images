@@ -1,9 +1,12 @@
 #! /bin/bash
 
-NOOP='true'
+#NOOP='true'
+#DO_PUSH='true'
+#NO_BUILD='true'
 
 DOCKER_REPO="${DOCKER_REPO:-moonbuggy2000/minideb-s6-python}"
-DOCKER_TAG="${1:-3.7-buster}"
-IMAGE_NAME="${DOCKER_REPO}:${DOCKER_TAG}"
 
-. "../.common/build.sh"
+all_tags='2.7-jessie 2.7-stretch 2.7-buster 3.4-jessie 3.5-stretch 3.7-buster'
+default_tag='3.7-buster'
+
+. "hooks/.build.sh"

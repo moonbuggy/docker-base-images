@@ -2,21 +2,20 @@ ARG PYPY_PYTHON_VERSION="3.6"
 ARG ALPINE_VERSION="3.11"
 ARG FROM_IMAGE="jamiehewland/alpine-pypy:${PYPY_PYTHON_VERSION}-alpine${ALPINE_VERSION}"
 
+ARG S6_VERSION="latest"
+ARG S6_ARCH="amd64"
+
+## get s6 overlay
+FROM "moonbuggy2000/s6:${S6_VERSION}-${S6_ARCH}" AS s6
+
 ## build the image
 #
-FROM ${FROM_IMAGE}
+FROM "${FROM_IMAGE}"
 
-ARG S6_VERSION=v2.2.0.3
-ARG S6_ARCH=amd64
-
-ARG ALPINE_VERSION
-
+COPY --from=s6 / /
 COPY ./root /
 
-RUN add-contenv ALPINE_VERSION=${ALPINE_VERSION} \
-	&& wget -qO /installer "https://github.com/just-containers/s6-overlay/releases/download/${S6_VERSION}/s6-overlay-${S6_ARCH}-installer" \
-	&& chmod a+x /installer \
-	&& /installer / >/dev/null 2>&1 \
-	&& rm -rf /installer
+ARG ALPINE_VERSION
+RUN add-contenv ALPINE_VERSION="${ALPINE_VERSION}"
 
 ENTRYPOINT ["/init"]

@@ -1,9 +1,13 @@
 #! /bin/bash
 
-NOOP='true'
+#NOOP='true'
+#DO_PUSH='true'
+##[ -z "${DO_PUSH+set}" ] && NO_PUSH='true'
+#NO_BUILD='true'
 
 DOCKER_REPO="${DOCKER_REPO:-moonbuggy2000/debian-builder}"
-DOCKER_TAG="${1:-latest}"
-IMAGE_NAME="${DOCKER_REPO}:${DOCKER_TAG}"
 
-. "../.common/build.sh"
+all_tags='latest'
+default_tag='latest'
+
+. "hooks/.build.sh"

@@ -1,0 +1,10 @@
+#! /usr/bin/env bash
+
+. hooks/env
+
+#echo "--- post_build ---"
+
+##	call any post_build_end() from build.conf
+#
+ifFuncExec post_build_end
+echo

@@ -1,9 +1,13 @@
 #! /bin/bash
 
-NOOP='true'
+#NOOP='true'
+#DO_PUSH='true'
+##[ -z "${DO_PUSH+set}" ] && NO_PUSH='true'
+#NO_BUILD='true'
 
 DOCKER_REPO="${DOCKER_REPO:-moonbuggy2000/debian-slim-s6-python}"
-DOCKER_TAG="${1:-3.7-buster}"
-IMAGE_NAME="${DOCKER_REPO}:${DOCKER_TAG}"
 
-. "../.common/build.sh"
+all_tags='2.7 3.3 3.4 3.5 3.6 3.7 3.8 3.9'
+default_tag='latest'
+
+. "hooks/.build.sh"

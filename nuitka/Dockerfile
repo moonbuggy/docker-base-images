@@ -1,4 +1,4 @@
-ARG ALPINE_VERSION="3.13.2"
+ARG ALPINE_VERSION="3.13"
 ARG PYTHON_VERSION="3.8"
 ARG NUITKA_VERSION="0.6.12"
 
@@ -8,6 +8,11 @@ ARG FROM_IMAGE="alpine:${ALPINE_VERSION}"
 ## build the image
 #
 FROM "${FROM_IMAGE}"
+
+# QEMU static binaries from pre_build
+ARG QEMU_DIR
+ARG QEMU_ARCH=""
+COPY _dummyfile "${QEMU_DIR}/qemu-${QEMU_ARCH}-static*" /usr/bin/
 
 ARG PYTHON_VERSION
 
@@ -22,8 +27,8 @@ RUN apk -U add --no-cache \
 		openssl-dev \
 		py3-pip \
 		py3-wheel \
-		python3=~"${PYTHON_VERSION}" \
-		python3-dev=~"${PYTHON_VERSION}" \
+#		python3=~"${PYTHON_VERSION}" \
+#		python3-dev=~"${PYTHON_VERSION}" \
 		rust \
 		subversion
 
@@ -35,3 +40,5 @@ RUN python3 -m pip install --no-cache-dir --upgrade pip \
 	&& pip3 install --no-cache-dir nuitka=="${NUITKA_VERSION}"
 
 ENTRYPOINT ["python3","-m","nuitka"]
+
+# in this case retain the QEMU start binaries

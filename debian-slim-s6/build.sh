@@ -1,9 +1,12 @@
 #! /bin/bash
 
-NOOP='true'
+#NOOP='true'
+#DO_PUSH='true'
+#NO_BUILD='true'
 
 DOCKER_REPO="${DOCKER_REPO:-moonbuggy2000/debian-slim-s6}"
-DOCKER_TAG="${1:-buster}"
-IMAGE_NAME="${DOCKER_REPO}:${DOCKER_TAG}"
 
-. "../.common/build.sh"
+all_tags='jessie stretch buster bullseye'
+default_tag='buster'
+
+. "hooks/.build.sh"

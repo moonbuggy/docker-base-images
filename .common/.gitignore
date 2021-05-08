@@ -1,2 +1,4 @@
 .build_data
-#build.sh
+*.bak
+_dummyfile
+.qemu_static

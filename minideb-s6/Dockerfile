@@ -1,25 +1,34 @@
 ARG MINIDEB_RELEASE="buster"
 ARG FROM_IMAGE="bitnami/minideb:${MINIDEB_RELEASE}"
 
+ARG S6_VERSION="latest"
+ARG S6_ARCH="amd64"
+
+ARG TARGET_ARCH_TAG
+
+## get s6 overlay
+FROM "moonbuggy2000/s6:${S6_VERSION}-${S6_ARCH}" AS s6
+
 ## build the image
 #
-FROM ${FROM_IMAGE}
+FROM "${FROM_IMAGE}" AS builder
 
+# QEMU static binaries from pre_build
+ARG QEMU_DIR
+ARG QEMU_ARCH
+COPY _dummyfile "${QEMU_DIR}/qemu-${QEMU_ARCH}-static*" /usr/bin/
+
+COPY --from=s6 / /
 COPY ./root /
 
 ARG DEBIAN_RELEASE="${DEBIAN_RELEASE}"
-ARG S6_VERSION="v2.2.0.3"
-ARG S6_ARCH="amd64"
+RUN add-contenv "MINIDEB_RELEASE=${MINIDEB_RELEASE}"
 
-RUN add-contenv MINIDEB_RELEASE=${MINIDEB_RELEASE} \
-	&& apt-get update \
-	&& BUILD_PACKAGES="wget" \
-	&& apt-get install -qy --no-install-recommends $BUILD_PACKAGES \
-	&& wget --no-check-certificate -qO /installer "https://github.com/just-containers/s6-overlay/releases/download/${S6_VERSION}/s6-overlay-${S6_ARCH}-installer" \
-	&& chmod a+x /installer \
-	&& /installer / >/dev/null 2>&1 \
-	&& rm -rf /installer \
-	&& apt-get remove --purge -qy $BUILD_PACKAGES $(apt-mark showauto) \
-	&& rm -rf /var/lib/apt/lists/*
+RUN rm -f "/usr/bin/qemu-${QEMU_ARCH}-static" >/dev/null 2>&1
+
+## build the final image
+FROM "moonbuggy2000/scratch:${TARGET_ARCH_TAG}"
+
+COPY --from=builder / /
 
 ENTRYPOINT ["/init"]

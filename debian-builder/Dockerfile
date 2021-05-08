@@ -5,6 +5,11 @@ ARG FROM_IMAGE="debian:${DEBIAN_RELEASE}"
 #
 FROM "${FROM_IMAGE}"
 
+# QEMU static binaries from pre_build (retained in this image)
+ARG QEMU_DIR
+ARG QEMU_ARCH=""
+COPY _dummyfile "${QEMU_DIR}/qemu-${QEMU_ARCH}-static*" /usr/bin/
+
 ARG BUILD_DIR="/build"
 ARG PUID="${PUID:-1000}"
 ARG GUID="${GUID:-1000}"
@@ -22,6 +27,6 @@ RUN apt-get update && apt-get install -qy --no-install-recommends \
 	&& echo "builder	ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 WORKDIR "${BUILD_DIR}"
-USER builder
+#USER builder
 
 ENTRYPOINT ["/bin/bash", "-l", "-c"]

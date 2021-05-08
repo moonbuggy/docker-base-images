@@ -1,12 +1,13 @@
 #! /bin/bash
 
 #NOOP='true'
-NOPUSH='true'
-#NOBUILD='true'
+#DO_PUSH='true'
+##[ -z "${DO_PUSH+set}" ] && NO_PUSH='true'
+#NO_BUILD='true'
 
 DOCKER_REPO="${DOCKER_REPO:-moonbuggy2000/s6}"
-DOCKER_TAG="${1:-latest}"
-# shellcheck disable=SC2034
-IMAGE_NAME="${DOCKER_REPO}:${DOCKER_TAG}"
 
-. "../.common/build.sh"
+all_tags='latest'
+default_tag='latest'
+
+. "hooks/.build.sh"

@@ -6,6 +6,11 @@ ARG FROM_IMAGE="alpine:${ALPINE_VERSION}"
 #
 FROM "${FROM_IMAGE}"
 
+# QEMU static binaries from pre_build
+ARG QEMU_DIR
+ARG QEMU_ARCH
+COPY _dummyfile "${QEMU_DIR}/qemu-${QEMU_ARCH}-static*" /usr/bin/
+
 ARG BUILD_DIR=/build
 
 WORKDIR "${BUILD_DIR}"
@@ -25,6 +30,6 @@ RUN apk -U add --no-cache \
 	&& echo "Set disable_coredump false" >> /etc/sudo.conf \
 	&& abuild-keygen -a -i -n
 
-USER builder
+#USER builder
 
 CMD ["/bin/ash"]

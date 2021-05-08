@@ -9,6 +9,11 @@ ARG FROM_IMAGE="debian:${DEBIAN_RELEASE}-slim"
 #
 FROM "${FROM_IMAGE}"
 
+# QEMU static binaries from pre_build
+ARG QEMU_DIR
+ARG QEMU_ARCH=""
+COPY _dummyfile "${QEMU_DIR}/qemu-${QEMU_ARCH}-static*" /usr/bin/
+
 RUN apt-get update \
 	&& apt-get install -qy \
 		cargo \
@@ -28,3 +33,5 @@ RUN python3 -m pip install --no-cache-dir --upgrade pip \
 
 
 ENTRYPOINT ["python3","-m","nuitka"]
+
+# in this case retain the QEMU start binaries
