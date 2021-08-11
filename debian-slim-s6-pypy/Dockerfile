@@ -54,8 +54,12 @@ RUN apt-get update && apt-get install -qy --no-install-recommends \
 		libtinfo5 \
 	&& rm -rf /var/lib/apt/lists/*
 
+
 ARG FETCHER_ROOT
 COPY --from=fetcher "${FETCHER_ROOT}/" /
+
+ARG PYPY_DIR
+RUN add-contenv PATH="${PYPY_DIR}/bin:${PATH}"
 
 RUN rm -f "/usr/bin/qemu-${QEMU_ARCH}-static" >/dev/null 2>&1
 

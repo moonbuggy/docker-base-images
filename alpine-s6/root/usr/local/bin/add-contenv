@@ -1,5 +1,6 @@
 #!/bin/sh
 
 for arg in "$@"; do
+	sed "|^${arg%%=*}=.*|d" -i /etc/contenv_extra
 	echo "${arg%%=*}=${arg#*=}"  >> /etc/contenv_extra
 done

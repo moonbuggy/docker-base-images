@@ -1,4 +1,4 @@
-# alpine-s6-nginx
+# debian-slim-s6-nginx
 
 ## Container Details
 
@@ -15,6 +15,6 @@
 * `WEB_ROOT`      - default: `/var/www/html`
 
 ## Links
-GitHub: https://github.com/moonbuggy/docker-base-images
+GitHub: https://github.com/moonbuggy/docker-base-images/
 
-DockerHub: https://hub.docker.com/r/moonbuggy2000/alpine-s6-nginx
+DockerHub: https://hub.docker.com/r/moonbuggy2000/debian-slim-s6-nginx

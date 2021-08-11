@@ -4,7 +4,7 @@
 
 #echo "--- post_build ---"
 
-##	call any post_build_end() from build.conf
+##	call any post_build() from build.conf
 #
-ifFuncExec post_build_end
+ifFuncExec post_build
 echo
