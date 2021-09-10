@@ -2,3 +2,4 @@
 *.bak
 _dummyfile
 .qemu_static
+.imports

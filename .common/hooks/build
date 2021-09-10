@@ -8,11 +8,11 @@ set -e
 
 ## loop through valid arches
 #
-for arch in ${build_arches}; do
+for arch in ${build_arches:-}; do
 	echo "--- build (${arch}) ---"
 
 	# get arch config
-	for key in ${available_keys}; do
+	for key in ${available_keys:-}; do
 		var="${arch}_${key}"
 		declare "${key}=${!var}"
 	done
@@ -73,8 +73,12 @@ for arch in ${build_arches}; do
 
 	## prepare the build command
 	#
-	build_cmd=(docker build --rm -f "${DOCKER_FILE}")
+	build_cmd=(docker build --rm)
 	[ -n "${BUILD_NO_CACHE+set}" ] && build_cmd+=('--no-cache')
+	[ -n "${BUILD_SQUASH}" ] && [ -z "${NO_BUILD_SQUASH+set}" ] \
+		&& build_cmd+=('--squash')
+
+	build_cmd+=(-f "${DOCKER_FILE}")
 
 	# add the build arguments
 	for arg in $(echo "${!BUILD_ARGS[@]}" | xargs -n1 | sort); do
