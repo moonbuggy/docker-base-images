@@ -10,7 +10,7 @@ Most of these images include a script called `add-contenv` that allows Dockerfil
 RUN add-contenv <var1>=<value1> <var2>=<value2> ...
 ```
 
-This is useful because there are some environment variables that don't need user configuration but may change between image builds (e.g. software versions and names of executables). Frontends like Portainer will retain these variables if a new image is pulled, which can break the container if these variables have changed in the image.
+This is useful because there are some environment variables that don't need user configuration but may change between image builds (e.g. software versions, git hashes and names of executables). Frontends like Portainer will retain these environment variables if a new image is pulled, which can break the container if these variables have changed in the image.
 
 ## Links
 GitHub: https://github.com/moonbuggy/docker-base-images

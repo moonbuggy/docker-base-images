@@ -1,4 +1,4 @@
-ARG ALPINE_VERSION="3.13"
+ARG ALPINE_VERSION="3.14"
 ARG FROM_IMAGE="moonbuggy2000/alpine-s6:${ALPINE_VERSION}"
 
 ARG NGINX_PORT="8080"
@@ -14,14 +14,16 @@ ARG QEMU_DIR
 ARG QEMU_ARCH
 COPY _dummyfile "${QEMU_DIR}/qemu-${QEMU_ARCH}-static*" /usr/bin/
 
-ARG NGINX_VERSION="1.18"
+ARG NGINX_VERSION="1.20"
 ARG	WEB_ROOT="/var/www/html"
 RUN apk add --no-cache \
 		nginx=~"${NGINX_VERSION}" \
 		shadow \
 	&& adduser -DH -G www-data www-data \
 	&& rm -rf /var/www/localhost \
-	&& mkdir -p "${WEB_ROOT}"
+	&& mkdir -p "${WEB_ROOT}" \
+	&& chown -R www-data:www-data "${WEB_ROOT}" \
+	&& chown -R www-data:www-data /var/lib/nginx
 
 ARG	NGINX_PORT
 RUN add-contenv \
