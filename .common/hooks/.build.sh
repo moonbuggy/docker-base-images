@@ -31,10 +31,12 @@ done
 
 ## then do post-build
 #
+echo "--- post_build ---"
 for DOCKER_TAG in ${tags}; do
 	IMAGE_NAME="${DOCKER_REPO}:${DOCKER_TAG}"
 	. hooks/post_build
 done
+echo
 
 ## then push base tags
 #
@@ -75,9 +77,16 @@ fi
 
 ## clean temporary files
 #
-[ -n "${CLEAN+set}" ] \
-	&& echo '--- cleaning temporary files ---' \
-	&& rm -rf _dummyfile "${QEMU_DIR}" "${IMPORTS_DIR}" >/dev/null 2>&1 \
-	&& echo
+# we may want to keep these files to save a few seconds on imports
+if [ ! -z "${CLEAN+set}" ] || [ -z "${NO_CLEAN+set}" ]; then
+	echo '--- clean ---'
+	echo 'Removing temp files..'
+	rm -rf _dummyfile "${QEMU_DIR}" "${IMPORTS_DIR}" >/dev/null 2>&1
+	echo
+fi
 
+# remove this regardless
 rm -f _dummyfile >/dev/null 2>&1
+
+echo 'Done.'
+echo

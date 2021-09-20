@@ -1,4 +1,4 @@
-ARG TARGET_VERSION="3.13.5"
+ARG TARGET_VERSION="3.14.2"
 ARG S6_VERSION="latest"
 ARG S6_ARCH="amd64"
 
@@ -13,20 +13,20 @@ FROM "moonbuggy2000/s6:${S6_VERSION}-${S6_ARCH}" AS s6
 FROM "${FROM_IMAGE}" AS builder
 
 # QEMU static binaries from pre_build
-ARG QEMU_DIR
-ARG QEMU_ARCH
+ARG QEMU_DIR=""
+ARG QEMU_ARCH=""
 COPY _dummyfile "${QEMU_DIR}/qemu-${QEMU_ARCH}-static*" /usr/bin/
 
 COPY --from=s6 / /
 COPY ./root /
 
 ARG TARGET_VERSION
-RUN add-contenv ALPINE_VERSION=${TARGET_VERSION}
+RUN add-contenv "ALPINE_VERSION=${TARGET_VERSION}"
 
+# remove QEMU static binaries
 RUN rm -f "/usr/bin/qemu-${QEMU_ARCH}-static" >/dev/null 2>&1
 
 ## build the final image
-#FROM scratch
 FROM "moonbuggy2000/scratch:${TARGET_ARCH_TAG}"
 
 COPY --from=builder / /
