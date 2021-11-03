@@ -1,5 +1,5 @@
-ARG PYTHON_VERSION="3.6"
-ARG FROM_IMAGE="moonbuggy2000/debian-slim-s6-python:${PYTHON_VERSION}"
+ARG DEBIAN_VERSION="10.11"
+ARG FROM_IMAGE="moonbuggy2000/debian-slim-s6:${DEBIAN_VERSION}"
 
 ARG TARGET_ARCH_TAG="amd64"
 ARG PYPY_PACKAGE="pypy3"
@@ -7,13 +7,12 @@ ARG PYPY_PACKAGE="pypy3"
 ARG FETCHER_ARCH="amd64"
 ARG FETCHER_ROOT="/fetcher-root"
 
-
-ARG PYPY_VERSION="7.3.1"
+ARG PYTHON_VERSION="3.8"
+ARG PYPY_VERSION="7.3.7"
 ARG PYPY_DIR="/pypy-${PYPY_VERSION}"
 
 ## get pypy and prepare files
 #
-#FROM "moonbuggy2000/fetcher:latest-${FETCHER_ARCH}" AS fetcher
 FROM "moonbuggy2000/fetcher:latest" AS fetcher
 
 ARG FETCHER_ROOT
@@ -33,12 +32,16 @@ RUN case "${TARGET_ARCH_TAG}" in \
 	&& echo "*** PYPY_TARBALL: ${PYPY_TARBALL}" \
 	&& wget -qO- "${PYPY_TARBALL}" | tar -xj --strip-components 1
 
-WORKDIR "${FETCHER_ROOT}/usr/bin"
+# links to the executable
+WORKDIR "${FETCHER_ROOT}/usr/local/bin"
 
 ARG PYPY_PACKAGE
-RUN ln -sf "../..${PYPY_DIR}/bin/${PYPY_PACKAGE}" ./python \
+RUN ln -sf "../../..${PYPY_DIR}/bin/${PYPY_PACKAGE}" "./${PYPY_PACKAGE}" \
+	&& ln -sf "../../..${PYPY_DIR}/bin/${PYPY_PACKAGE}" ./python \
 	&& [ "${PYTHON_VERSION%\.*}" != '3' ] \
-		|| ln -sf "../..${PYPY_DIR}/bin/${PYPY_PACKAGE}" ./python3
+		|| { ln -sf "../../..${PYPY_DIR}/bin/${PYPY_PACKAGE}" ./python3; \
+			ln -sf "../../..${PYPY_DIR}/bin/${PYPY_PACKAGE}" ./pypy; }
+
 
 ## build the image
 #

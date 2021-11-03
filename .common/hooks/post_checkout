@@ -54,7 +54,7 @@ add_param "${SOURCE_TAG}" 'SOURCE_TAG'
 
 [ -n "${SOURCE_REPO}" ] \
 	&& SOURCE_IMAGE="${SOURCE_REPO}:${SOURCE_TAG}" \
-	&& SOURCE_MANIFEST="${DATA_DIR}/manifest.${SOURCE_TAG}"
+	&& SOURCE_MANIFEST="${DATA_DIR}/manifest.${SOURCE_REPO##*/}.${SOURCE_TAG}"
 
 ## get source manifest
 #

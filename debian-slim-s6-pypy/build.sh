@@ -6,7 +6,7 @@
 
 DOCKER_REPO="${DOCKER_REPO:-moonbuggy2000/debian-slim-s6-pypy}"
 
-all_tags='2.7 3.5 3.6 3.7'
-default_tag='3.7'
+all_tags='2.7 3.5 3.6 3.7 3.8'
+default_tag='3.8'
 
 . "hooks/.build.sh"
