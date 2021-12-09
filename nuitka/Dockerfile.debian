@@ -14,6 +14,8 @@ ARG QEMU_DIR=""
 ARG QEMU_ARCH=""
 COPY _dummyfile "${QEMU_DIR}/qemu-${QEMU_ARCH}-static*" /usr/bin/
 
+ARG BUILD_PYTHON_VERSION
+
 RUN apt-get update \
 	&& apt-get install -qy --no-install-recommends \
 		cargo \
