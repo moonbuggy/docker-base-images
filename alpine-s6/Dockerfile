@@ -20,6 +20,9 @@ COPY _dummyfile "${QEMU_DIR}/qemu-${QEMU_ARCH}-static*" /usr/bin/
 COPY --from=s6 / /
 COPY ./root /
 
+# enable use of TZ enviornment variable
+RUN apk -U add --no-cache tzdata
+
 ARG TARGET_VERSION
 RUN add-contenv "ALPINE_VERSION=${TARGET_VERSION}"
 

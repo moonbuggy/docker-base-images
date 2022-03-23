@@ -13,10 +13,13 @@ fi
 
 if [ $# -eq 0 ]; then tags="${default_tag:-}"
 elif [ "${1}" = 'all' ]; then tags="${all_tags:-}"
+elif [ "${1:0:4}" = "all_" ]; then tags="${!1:-}"
 else tags="$*"
 fi
 
 tags="$(echo "${tags}" | xargs -n1 | sort -uV | xargs)"
+echo "Build tags: ${tags}"
+echo
 
 ## first build everything
 #

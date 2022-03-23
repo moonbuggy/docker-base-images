@@ -25,6 +25,7 @@ RUN apk add --no-cache \
 		make \
 		musl-dev \
 		openssl-dev \
+		patchelf \
 #		py3-pip \
 #		py3-wheel \
 #		python3=~"${BUILD_PYTHON_VERSION}" \

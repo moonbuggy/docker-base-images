@@ -1,4 +1,4 @@
-ARG TARGET_VERSION="3.9"
+ARG TARGET_VERSION="3.10"
 ARG S6_VERSION="latest"
 ARG S6_ARCH="amd64"
 
@@ -16,6 +16,9 @@ FROM "${FROM_IMAGE}" AS builder
 ARG QEMU_DIR
 ARG QEMU_ARCH
 COPY _dummyfile "${QEMU_DIR}/qemu-${QEMU_ARCH}-static*" /usr/bin/
+
+# enable use of TZ enviornment variable
+RUN apk -U add --no-cache tzdata
 
 COPY --from=s6 / /
 COPY ./root/ /

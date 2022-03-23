@@ -37,6 +37,20 @@ i386:
   QEMU_PREFIX: i386
   PLATFORM: linux/386
 
+# i486:
+#   TARGET_ARCH_TAG: 486
+#   QEMU_ARCH: i486
+#   S6_ARCH: i486
+#   QEMU_PREFIX: i486
+#   PLATFORM: linux/486
+#
+# i686:
+#   TARGET_ARCH_TAG: 686
+#   QEMU_ARCH: i686
+#   S6_ARCH: i686
+#   QEMU_PREFIX: i686
+#   PLATFORM: linux/686
+
 ppc64le:
   TARGET_ARCH_TAG: ppc64le
   QEMU_ARCH: ppc64le

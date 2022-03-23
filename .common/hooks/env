@@ -2,23 +2,23 @@
 # shellcheck disable=SC2034
 
 MANIFEST_TOOL_REPO="estesp/manifest-tool"
-MUSL_WHEEL_REPO="moonbuggy2000/python-musl-wheels"
+WHEEL_REPO="${WHEEL_REPO:-moonbuggy2000/python-alpine-wheels}"
 
 DATA_DIR='.build_data'
 QEMU_DIR='.qemu_static'
 IMPORTS_DIR='.imports'
 
 ARCH_YAML='arch.yaml'
-CONFIG_YAML="${DATA_DIR}/config.${DOCKER_TAG}.yaml"
+CONFIG_YAML="${DATA_DIR}/config.${DOCKER_TAG}${CONFIG_SUFFIX}.yaml"
 
 #BUILD_PLATFORM_ARG='true'
 
 # 1 day
 #CACHE_EXPIRY=86400
 # 7 days
-#CACHE_EXPIRY=604800
+CACHE_EXPIRY=604800
 # 30 days
-CACHE_EXPIRY=2592000
+#CACHE_EXPIRY=2592000
 
 DOCKER_FILE='Dockerfile'
 
@@ -104,7 +104,7 @@ pypi_api_versions () { pypi_api_data "${1}" | grep -oP "(?<=${1}-)[0-9.]{4,}(?=.
 pypi_api_latest_version () { pypi_api_versions "${1}" | tail -n1; }
 
 # py_musl_wheel_XXXX <wheel string>
-py_musl_wheel_versions () { docker_api_repo_tags "${MUSL_WHEEL_REPO}" | grep -oP "${1}\K([0-9.]+)(?=-py)" | sort -uV; }
+py_musl_wheel_versions () { docker_api_repo_tags "${WHEEL_REPO}" | grep -oP "${1}\K([0-9.]+)(?=-py)" | sort -uV; }
 py_musl_wheel_latest () { py_musl_wheel_versions "${1}" | tail -n1; }
 
 #
@@ -150,7 +150,7 @@ py_required_version () {
 	esac
 
 	[ -n "${requirements}" ] \
-		&& modstring="$(echo "${requirements}" | xargs -n1 | grep -P "^#?${modname}\W")" \
+		&& modstring="$(echo "${requirements}" | xargs -n1 | grep -P "^${modname}\W")" \
 		&& modsign="$(echo "${modstring}" | grep -oP "([<>=])(?==)")"
 
 	[ -n "${modsign}" ] && [ "x${modsign}" = "x>" ] \
@@ -180,9 +180,10 @@ python_get_module_from_string () {
 	local mod_longname
 	local mod_name
 	local mod_ver
-#	local mod_ssllib
 	local mod_pyver
 
+	# some python modules have a hyphen in the name so we can't simply split the
+	# string at hyphens, need to iterate and parse each fragment
 	IFS='-' read -r -a input_array <<< "${1}"
 
 	mod_namever=''
@@ -196,22 +197,20 @@ python_get_module_from_string () {
 			amd64|arm64v8|armv6|armv7|386|ppc64le|s390x)
 				break
 				;;
-			*[0-9])
-				mod_ver="${value//[[:alpha:]]/}"
-				;;&
 			*)
 				mod_namever="${mod_namever}-${value}"
 				;;
 		esac
 	done
 
-	mod_namever="${mod_namever/#-/}"
-	mod_longname="${mod_namever%%[0-9.]*}"
-	mod_longname="${mod_longname%-}"
+	# strip leading hyphen
+	mod_namever="${mod_namever:1}"
+
+	# strip trailing version number, don't strip integers that are part of the name
+	mod_longname="$(echo ${mod_namever} | sed -E 's|([0-9.]*)$||')"
 
 	case "${mod_longname##*-}" in
 		libressl|openssl)
-#			mod_ssllib="${mod_longname##*-}"
 			mod_name="${mod_longname%-*}"
 			;;
 		*)
@@ -219,8 +218,14 @@ python_get_module_from_string () {
 			;;
 	esac
 
-	[ -z "${mod_ver}" ] \
-		&& mod_ver="$(docker_api_repo_tags "${MUSL_WHEEL_REPO}" | \
+	# don't catch integers that may be part of the module name
+	mod_ver="$(echo ${mod_namever} | grep -oP '([0-9.]*)$')"
+
+	# by default, if no version is supplied, get the latest version from WHEEL_REPO
+	# if it exists in that repo and use PyPi if it doesn't
+	# set NO_WHEEL_REPO to use only PyPi
+	[ -z "${NO_WHEEL_REPO}" ] && [ -z "${mod_ver}" ] \
+		&& mod_ver="$(docker_api_repo_tags "${WHEEL_REPO}" | \
 			grep -oP "(?<=${mod_longname})[0-9.]+(?=-py${mod_pyver})" | sort -uV | tail -n1)"
 	[ -z "${mod_ver}" ] \
 		&& mod_ver="$(pypi_api_latest_version "${mod_name}")"
