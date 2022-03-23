@@ -1,6 +1,6 @@
 amd64:
   TARGET_ARCH_TAG: amd64
-	S6_ARCH: amd64
+  S6_ARCH: x86_64
   PLATFORM: linux/amd64
 
 arm64:
@@ -20,10 +20,20 @@ armhf:
 
 i386:
   TARGET_ARCH_TAG: x86
-  S6_ARCH: x86
+  S6_ARCH: i686
   PLATFORM: linux/386
 
-ppc64le:
-  TARGET_ARCH_TAG: ppc64le
-  S6_ARCH: ppc64le
-  PLATFORM: linux/ppc64le
+# ppc64le:
+#   TARGET_ARCH_TAG: ppc64le
+#   S6_ARCH: ppc64le
+#   PLATFORM: linux/ppc64le
+
+riscv64:
+  TARGET_ARCH_TAG: riscv64
+  S6_ARCH: riscv64
+  PLATFORM: linux/riscv64
+
+s390x:
+  TARGET_ARCH_TAG: s390x
+  S6_ARCH: s390x
+  PLATFORM: linux/s390x
