@@ -47,12 +47,30 @@ i386:
   PLATFORM: linux/386
   TAG_OVERRIDE: 386
 
+mips64le:
+  TARGET_ARCH_TAG: mips64le
+  QEMU_ARCH: mips64el
+  QEMU_PREFIX: mips64le
+  PLATFORM: linux/mips64le
+  BUILDER_REPO: debian
+  BUILDER_TAG: 10.8-slim
+  TAG_OVERRIDE: mips64le
+
 ppc64le:
   TARGET_ARCH_TAG: ppc64le
   QEMU_ARCH: ppc64le
   QEMU_PREFIX: ppc64le
   PLATFORM: linux/ppc64le
   TAG_OVERRIDE: ppc64le
+
+riscv64:
+  TARGET_ARCH_TAG: riscv64
+  QEMU_ARCH: riscv64
+  QEMU_PREFIX: riscv64
+  PLATFORM: linux/riscv64
+  BUILDER_REPO: debian
+  BUILDER_TAG: sid-slim
+  TAG_OVERRIDE: riscv64
 
 s390x:
   TARGET_ARCH_TAG: s390x

@@ -1,4 +1,5 @@
 #! /bin/bash
+# shellcheck disable=SC2034
 
 #NOOP='true'
 #[ -z "${DO_PUSH+set}" ] && NO_PUSH='true'
