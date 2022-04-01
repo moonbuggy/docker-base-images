@@ -1,5 +1,5 @@
 #! /usr/bin/env bash
-# shellcheck disable=SC2034
+# shellcheck shell=bash disable=SC2034
 
 MANIFEST_TOOL_REPO="estesp/manifest-tool"
 WHEEL_REPO="${WHEEL_REPO:-moonbuggy2000/python-alpine-wheels}"
@@ -265,9 +265,10 @@ docker_api_latest () { docker_api_repo_tags "${1}" | grep '\.' | cut -d'-' -f1 |
 #	SOURCE_MAJOR=3; SOURCE_MAJOR_LATEST="$(search_repo_tags "${SOURCE_MAJOR}" "${REPO_TAGS}")"
 #	SOURCE_MINOR=3.5; SOURCE_MINOR_LATEST="$(search_repo_tags "${SOURCE_MINOR}" "${REPO_TAGS}")"
 search_repo_tags () {
-	local repo_tags && repo_tags="${2:-${SOURCE_REPO_TAGS}}"
-#	[ -z "${repo_tags}" ] && repo_tags="${SOURCE_REPO_TAGS}"
-	echo "${repo_tags}" | xargs -n1 | sed -En 's/^('"${1}"'[0-9.]*).*/\1/p' | sort -uV | tail -n1
+	local pattern && pattern="${1}"
+	shift
+	local repo_tags && repo_tags="${*:-${SOURCE_REPO_TAGS}}"
+	echo "${repo_tags}" | xargs -n1 | sed -En 's/^('"${pattern}"'[0-9.]*).*/\1/p' | sort -uV | tail -n1
 }
 
 # docker_container_contents <repo:tag> <outpud folder> <tar args>
@@ -362,6 +363,66 @@ get_manifest_tool () {
 		chmod a+x "manifest-tool"
 		echo './manifest-tool'
 	fi
+}
+
+## delete a file silently
+delete_file() {
+	rm -rf "$@" >/dev/null 2>&1
+}
+
+## get an image manifest
+#
+# get_manifest '<repo>/<image>:<tag>'
+#
+# returns the filename for the cached manifest
+#
+get_manifest() {
+	local source_image && source_image="${1}"
+	local source_repo && source_repo="${source_image%:*}"
+
+	manifest_file="${DATA_DIR}/manifest.${source_repo//\//_}.${source_image##*:}"
+
+	if [ ! -f "${manifest_file}" ] || [ "$(( $(date +"%s") - $(date -r "${manifest_file}" +"%s") ))" -gt "${CACHE_EXPIRY}" ]; then
+		>&2 printf 'Fetching manifest: %s.. ' "${source_image}"
+
+		manifest_cmd=("$(get_manifest_tool)" 'inspect' "${source_image}")
+		# pretty_manifest_cmd="$(echo "${manifest_cmd[*]}" | sed -r -e "s/(--)/\\\ \n\t\1/g")"
+		# >&2 printf '\n--- manifest command ---\n%s\n' "${pretty_manifest_cmd}"
+
+		local error
+		error="$("${manifest_cmd[@]}" 2>&1 1>"${manifest_file}")";
+
+		# if there's an error try and determine the cause so we can decide whether to
+		# cache the failure by keeping the empty manifest file:
+		#		cache the failure if it's indicative of the image/tag not existing
+		#		don't cache transient failures
+		#
+		if [ -n "${error}" ]; then
+			local error_message
+			error_message="$(echo "${error}" | grep -oP '.*msg\=\"\K[^\"]*' | head -n1)"
+
+			case ${error_message} in
+				*"not found") >&2 echo 'tag not found' ;;
+				"pull access denied"*) >&2 echo 'image not found or no auth' ;;
+				*toomanyrequests*)
+					>&2 echo 'rate limited'
+					delete_file "${manifest_file}"
+					exit 1
+					;;
+				*)
+					>&2 printf 'unknown error:\n%s\n' "${error}"
+					delete_file "${manifest_file}"
+					exit 1
+					;;
+			esac
+			return 1
+		fi
+
+		>&2 echo
+	# else
+	# 	>&2 printf 'Using cached manifest: %s\n' "${manifest_file}"
+	fi
+	echo "${manifest_file}"
 }
 
 # ifFunc <func>

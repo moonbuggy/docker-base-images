@@ -11,9 +11,14 @@ else
 	echo
 fi
 
+tags=''
 if [ $# -eq 0 ]; then tags="${default_tag:-}"
 elif [ "${1}" = 'all' ]; then tags="${all_tags:-}"
 elif [ "${1:0:4}" = "all_" ]; then tags="${!1:-}"
+elif [ "${1:0:4}" = "all-" ]; then # assume tags with hypens are "all-<arch>"
+	for tag in ${all_tags:-}; do
+		tags+="${tag}-${1##*-} "
+	done
 else tags="$*"
 fi
 
@@ -28,6 +33,7 @@ for DOCKER_TAG in ${tags}; do
 	printf 'Building: %s\n\n' "${IMAGE_NAME}"
 
 	. hooks/post_checkout
+	[ ! -z "${SKIP_BUILD+set}" ] && echo 'Skipping build.' && continue
 	. hooks/pre_build
 	. hooks/build
 done

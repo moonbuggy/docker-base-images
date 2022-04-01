@@ -32,6 +32,8 @@ push_platforms () {
 
 if [ -n "${SINGLE_ARCH_BUILD}" ]; then
 	echo "Single arch build, not pushing manifests."
+elif [ ! -z "${SKIP_BUILD+set}" ]; then
+	echo "Skipping."
 elif [ -n "${NO_MANIFEST+set}" ]; then
 	echo "NO_MANIFEST is set, skipping post_push."
 else

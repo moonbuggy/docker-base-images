@@ -1,3 +1,10 @@
+amd64:
+  TARGET_ARCH_TAG: amd64
+  QEMU_ARCH:
+  S6_ARCH: amd64
+  QEMU_PREFIX: amd64
+  PLATFORM: linux/amd64
+
 arm64v8:
   TARGET_ARCH_TAG: arm64v8
   EXTRA_ARCH_TAGS: arm64
@@ -5,13 +12,6 @@ arm64v8:
   S6_ARCH: aarch64
   QEMU_PREFIX: arm64v8
   PLATFORM: linux/arm64/v8
-
-amd64:
-  TARGET_ARCH_TAG: amd64
-  QEMU_ARCH:
-  S6_ARCH: amd64
-  QEMU_PREFIX: amd64
-  PLATFORM: linux/amd64
 
 armv6:
   TARGET_ARCH_TAG: armv6
@@ -37,20 +37,6 @@ i386:
   QEMU_PREFIX: i386
   PLATFORM: linux/386
 
-# i486:
-#   TARGET_ARCH_TAG: 486
-#   QEMU_ARCH: i486
-#   S6_ARCH: i486
-#   QEMU_PREFIX: i486
-#   PLATFORM: linux/486
-#
-# i686:
-#   TARGET_ARCH_TAG: 686
-#   QEMU_ARCH: i686
-#   S6_ARCH: i686
-#   QEMU_PREFIX: i686
-#   PLATFORM: linux/686
-
 ppc64le:
   TARGET_ARCH_TAG: ppc64le
   QEMU_ARCH: ppc64le
@@ -58,9 +44,16 @@ ppc64le:
   QEMU_PREFIX: ppc64le
   PLATFORM: linux/ppc64le
 
+riscv64:
+  TARGET_ARCH_TAG: riscv64
+  QEMU_ARCH: riscv64
+  S6_ARCH: riscv64
+  QEMU_PREFIX: riscv64
+  PLATFORM: linux/riscv64
+
 s390x:
   TARGET_ARCH_TAG: s390x
   QEMU_ARCH: s390x
-  S6_ARCH:
+  S6_ARCH: s390x
   QEMU_PREFIX: s390x
   PLATFORM: linux/s390x

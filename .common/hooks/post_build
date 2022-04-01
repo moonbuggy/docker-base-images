@@ -6,4 +6,4 @@
 
 ##	call any post_build() from build.conf
 #
-ifFuncExec post_build
+[ -z "${SKIP_BUILD+set}" ] && ifFuncExec post_build
