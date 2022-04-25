@@ -15,9 +15,9 @@ chown -R ${PUID}:${PGID} $WEB_ROOT
 
 # server configuration
 #
-NGINX_PORT=${NGINX_PORT:-8080}
+NGINX_PORT=${NGINX_PORT:-$DEFAULT_NGINX_PORT}
 NGINX_INDEX=${NGINX_INDEX:-index.html index.htm}
-WEB_ROOT=${WEB_ROOT:-/var/www/html}
+WEB_ROOT=${WEB_ROOT:-$DEFAULT_WEB_ROOT}
 
 sed -r \
 	-e "s|^(\s+listen\D+)(\d+)(\D.*)$|\1${NGINX_PORT}\3|g" \

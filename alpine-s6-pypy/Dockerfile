@@ -12,6 +12,9 @@ FROM "moonbuggy2000/s6:${S6_VERSION}-${S6_ARCH}" AS s6
 #
 FROM "${FROM_IMAGE}"
 
+# enable use of TZ enviornment variable
+RUN apk -U add --no-cache tzdata
+
 COPY --from=s6 / /
 COPY ./root /
 

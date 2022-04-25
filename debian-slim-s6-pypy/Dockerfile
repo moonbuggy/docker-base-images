@@ -1,3 +1,5 @@
+# syntax=docker/dockerfile:1.3-labs
+
 ARG DEBIAN_VERSION="10.11"
 ARG FROM_IMAGE="moonbuggy2000/debian-slim-s6:${DEBIAN_VERSION}"
 
@@ -57,12 +59,8 @@ RUN apt-get update && apt-get install -qy --no-install-recommends \
 		libtinfo5 \
 	&& rm -rf /var/lib/apt/lists/*
 
-
 ARG FETCHER_ROOT
 COPY --from=fetcher "${FETCHER_ROOT}/" /
-
-ARG PYPY_DIR
-RUN add-contenv PATH="${PYPY_DIR}/bin:${PATH}"
 
 RUN rm -f "/usr/bin/qemu-${QEMU_ARCH}-static" >/dev/null 2>&1
 
@@ -71,5 +69,8 @@ RUN rm -f "/usr/bin/qemu-${QEMU_ARCH}-static" >/dev/null 2>&1
 FROM "moonbuggy2000/scratch:${TARGET_ARCH_TAG}"
 
 COPY --from=builder / /
+
+ARG PYPY_DIR
+ENV PATH="${PYPY_DIR}/bin:${PATH}"
 
 ENTRYPOINT ["/init"]

@@ -1,0 +1,35 @@
+with-contenv
+
+#	configure timezone
+#
+foreground
+{
+	importas -D "" TZ TZ
+	ifelse -X { test -n "${TZ}" }
+	{
+		importas -D "" PHP_PACKAGE PHP_PACKAGE
+		define php_ini "/etc/${PHP_PACKAGE}/php.ini"
+
+		ifelse -Xn { test -f "${php_ini}" }
+		{
+			foreground { echo "php-fpm-init: ERROR: can't find PHP config: ${php_ini}" }
+			exit 1
+		}
+		foreground { sed -E -i "${php_ini}" -e "s|^;?\\s*date\\.timezone.*|date.timezone = ${TZ}|g" }
+		echo "php-fpm-init: info: set timezone: ${TZ}"
+	}
+}
+
+# configure index
+#
+define default_conf "/etc/nginx/conf.d/default.conf"
+
+ifelse -Xn { test -f "${default_conf}" }
+{
+	foreground { echo "php-fpm-init: ERROR: can't find default config: ${default_conf}" }
+	exit 1
+}
+importas -D "index.php index.html index.htm" NGINX_INDEX NGINX_INDEX
+foreground { sed -E -i /etc/nginx/conf.d/default.conf -e "s|^\\s+index.*|\\tindex\\t\\t${NGINX_INDEX};|g" }
+
+echo "php-fpm-init: info: set index: ${NGINX_INDEX}"

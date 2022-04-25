@@ -1,3 +1,5 @@
+# syntax=docker/dockerfile:1.3-labs
+
 ARG TARGET_VERSION="3.10"
 ARG S6_VERSION="latest"
 ARG S6_ARCH="amd64"
@@ -8,6 +10,7 @@ ARG TARGET_ARCH_TAG="amd64"
 
 ## get s6 overlay
 FROM "moonbuggy2000/s6:${S6_VERSION}-${S6_ARCH}" AS s6
+
 
 ## collect everything we need
 FROM "${FROM_IMAGE}" AS builder
@@ -23,11 +26,21 @@ RUN apk -U add --no-cache tzdata
 COPY --from=s6 / /
 COPY ./root/ /
 
+# determine the s6 overlay major version in use, remove any uneeded config
+#   v2.* uses /etc/s6,  v3.* uses /etc/s6-overlay
+RUN if [ -d "/etc/s6" ]; then \
+    rm -rvf /etc/s6-overlay 2>/dev/null; \
+  elif [ -d "/etc/s6-overlay" ]; then \
+    rm -rvf /etc/cont-init.d /etc/services.d /etc/fix-attrs.d 2>/dev/null; \
+  fi
+
 ARG TARGET_VERSION
-RUN echo "PYTHON_VERSION=$(echo ${TARGET_VERSION} | awk -F \. '{print $1"."$2}')" >> /etc/contenv_extra \
-	&& echo "PYTHON_PACKAGE=python$(echo ${TARGET_VERSION} | awk -F \. '{print $1}')" >> /etc/contenv_extra
+RUN add-contenv \
+		"PYTHON_VERSION=$(echo ${TARGET_VERSION} | awk -F \. '{print $1"."$2}')" \
+		"PYTHON_PACKAGE=python$(echo ${TARGET_VERSION} | awk -F \. '{print $1}')"
 
 RUN rm -f "/usr/bin/qemu-${QEMU_ARCH}-static" >/dev/null 2>&1
+
 
 ## build the final image
 FROM "moonbuggy2000/scratch:${TARGET_ARCH_TAG}"

@@ -15,10 +15,6 @@ COPY _dummyfile "${QEMU_DIR}/qemu-${QEMU_ARCH}-static*" /usr/bin/
 
 ARG PHP_VERSION="7.4"
 ARG PHP_PACKAGE="php7"
-COPY ./etc/nginx /etc/nginx
-COPY ./etc/${PHP_PACKAGE} /etc/${PHP_PACKAGE}
-COPY ./etc/cont-init.d /etc/cont-init.d
-COPY ./etc/services.d /etc/services.d
 
 RUN add-contenv \
 		PHP_VERSION=${PHP_VERSION} \
@@ -26,6 +22,21 @@ RUN add-contenv \
 	&& apk add --no-cache \
 		${PHP_PACKAGE}=~${PHP_VERSION} \
 		${PHP_PACKAGE}-fpm=~${PHP_VERSION}
+
+COPY ./etc/nginx /etc/nginx
+COPY ./etc/${PHP_PACKAGE} /etc/${PHP_PACKAGE}
+COPY ./etc/cont-init.d /etc/cont-init.d
+COPY ./etc/services.d /etc/services.d
+
+COPY ./etc/s6-overlay /etc/s6-overlay
+
+# determine the s6 overlay major version in use, remove any uneeded config
+#   v2.* uses /etc/s6,  v3.* uses /etc/s6-overlay
+RUN if [ -d "/etc/s6" ]; then \
+    rm -rvf /etc/s6-overlay 2>/dev/null; \
+  elif [ -d "/etc/s6-overlay" ]; then \
+    rm -rvf /etc/cont-init.d /etc/services.d /etc/fix-attrs.d 2>/dev/null; \
+  fi
 
 RUN rm -f "/usr/bin/qemu-${QEMU_ARCH}-static" > /dev/null 2>&1
 

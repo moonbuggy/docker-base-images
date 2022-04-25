@@ -1,4 +1,5 @@
 #! /bin/bash
+# shellcheck shell=bash disable=SC2034
 
 #NOOP='true'
 #DO_PUSH='true'

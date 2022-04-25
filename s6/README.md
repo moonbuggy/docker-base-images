@@ -8,7 +8,7 @@ Images are taggsd in the form `<s6 version>-<s6 arch>`. The simplest route is to
 
 Valid s6 arches: `aarch64`, `amd64`, `arm`, `armhf`, `arm64`, `ppc64le`, `riscv64`, `s390x`, `x86`
 
-**Note:** Because there are no binaries for it in the current releases, the `latest-ppc64le` build contains an old s6 version, v2. All other `latest-*` builds contain a more recent v3 version. This may cause problems in downstram multi-arch builds, so `ppc64le` may need to be dropped from such builds. (Unless relevant binaries become available).
+**Note:** Because there are no binaries for it in the current releases, the `latest-ppc64le` build contains an old s6 version, v2. All other `latest-*` builds contain a more recent v3 version. This may cause problems in downstram multi-arch builds, so `ppc64le` may need to be dropped from such builds (unless relevant binaries become available).
 
 ## Usage
 ```

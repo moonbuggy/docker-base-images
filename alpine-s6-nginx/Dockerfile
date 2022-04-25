@@ -28,10 +28,18 @@ RUN apk add --no-cache \
 ARG	NGINX_PORT
 RUN add-contenv \
 		NGINX_VERSION="${NGINX_VERSION}" \
-		NGINX_PORT="${NGINX_PORT}" \
-		WEB_ROOT="${WEB_ROOT}"
+		DEFAULT_NGINX_PORT="${NGINX_PORT}" \
+		DEFAULT_WEB_ROOT="${WEB_ROOT}"
 
 COPY ./etc /etc
+
+# determine the s6 overlay major version in use, remove any uneeded config
+#   v2.* uses /etc/s6,  v3.* uses /etc/s6-overlay
+RUN if [ -d "/etc/s6" ]; then \
+    rm -rvf /etc/s6-overlay 2>/dev/null; \
+  elif [ -d "/etc/s6-overlay" ]; then \
+    rm -rvf /etc/cont-init.d /etc/services.d /etc/fix-attrs.d 2>/dev/null; \
+  fi
 
 RUN rm -f "/usr/bin/qemu-${QEMU_ARCH}-static" > /dev/null 2>&1
 

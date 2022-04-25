@@ -1,0 +1,13 @@
+with-contenv
+
+importas -D "" UWSGI_LOG UWSGI_LOG
+
+ifelse -Xn { test -n "${UWSGI_LOG}" } { exit }
+
+case ${UWSGI_LOG} {
+	"yes|true|on" {
+		foreground { echo "uwsgi-init: info: UWSGI_LOG enabled" }
+		sed -e "s|^disable-logging.*|disable-logging = false|" -i "/etc/uwsgi.ini"
+	}
+}
+echo "uwsgi-init: info: UWSGI_LOG disabled"

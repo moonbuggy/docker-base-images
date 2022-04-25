@@ -1,0 +1,6 @@
+#!/command/execlineb -P
+
+with-contenv
+importas php_package PHP_PACKAGE
+ifelse { test $php_package = php5 } { php-fpm5 -F }
+if { test $php_package = php7 } php-fpm7 -F

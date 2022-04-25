@@ -1,0 +1,2276 @@
+** NOOP set. No operations will be performed.
+
+Build tags: 2.7 3.3 3.4 3.5 3.6 3.7 3.8 3.9
+
+Building: moonbuggy2000/debian-slim-s6-python:2.7
+
+--- post_checkout ---
+Docker tag           2.7     
+Target tag           2.7.18  
+Configured arches    amd64 arm arm64v8 armv5 armv7 i386 ppc64le riscv64 s390x
+Source arches        amd64 arm arm64v8 armv5 armv7 i386 ppc64le s390x 
+Build arches         amd64 arm arm64v8 armv5 armv7 i386 ppc64le s390x
+Platforms            linux/amd64,linux/arm/v5,linux/arm64/v8,linux/arm/v5,linux/arm/v7,linux/386,linux/ppc64le,linux/s390x
+Source image         python:2.7.18-slim
+Python latest        3.10.4  
+Python major latest  2.7.18  
+Python minor latest  2.7.18  
+Python version       2.7.18  
+
+--- pre_build ---
+Registered QEMU interpreters.
+
+--- pre_build (QEMU) ---
+Importing: multiarch/qemu-user-static:x86_64-aarch64
+Status: [NOOP]
+Importing: multiarch/qemu-user-static:x86_64-arm
+Status: [NOOP]
+Importing: multiarch/qemu-user-static:x86_64-i386
+Status: [NOOP]
+Importing: multiarch/qemu-user-static:x86_64-ppc64le
+Status: [NOOP]
+Importing: multiarch/qemu-user-static:x86_64-s390x
+Status: [NOOP]
+
+
+--- build ---
+--- build (amd64) ---
+Target tag           2.7.18  
+Platform             linux/amd64
+Dockerfile           Dockerfile
+From                 amd64/python:2.7.18-slim
+S6 arch              amd64   
+Target arch          amd64   
+Python version       2.7.18  
+
+--- build command ---
+docker build --rm \ 
+	-f Dockerfile \ 
+	--build-arg FROM_IMAGE=amd64/python:2.7.18-slim \ 
+	--build-arg S6_ARCH=amd64 \ 
+	--build-arg TARGET_ARCH_TAG=amd64 \ 
+	--build-arg TARGET_VERSION=2.7.18 \ 
+	-t moonbuggy2000/debian-slim-s6-python:2.7.18-amd64 .
+
+[NOOP]
+
+--- build (arm) ---
+Target tag           2.7.18  
+Platform             linux/arm
+Dockerfile           Dockerfile
+From                 arm32v5/python:2.7.18-slim
+QEMU arch            arm     
+QEMU dir             .qemu_static
+QEMU prefix          arm32v5 
+S6 arch              arm     
+Target arch          armv5   
+Python version       2.7.18  
+
+--- build command ---
+docker build --rm \ 
+	-f Dockerfile \ 
+	--build-arg FROM_IMAGE=arm32v5/python:2.7.18-slim \ 
+	--build-arg QEMU_ARCH=arm \ 
+	--build-arg QEMU_DIR=.qemu_static \ 
+	--build-arg QEMU_PREFIX=arm32v5 \ 
+	--build-arg S6_ARCH=arm \ 
+	--build-arg TARGET_ARCH_TAG=armv5 \ 
+	--build-arg TARGET_VERSION=2.7.18 \ 
+	-t moonbuggy2000/debian-slim-s6-python:2.7.18-armv5 .
+
+[NOOP]
+
+--- build (arm64v8) ---
+Target tag           2.7.18  
+Platform             linux/arm64/v8
+Dockerfile           Dockerfile
+From                 arm64v8/python:2.7.18-slim
+QEMU arch            aarch64 
+QEMU dir             .qemu_static
+QEMU prefix          arm64v8 
+S6 arch              aarch64 
+Target arch          arm64v8 
+Python version       2.7.18  
+
+--- build command ---
+docker build --rm \ 
+	-f Dockerfile \ 
+	--build-arg FROM_IMAGE=arm64v8/python:2.7.18-slim \ 
+	--build-arg QEMU_ARCH=aarch64 \ 
+	--build-arg QEMU_DIR=.qemu_static \ 
+	--build-arg QEMU_PREFIX=arm64v8 \ 
+	--build-arg S6_ARCH=aarch64 \ 
+	--build-arg TARGET_ARCH_TAG=arm64v8 \ 
+	--build-arg TARGET_VERSION=2.7.18 \ 
+	-t moonbuggy2000/debian-slim-s6-python:2.7.18-arm64v8 .
+
+[NOOP]
+
+--- build (armv5) ---
+Target tag           2.7.18  
+Platform             linux/arm
+Dockerfile           Dockerfile
+From                 arm32v5/python:2.7.18-slim
+QEMU arch            arm     
+QEMU dir             .qemu_static
+QEMU prefix          arm32v5 
+S6 arch              arm     
+Target arch          armv5   
+Python version       2.7.18  
+
+--- build command ---
+docker build --rm \ 
+	-f Dockerfile \ 
+	--build-arg FROM_IMAGE=arm32v5/python:2.7.18-slim \ 
+	--build-arg QEMU_ARCH=arm \ 
+	--build-arg QEMU_DIR=.qemu_static \ 
+	--build-arg QEMU_PREFIX=arm32v5 \ 
+	--build-arg S6_ARCH=arm \ 
+	--build-arg TARGET_ARCH_TAG=armv5 \ 
+	--build-arg TARGET_VERSION=2.7.18 \ 
+	-t moonbuggy2000/debian-slim-s6-python:2.7.18-armv5 .
+
+[NOOP]
+
+--- build (armv7) ---
+Target tag           2.7.18  
+Platform             linux/arm/v7
+Dockerfile           Dockerfile
+From                 arm32v7/python:2.7.18-slim
+QEMU arch            arm     
+QEMU dir             .qemu_static
+QEMU prefix          arm32v7 
+S6 arch              armhf   
+Target arch          armv7   
+Python version       2.7.18  
+
+--- build command ---
+docker build --rm \ 
+	-f Dockerfile \ 
+	--build-arg FROM_IMAGE=arm32v7/python:2.7.18-slim \ 
+	--build-arg QEMU_ARCH=arm \ 
+	--build-arg QEMU_DIR=.qemu_static \ 
+	--build-arg QEMU_PREFIX=arm32v7 \ 
+	--build-arg S6_ARCH=armhf \ 
+	--build-arg TARGET_ARCH_TAG=armv7 \ 
+	--build-arg TARGET_VERSION=2.7.18 \ 
+	-t moonbuggy2000/debian-slim-s6-python:2.7.18-armv7 .
+
+[NOOP]
+
+--- build (i386) ---
+Target tag           2.7.18  
+Platform             linux/386
+Dockerfile           Dockerfile
+From                 i386/python:2.7.18-slim
+QEMU arch            i386    
+QEMU dir             .qemu_static
+QEMU prefix          i386    
+S6 arch              x86     
+Target arch          386     
+Python version       2.7.18  
+
+--- build command ---
+docker build --rm \ 
+	-f Dockerfile \ 
+	--build-arg FROM_IMAGE=i386/python:2.7.18-slim \ 
+	--build-arg QEMU_ARCH=i386 \ 
+	--build-arg QEMU_DIR=.qemu_static \ 
+	--build-arg QEMU_PREFIX=i386 \ 
+	--build-arg S6_ARCH=x86 \ 
+	--build-arg TARGET_ARCH_TAG=386 \ 
+	--build-arg TARGET_VERSION=2.7.18 \ 
+	-t moonbuggy2000/debian-slim-s6-python:2.7.18-386 .
+
+[NOOP]
+
+--- build (ppc64le) ---
+Target tag           2.7.18  
+Platform             linux/ppc64le
+Dockerfile           Dockerfile
+From                 ppc64le/python:2.7.18-slim
+QEMU arch            ppc64le 
+QEMU dir             .qemu_static
+QEMU prefix          ppc64le 
+S6 arch              ppc64le 
+Target arch          ppc64le 
+Python version       2.7.18  
+
+--- build command ---
+docker build --rm \ 
+	-f Dockerfile \ 
+	--build-arg FROM_IMAGE=ppc64le/python:2.7.18-slim \ 
+	--build-arg QEMU_ARCH=ppc64le \ 
+	--build-arg QEMU_DIR=.qemu_static \ 
+	--build-arg QEMU_PREFIX=ppc64le \ 
+	--build-arg S6_ARCH=ppc64le \ 
+	--build-arg TARGET_ARCH_TAG=ppc64le \ 
+	--build-arg TARGET_VERSION=2.7.18 \ 
+	-t moonbuggy2000/debian-slim-s6-python:2.7.18-ppc64le .
+
+[NOOP]
+
+--- build (s390x) ---
+Target tag           2.7.18  
+Platform             linux/s390x
+Dockerfile           Dockerfile
+From                 s390x/python:2.7.18-slim
+QEMU arch            s390x   
+QEMU dir             .qemu_static
+QEMU prefix          s390x   
+S6 arch              s390x   
+Target arch          s390x   
+Python version       2.7.18  
+
+--- build command ---
+docker build --rm \ 
+	-f Dockerfile \ 
+	--build-arg FROM_IMAGE=s390x/python:2.7.18-slim \ 
+	--build-arg QEMU_ARCH=s390x \ 
+	--build-arg QEMU_DIR=.qemu_static \ 
+	--build-arg QEMU_PREFIX=s390x \ 
+	--build-arg S6_ARCH=s390x \ 
+	--build-arg TARGET_ARCH_TAG=s390x \ 
+	--build-arg TARGET_VERSION=2.7.18 \ 
+	-t moonbuggy2000/debian-slim-s6-python:2.7.18-s390x .
+
+[NOOP]
+
+Building: moonbuggy2000/debian-slim-s6-python:3.3
+
+--- post_checkout ---
+Docker tag           3.3     
+Target tag           3.3.7   
+Configured arches    amd64 arm arm64v8 armv5 armv7 i386 ppc64le riscv64 s390x
+Excluded arches      i386    
+Source arches        amd64 arm arm64v8 armv5 armv7 ppc64le s390x 
+Build arches         amd64 arm arm64v8 armv5 armv7 ppc64le s390x
+Platforms            linux/amd64,linux/arm/v5,linux/arm64/v8,linux/arm/v5,linux/arm/v7,linux/ppc64le,linux/s390x
+Source image         python:3.3.7-slim
+Python latest        3.10.4  
+Python major latest  3.10.4  
+Python minor latest  3.3.7   
+Python version       3.3.7   
+
+--- pre_build ---
+Registered QEMU interpreters.
+
+--- pre_build (QEMU) ---
+Importing: multiarch/qemu-user-static:x86_64-aarch64
+Status: [NOOP]
+Importing: multiarch/qemu-user-static:x86_64-arm
+Status: [NOOP]
+Importing: multiarch/qemu-user-static:x86_64-ppc64le
+Status: [NOOP]
+Importing: multiarch/qemu-user-static:x86_64-s390x
+Status: [NOOP]
+
+
+--- build ---
+--- build (amd64) ---
+Target tag           3.3.7   
+Platform             linux/amd64
+Dockerfile           Dockerfile
+From                 amd64/python:3.3.7-slim
+S6 arch              amd64   
+Target arch          amd64   
+Python version       3.3.7   
+
+--- build command ---
+docker build --rm \ 
+	-f Dockerfile \ 
+	--build-arg FROM_IMAGE=amd64/python:3.3.7-slim \ 
+	--build-arg S6_ARCH=amd64 \ 
+	--build-arg TARGET_ARCH_TAG=amd64 \ 
+	--build-arg TARGET_VERSION=3.3.7 \ 
+	-t moonbuggy2000/debian-slim-s6-python:3.3.7-amd64 .
+
+[NOOP]
+
+--- build (arm) ---
+Target tag           3.3.7   
+Platform             linux/arm
+Dockerfile           Dockerfile
+From                 arm32v5/python:3.3.7-slim
+QEMU arch            arm     
+QEMU dir             .qemu_static
+QEMU prefix          arm32v5 
+S6 arch              arm     
+Target arch          armv5   
+Python version       3.3.7   
+
+--- build command ---
+docker build --rm \ 
+	-f Dockerfile \ 
+	--build-arg FROM_IMAGE=arm32v5/python:3.3.7-slim \ 
+	--build-arg QEMU_ARCH=arm \ 
+	--build-arg QEMU_DIR=.qemu_static \ 
+	--build-arg QEMU_PREFIX=arm32v5 \ 
+	--build-arg S6_ARCH=arm \ 
+	--build-arg TARGET_ARCH_TAG=armv5 \ 
+	--build-arg TARGET_VERSION=3.3.7 \ 
+	-t moonbuggy2000/debian-slim-s6-python:3.3.7-armv5 .
+
+[NOOP]
+
+--- build (arm64v8) ---
+Target tag           3.3.7   
+Platform             linux/arm64/v8
+Dockerfile           Dockerfile
+From                 arm64v8/python:3.3.7-slim
+QEMU arch            aarch64 
+QEMU dir             .qemu_static
+QEMU prefix          arm64v8 
+S6 arch              aarch64 
+Target arch          arm64v8 
+Python version       3.3.7   
+
+--- build command ---
+docker build --rm \ 
+	-f Dockerfile \ 
+	--build-arg FROM_IMAGE=arm64v8/python:3.3.7-slim \ 
+	--build-arg QEMU_ARCH=aarch64 \ 
+	--build-arg QEMU_DIR=.qemu_static \ 
+	--build-arg QEMU_PREFIX=arm64v8 \ 
+	--build-arg S6_ARCH=aarch64 \ 
+	--build-arg TARGET_ARCH_TAG=arm64v8 \ 
+	--build-arg TARGET_VERSION=3.3.7 \ 
+	-t moonbuggy2000/debian-slim-s6-python:3.3.7-arm64v8 .
+
+[NOOP]
+
+--- build (armv5) ---
+Target tag           3.3.7   
+Platform             linux/arm
+Dockerfile           Dockerfile
+From                 arm32v5/python:3.3.7-slim
+QEMU arch            arm     
+QEMU dir             .qemu_static
+QEMU prefix          arm32v5 
+S6 arch              arm     
+Target arch          armv5   
+Python version       3.3.7   
+
+--- build command ---
+docker build --rm \ 
+	-f Dockerfile \ 
+	--build-arg FROM_IMAGE=arm32v5/python:3.3.7-slim \ 
+	--build-arg QEMU_ARCH=arm \ 
+	--build-arg QEMU_DIR=.qemu_static \ 
+	--build-arg QEMU_PREFIX=arm32v5 \ 
+	--build-arg S6_ARCH=arm \ 
+	--build-arg TARGET_ARCH_TAG=armv5 \ 
+	--build-arg TARGET_VERSION=3.3.7 \ 
+	-t moonbuggy2000/debian-slim-s6-python:3.3.7-armv5 .
+
+[NOOP]
+
+--- build (armv7) ---
+Target tag           3.3.7   
+Platform             linux/arm/v7
+Dockerfile           Dockerfile
+From                 arm32v7/python:3.3.7-slim
+QEMU arch            arm     
+QEMU dir             .qemu_static
+QEMU prefix          arm32v7 
+S6 arch              armhf   
+Target arch          armv7   
+Python version       3.3.7   
+
+--- build command ---
+docker build --rm \ 
+	-f Dockerfile \ 
+	--build-arg FROM_IMAGE=arm32v7/python:3.3.7-slim \ 
+	--build-arg QEMU_ARCH=arm \ 
+	--build-arg QEMU_DIR=.qemu_static \ 
+	--build-arg QEMU_PREFIX=arm32v7 \ 
+	--build-arg S6_ARCH=armhf \ 
+	--build-arg TARGET_ARCH_TAG=armv7 \ 
+	--build-arg TARGET_VERSION=3.3.7 \ 
+	-t moonbuggy2000/debian-slim-s6-python:3.3.7-armv7 .
+
+[NOOP]
+
+--- build (ppc64le) ---
+Target tag           3.3.7   
+Platform             linux/ppc64le
+Dockerfile           Dockerfile
+From                 ppc64le/python:3.3.7-slim
+QEMU arch            ppc64le 
+QEMU dir             .qemu_static
+QEMU prefix          ppc64le 
+S6 arch              ppc64le 
+Target arch          ppc64le 
+Python version       3.3.7   
+
+--- build command ---
+docker build --rm \ 
+	-f Dockerfile \ 
+	--build-arg FROM_IMAGE=ppc64le/python:3.3.7-slim \ 
+	--build-arg QEMU_ARCH=ppc64le \ 
+	--build-arg QEMU_DIR=.qemu_static \ 
+	--build-arg QEMU_PREFIX=ppc64le \ 
+	--build-arg S6_ARCH=ppc64le \ 
+	--build-arg TARGET_ARCH_TAG=ppc64le \ 
+	--build-arg TARGET_VERSION=3.3.7 \ 
+	-t moonbuggy2000/debian-slim-s6-python:3.3.7-ppc64le .
+
+[NOOP]
+
+--- build (s390x) ---
+Target tag           3.3.7   
+Platform             linux/s390x
+Dockerfile           Dockerfile
+From                 s390x/python:3.3.7-slim
+QEMU arch            s390x   
+QEMU dir             .qemu_static
+QEMU prefix          s390x   
+S6 arch              s390x   
+Target arch          s390x   
+Python version       3.3.7   
+
+--- build command ---
+docker build --rm \ 
+	-f Dockerfile \ 
+	--build-arg FROM_IMAGE=s390x/python:3.3.7-slim \ 
+	--build-arg QEMU_ARCH=s390x \ 
+	--build-arg QEMU_DIR=.qemu_static \ 
+	--build-arg QEMU_PREFIX=s390x \ 
+	--build-arg S6_ARCH=s390x \ 
+	--build-arg TARGET_ARCH_TAG=s390x \ 
+	--build-arg TARGET_VERSION=3.3.7 \ 
+	-t moonbuggy2000/debian-slim-s6-python:3.3.7-s390x .
+
+[NOOP]
+
+Building: moonbuggy2000/debian-slim-s6-python:3.4
+
+--- post_checkout ---
+Docker tag           3.4     
+Target tag           3.4.10  
+Configured arches    amd64 arm arm64v8 armv5 armv7 i386 ppc64le riscv64 s390x
+Source arches        amd64 arm arm64v8 armv5 armv7 i386 ppc64le s390x 
+Build arches         amd64 arm arm64v8 armv5 armv7 i386 ppc64le s390x
+Platforms            linux/amd64,linux/arm/v5,linux/arm64/v8,linux/arm/v5,linux/arm/v7,linux/386,linux/ppc64le,linux/s390x
+Source image         python:3.4.10-slim
+Python latest        3.10.4  
+Python major latest  3.10.4  
+Python minor latest  3.4.10  
+Python version       3.4.10  
+
+--- pre_build ---
+Registered QEMU interpreters.
+
+--- pre_build (QEMU) ---
+Importing: multiarch/qemu-user-static:x86_64-aarch64
+Status: [NOOP]
+Importing: multiarch/qemu-user-static:x86_64-arm
+Status: [NOOP]
+Importing: multiarch/qemu-user-static:x86_64-i386
+Status: [NOOP]
+Importing: multiarch/qemu-user-static:x86_64-ppc64le
+Status: [NOOP]
+Importing: multiarch/qemu-user-static:x86_64-s390x
+Status: [NOOP]
+
+
+--- build ---
+--- build (amd64) ---
+Target tag           3.4.10  
+Platform             linux/amd64
+Dockerfile           Dockerfile
+From                 amd64/python:3.4.10-slim
+S6 arch              amd64   
+Target arch          amd64   
+Python version       3.4.10  
+
+--- build command ---
+docker build --rm \ 
+	-f Dockerfile \ 
+	--build-arg FROM_IMAGE=amd64/python:3.4.10-slim \ 
+	--build-arg S6_ARCH=amd64 \ 
+	--build-arg TARGET_ARCH_TAG=amd64 \ 
+	--build-arg TARGET_VERSION=3.4.10 \ 
+	-t moonbuggy2000/debian-slim-s6-python:3.4.10-amd64 .
+
+[NOOP]
+
+--- build (arm) ---
+Target tag           3.4.10  
+Platform             linux/arm
+Dockerfile           Dockerfile
+From                 arm32v5/python:3.4.10-slim
+QEMU arch            arm     
+QEMU dir             .qemu_static
+QEMU prefix          arm32v5 
+S6 arch              arm     
+Target arch          armv5   
+Python version       3.4.10  
+
+--- build command ---
+docker build --rm \ 
+	-f Dockerfile \ 
+	--build-arg FROM_IMAGE=arm32v5/python:3.4.10-slim \ 
+	--build-arg QEMU_ARCH=arm \ 
+	--build-arg QEMU_DIR=.qemu_static \ 
+	--build-arg QEMU_PREFIX=arm32v5 \ 
+	--build-arg S6_ARCH=arm \ 
+	--build-arg TARGET_ARCH_TAG=armv5 \ 
+	--build-arg TARGET_VERSION=3.4.10 \ 
+	-t moonbuggy2000/debian-slim-s6-python:3.4.10-armv5 .
+
+[NOOP]
+
+--- build (arm64v8) ---
+Target tag           3.4.10  
+Platform             linux/arm64/v8
+Dockerfile           Dockerfile
+From                 arm64v8/python:3.4.10-slim
+QEMU arch            aarch64 
+QEMU dir             .qemu_static
+QEMU prefix          arm64v8 
+S6 arch              aarch64 
+Target arch          arm64v8 
+Python version       3.4.10  
+
+--- build command ---
+docker build --rm \ 
+	-f Dockerfile \ 
+	--build-arg FROM_IMAGE=arm64v8/python:3.4.10-slim \ 
+	--build-arg QEMU_ARCH=aarch64 \ 
+	--build-arg QEMU_DIR=.qemu_static \ 
+	--build-arg QEMU_PREFIX=arm64v8 \ 
+	--build-arg S6_ARCH=aarch64 \ 
+	--build-arg TARGET_ARCH_TAG=arm64v8 \ 
+	--build-arg TARGET_VERSION=3.4.10 \ 
+	-t moonbuggy2000/debian-slim-s6-python:3.4.10-arm64v8 .
+
+[NOOP]
+
+--- build (armv5) ---
+Target tag           3.4.10  
+Platform             linux/arm
+Dockerfile           Dockerfile
+From                 arm32v5/python:3.4.10-slim
+QEMU arch            arm     
+QEMU dir             .qemu_static
+QEMU prefix          arm32v5 
+S6 arch              arm     
+Target arch          armv5   
+Python version       3.4.10  
+
+--- build command ---
+docker build --rm \ 
+	-f Dockerfile \ 
+	--build-arg FROM_IMAGE=arm32v5/python:3.4.10-slim \ 
+	--build-arg QEMU_ARCH=arm \ 
+	--build-arg QEMU_DIR=.qemu_static \ 
+	--build-arg QEMU_PREFIX=arm32v5 \ 
+	--build-arg S6_ARCH=arm \ 
+	--build-arg TARGET_ARCH_TAG=armv5 \ 
+	--build-arg TARGET_VERSION=3.4.10 \ 
+	-t moonbuggy2000/debian-slim-s6-python:3.4.10-armv5 .
+
+[NOOP]
+
+--- build (armv7) ---
+Target tag           3.4.10  
+Platform             linux/arm/v7
+Dockerfile           Dockerfile
+From                 arm32v7/python:3.4.10-slim
+QEMU arch            arm     
+QEMU dir             .qemu_static
+QEMU prefix          arm32v7 
+S6 arch              armhf   
+Target arch          armv7   
+Python version       3.4.10  
+
+--- build command ---
+docker build --rm \ 
+	-f Dockerfile \ 
+	--build-arg FROM_IMAGE=arm32v7/python:3.4.10-slim \ 
+	--build-arg QEMU_ARCH=arm \ 
+	--build-arg QEMU_DIR=.qemu_static \ 
+	--build-arg QEMU_PREFIX=arm32v7 \ 
+	--build-arg S6_ARCH=armhf \ 
+	--build-arg TARGET_ARCH_TAG=armv7 \ 
+	--build-arg TARGET_VERSION=3.4.10 \ 
+	-t moonbuggy2000/debian-slim-s6-python:3.4.10-armv7 .
+
+[NOOP]
+
+--- build (i386) ---
+Target tag           3.4.10  
+Platform             linux/386
+Dockerfile           Dockerfile
+From                 i386/python:3.4.10-slim
+QEMU arch            i386    
+QEMU dir             .qemu_static
+QEMU prefix          i386    
+S6 arch              x86     
+Target arch          386     
+Python version       3.4.10  
+
+--- build command ---
+docker build --rm \ 
+	-f Dockerfile \ 
+	--build-arg FROM_IMAGE=i386/python:3.4.10-slim \ 
+	--build-arg QEMU_ARCH=i386 \ 
+	--build-arg QEMU_DIR=.qemu_static \ 
+	--build-arg QEMU_PREFIX=i386 \ 
+	--build-arg S6_ARCH=x86 \ 
+	--build-arg TARGET_ARCH_TAG=386 \ 
+	--build-arg TARGET_VERSION=3.4.10 \ 
+	-t moonbuggy2000/debian-slim-s6-python:3.4.10-386 .
+
+[NOOP]
+
+--- build (ppc64le) ---
+Target tag           3.4.10  
+Platform             linux/ppc64le
+Dockerfile           Dockerfile
+From                 ppc64le/python:3.4.10-slim
+QEMU arch            ppc64le 
+QEMU dir             .qemu_static
+QEMU prefix          ppc64le 
+S6 arch              ppc64le 
+Target arch          ppc64le 
+Python version       3.4.10  
+
+--- build command ---
+docker build --rm \ 
+	-f Dockerfile \ 
+	--build-arg FROM_IMAGE=ppc64le/python:3.4.10-slim \ 
+	--build-arg QEMU_ARCH=ppc64le \ 
+	--build-arg QEMU_DIR=.qemu_static \ 
+	--build-arg QEMU_PREFIX=ppc64le \ 
+	--build-arg S6_ARCH=ppc64le \ 
+	--build-arg TARGET_ARCH_TAG=ppc64le \ 
+	--build-arg TARGET_VERSION=3.4.10 \ 
+	-t moonbuggy2000/debian-slim-s6-python:3.4.10-ppc64le .
+
+[NOOP]
+
+--- build (s390x) ---
+Target tag           3.4.10  
+Platform             linux/s390x
+Dockerfile           Dockerfile
+From                 s390x/python:3.4.10-slim
+QEMU arch            s390x   
+QEMU dir             .qemu_static
+QEMU prefix          s390x   
+S6 arch              s390x   
+Target arch          s390x   
+Python version       3.4.10  
+
+--- build command ---
+docker build --rm \ 
+	-f Dockerfile \ 
+	--build-arg FROM_IMAGE=s390x/python:3.4.10-slim \ 
+	--build-arg QEMU_ARCH=s390x \ 
+	--build-arg QEMU_DIR=.qemu_static \ 
+	--build-arg QEMU_PREFIX=s390x \ 
+	--build-arg S6_ARCH=s390x \ 
+	--build-arg TARGET_ARCH_TAG=s390x \ 
+	--build-arg TARGET_VERSION=3.4.10 \ 
+	-t moonbuggy2000/debian-slim-s6-python:3.4.10-s390x .
+
+[NOOP]
+
+Building: moonbuggy2000/debian-slim-s6-python:3.5
+
+--- post_checkout ---
+Docker tag           3.5     
+Target tag           3.5.10  
+Configured arches    amd64 arm arm64v8 armv5 armv7 i386 ppc64le riscv64 s390x
+Source arches        amd64 arm arm64v8 armv5 armv7 i386 ppc64le s390x 
+Build arches         amd64 arm arm64v8 armv5 armv7 i386 ppc64le s390x
+Platforms            linux/amd64,linux/arm/v5,linux/arm64/v8,linux/arm/v5,linux/arm/v7,linux/386,linux/ppc64le,linux/s390x
+Source image         python:3.5.10-slim
+Python latest        3.10.4  
+Python major latest  3.10.4  
+Python minor latest  3.5.10  
+Python version       3.5.10  
+
+--- pre_build ---
+Registered QEMU interpreters.
+
+--- pre_build (QEMU) ---
+Importing: multiarch/qemu-user-static:x86_64-aarch64
+Status: [NOOP]
+Importing: multiarch/qemu-user-static:x86_64-arm
+Status: [NOOP]
+Importing: multiarch/qemu-user-static:x86_64-i386
+Status: [NOOP]
+Importing: multiarch/qemu-user-static:x86_64-ppc64le
+Status: [NOOP]
+Importing: multiarch/qemu-user-static:x86_64-s390x
+Status: [NOOP]
+
+
+--- build ---
+--- build (amd64) ---
+Target tag           3.5.10  
+Platform             linux/amd64
+Dockerfile           Dockerfile
+From                 amd64/python:3.5.10-slim
+S6 arch              amd64   
+Target arch          amd64   
+Python version       3.5.10  
+
+--- build command ---
+docker build --rm \ 
+	-f Dockerfile \ 
+	--build-arg FROM_IMAGE=amd64/python:3.5.10-slim \ 
+	--build-arg S6_ARCH=amd64 \ 
+	--build-arg TARGET_ARCH_TAG=amd64 \ 
+	--build-arg TARGET_VERSION=3.5.10 \ 
+	-t moonbuggy2000/debian-slim-s6-python:3.5.10-amd64 .
+
+[NOOP]
+
+--- build (arm) ---
+Target tag           3.5.10  
+Platform             linux/arm
+Dockerfile           Dockerfile
+From                 arm32v5/python:3.5.10-slim
+QEMU arch            arm     
+QEMU dir             .qemu_static
+QEMU prefix          arm32v5 
+S6 arch              arm     
+Target arch          armv5   
+Python version       3.5.10  
+
+--- build command ---
+docker build --rm \ 
+	-f Dockerfile \ 
+	--build-arg FROM_IMAGE=arm32v5/python:3.5.10-slim \ 
+	--build-arg QEMU_ARCH=arm \ 
+	--build-arg QEMU_DIR=.qemu_static \ 
+	--build-arg QEMU_PREFIX=arm32v5 \ 
+	--build-arg S6_ARCH=arm \ 
+	--build-arg TARGET_ARCH_TAG=armv5 \ 
+	--build-arg TARGET_VERSION=3.5.10 \ 
+	-t moonbuggy2000/debian-slim-s6-python:3.5.10-armv5 .
+
+[NOOP]
+
+--- build (arm64v8) ---
+Target tag           3.5.10  
+Platform             linux/arm64/v8
+Dockerfile           Dockerfile
+From                 arm64v8/python:3.5.10-slim
+QEMU arch            aarch64 
+QEMU dir             .qemu_static
+QEMU prefix          arm64v8 
+S6 arch              aarch64 
+Target arch          arm64v8 
+Python version       3.5.10  
+
+--- build command ---
+docker build --rm \ 
+	-f Dockerfile \ 
+	--build-arg FROM_IMAGE=arm64v8/python:3.5.10-slim \ 
+	--build-arg QEMU_ARCH=aarch64 \ 
+	--build-arg QEMU_DIR=.qemu_static \ 
+	--build-arg QEMU_PREFIX=arm64v8 \ 
+	--build-arg S6_ARCH=aarch64 \ 
+	--build-arg TARGET_ARCH_TAG=arm64v8 \ 
+	--build-arg TARGET_VERSION=3.5.10 \ 
+	-t moonbuggy2000/debian-slim-s6-python:3.5.10-arm64v8 .
+
+[NOOP]
+
+--- build (armv5) ---
+Target tag           3.5.10  
+Platform             linux/arm
+Dockerfile           Dockerfile
+From                 arm32v5/python:3.5.10-slim
+QEMU arch            arm     
+QEMU dir             .qemu_static
+QEMU prefix          arm32v5 
+S6 arch              arm     
+Target arch          armv5   
+Python version       3.5.10  
+
+--- build command ---
+docker build --rm \ 
+	-f Dockerfile \ 
+	--build-arg FROM_IMAGE=arm32v5/python:3.5.10-slim \ 
+	--build-arg QEMU_ARCH=arm \ 
+	--build-arg QEMU_DIR=.qemu_static \ 
+	--build-arg QEMU_PREFIX=arm32v5 \ 
+	--build-arg S6_ARCH=arm \ 
+	--build-arg TARGET_ARCH_TAG=armv5 \ 
+	--build-arg TARGET_VERSION=3.5.10 \ 
+	-t moonbuggy2000/debian-slim-s6-python:3.5.10-armv5 .
+
+[NOOP]
+
+--- build (armv7) ---
+Target tag           3.5.10  
+Platform             linux/arm/v7
+Dockerfile           Dockerfile
+From                 arm32v7/python:3.5.10-slim
+QEMU arch            arm     
+QEMU dir             .qemu_static
+QEMU prefix          arm32v7 
+S6 arch              armhf   
+Target arch          armv7   
+Python version       3.5.10  
+
+--- build command ---
+docker build --rm \ 
+	-f Dockerfile \ 
+	--build-arg FROM_IMAGE=arm32v7/python:3.5.10-slim \ 
+	--build-arg QEMU_ARCH=arm \ 
+	--build-arg QEMU_DIR=.qemu_static \ 
+	--build-arg QEMU_PREFIX=arm32v7 \ 
+	--build-arg S6_ARCH=armhf \ 
+	--build-arg TARGET_ARCH_TAG=armv7 \ 
+	--build-arg TARGET_VERSION=3.5.10 \ 
+	-t moonbuggy2000/debian-slim-s6-python:3.5.10-armv7 .
+
+[NOOP]
+
+--- build (i386) ---
+Target tag           3.5.10  
+Platform             linux/386
+Dockerfile           Dockerfile
+From                 i386/python:3.5.10-slim
+QEMU arch            i386    
+QEMU dir             .qemu_static
+QEMU prefix          i386    
+S6 arch              x86     
+Target arch          386     
+Python version       3.5.10  
+
+--- build command ---
+docker build --rm \ 
+	-f Dockerfile \ 
+	--build-arg FROM_IMAGE=i386/python:3.5.10-slim \ 
+	--build-arg QEMU_ARCH=i386 \ 
+	--build-arg QEMU_DIR=.qemu_static \ 
+	--build-arg QEMU_PREFIX=i386 \ 
+	--build-arg S6_ARCH=x86 \ 
+	--build-arg TARGET_ARCH_TAG=386 \ 
+	--build-arg TARGET_VERSION=3.5.10 \ 
+	-t moonbuggy2000/debian-slim-s6-python:3.5.10-386 .
+
+[NOOP]
+
+--- build (ppc64le) ---
+Target tag           3.5.10  
+Platform             linux/ppc64le
+Dockerfile           Dockerfile
+From                 ppc64le/python:3.5.10-slim
+QEMU arch            ppc64le 
+QEMU dir             .qemu_static
+QEMU prefix          ppc64le 
+S6 arch              ppc64le 
+Target arch          ppc64le 
+Python version       3.5.10  
+
+--- build command ---
+docker build --rm \ 
+	-f Dockerfile \ 
+	--build-arg FROM_IMAGE=ppc64le/python:3.5.10-slim \ 
+	--build-arg QEMU_ARCH=ppc64le \ 
+	--build-arg QEMU_DIR=.qemu_static \ 
+	--build-arg QEMU_PREFIX=ppc64le \ 
+	--build-arg S6_ARCH=ppc64le \ 
+	--build-arg TARGET_ARCH_TAG=ppc64le \ 
+	--build-arg TARGET_VERSION=3.5.10 \ 
+	-t moonbuggy2000/debian-slim-s6-python:3.5.10-ppc64le .
+
+[NOOP]
+
+--- build (s390x) ---
+Target tag           3.5.10  
+Platform             linux/s390x
+Dockerfile           Dockerfile
+From                 s390x/python:3.5.10-slim
+QEMU arch            s390x   
+QEMU dir             .qemu_static
+QEMU prefix          s390x   
+S6 arch              s390x   
+Target arch          s390x   
+Python version       3.5.10  
+
+--- build command ---
+docker build --rm \ 
+	-f Dockerfile \ 
+	--build-arg FROM_IMAGE=s390x/python:3.5.10-slim \ 
+	--build-arg QEMU_ARCH=s390x \ 
+	--build-arg QEMU_DIR=.qemu_static \ 
+	--build-arg QEMU_PREFIX=s390x \ 
+	--build-arg S6_ARCH=s390x \ 
+	--build-arg TARGET_ARCH_TAG=s390x \ 
+	--build-arg TARGET_VERSION=3.5.10 \ 
+	-t moonbuggy2000/debian-slim-s6-python:3.5.10-s390x .
+
+[NOOP]
+
+Building: moonbuggy2000/debian-slim-s6-python:3.6
+
+--- post_checkout ---
+Docker tag           3.6     
+Target tag           3.6.15  
+Configured arches    amd64 arm arm64v8 armv5 armv7 i386 ppc64le riscv64 s390x
+Source arches        amd64 arm arm64v8 armv5 armv7 i386 ppc64le s390x 
+Build arches         amd64 arm arm64v8 armv5 armv7 i386 ppc64le s390x
+Platforms            linux/amd64,linux/arm/v5,linux/arm64/v8,linux/arm/v5,linux/arm/v7,linux/386,linux/ppc64le,linux/s390x
+Source image         python:3.6.15-slim
+Python latest        3.10.4  
+Python major latest  3.10.4  
+Python minor latest  3.6.15  
+Python version       3.6.15  
+
+--- pre_build ---
+Registered QEMU interpreters.
+
+--- pre_build (QEMU) ---
+Importing: multiarch/qemu-user-static:x86_64-aarch64
+Status: [NOOP]
+Importing: multiarch/qemu-user-static:x86_64-arm
+Status: [NOOP]
+Importing: multiarch/qemu-user-static:x86_64-i386
+Status: [NOOP]
+Importing: multiarch/qemu-user-static:x86_64-ppc64le
+Status: [NOOP]
+Importing: multiarch/qemu-user-static:x86_64-s390x
+Status: [NOOP]
+
+
+--- build ---
+--- build (amd64) ---
+Target tag           3.6.15  
+Platform             linux/amd64
+Dockerfile           Dockerfile
+From                 amd64/python:3.6.15-slim
+S6 arch              amd64   
+Target arch          amd64   
+Python version       3.6.15  
+
+--- build command ---
+docker build --rm \ 
+	-f Dockerfile \ 
+	--build-arg FROM_IMAGE=amd64/python:3.6.15-slim \ 
+	--build-arg S6_ARCH=amd64 \ 
+	--build-arg TARGET_ARCH_TAG=amd64 \ 
+	--build-arg TARGET_VERSION=3.6.15 \ 
+	-t moonbuggy2000/debian-slim-s6-python:3.6.15-amd64 .
+
+[NOOP]
+
+--- build (arm) ---
+Target tag           3.6.15  
+Platform             linux/arm
+Dockerfile           Dockerfile
+From                 arm32v5/python:3.6.15-slim
+QEMU arch            arm     
+QEMU dir             .qemu_static
+QEMU prefix          arm32v5 
+S6 arch              arm     
+Target arch          armv5   
+Python version       3.6.15  
+
+--- build command ---
+docker build --rm \ 
+	-f Dockerfile \ 
+	--build-arg FROM_IMAGE=arm32v5/python:3.6.15-slim \ 
+	--build-arg QEMU_ARCH=arm \ 
+	--build-arg QEMU_DIR=.qemu_static \ 
+	--build-arg QEMU_PREFIX=arm32v5 \ 
+	--build-arg S6_ARCH=arm \ 
+	--build-arg TARGET_ARCH_TAG=armv5 \ 
+	--build-arg TARGET_VERSION=3.6.15 \ 
+	-t moonbuggy2000/debian-slim-s6-python:3.6.15-armv5 .
+
+[NOOP]
+
+--- build (arm64v8) ---
+Target tag           3.6.15  
+Platform             linux/arm64/v8
+Dockerfile           Dockerfile
+From                 arm64v8/python:3.6.15-slim
+QEMU arch            aarch64 
+QEMU dir             .qemu_static
+QEMU prefix          arm64v8 
+S6 arch              aarch64 
+Target arch          arm64v8 
+Python version       3.6.15  
+
+--- build command ---
+docker build --rm \ 
+	-f Dockerfile \ 
+	--build-arg FROM_IMAGE=arm64v8/python:3.6.15-slim \ 
+	--build-arg QEMU_ARCH=aarch64 \ 
+	--build-arg QEMU_DIR=.qemu_static \ 
+	--build-arg QEMU_PREFIX=arm64v8 \ 
+	--build-arg S6_ARCH=aarch64 \ 
+	--build-arg TARGET_ARCH_TAG=arm64v8 \ 
+	--build-arg TARGET_VERSION=3.6.15 \ 
+	-t moonbuggy2000/debian-slim-s6-python:3.6.15-arm64v8 .
+
+[NOOP]
+
+--- build (armv5) ---
+Target tag           3.6.15  
+Platform             linux/arm
+Dockerfile           Dockerfile
+From                 arm32v5/python:3.6.15-slim
+QEMU arch            arm     
+QEMU dir             .qemu_static
+QEMU prefix          arm32v5 
+S6 arch              arm     
+Target arch          armv5   
+Python version       3.6.15  
+
+--- build command ---
+docker build --rm \ 
+	-f Dockerfile \ 
+	--build-arg FROM_IMAGE=arm32v5/python:3.6.15-slim \ 
+	--build-arg QEMU_ARCH=arm \ 
+	--build-arg QEMU_DIR=.qemu_static \ 
+	--build-arg QEMU_PREFIX=arm32v5 \ 
+	--build-arg S6_ARCH=arm \ 
+	--build-arg TARGET_ARCH_TAG=armv5 \ 
+	--build-arg TARGET_VERSION=3.6.15 \ 
+	-t moonbuggy2000/debian-slim-s6-python:3.6.15-armv5 .
+
+[NOOP]
+
+--- build (armv7) ---
+Target tag           3.6.15  
+Platform             linux/arm/v7
+Dockerfile           Dockerfile
+From                 arm32v7/python:3.6.15-slim
+QEMU arch            arm     
+QEMU dir             .qemu_static
+QEMU prefix          arm32v7 
+S6 arch              armhf   
+Target arch          armv7   
+Python version       3.6.15  
+
+--- build command ---
+docker build --rm \ 
+	-f Dockerfile \ 
+	--build-arg FROM_IMAGE=arm32v7/python:3.6.15-slim \ 
+	--build-arg QEMU_ARCH=arm \ 
+	--build-arg QEMU_DIR=.qemu_static \ 
+	--build-arg QEMU_PREFIX=arm32v7 \ 
+	--build-arg S6_ARCH=armhf \ 
+	--build-arg TARGET_ARCH_TAG=armv7 \ 
+	--build-arg TARGET_VERSION=3.6.15 \ 
+	-t moonbuggy2000/debian-slim-s6-python:3.6.15-armv7 .
+
+[NOOP]
+
+--- build (i386) ---
+Target tag           3.6.15  
+Platform             linux/386
+Dockerfile           Dockerfile
+From                 i386/python:3.6.15-slim
+QEMU arch            i386    
+QEMU dir             .qemu_static
+QEMU prefix          i386    
+S6 arch              x86     
+Target arch          386     
+Python version       3.6.15  
+
+--- build command ---
+docker build --rm \ 
+	-f Dockerfile \ 
+	--build-arg FROM_IMAGE=i386/python:3.6.15-slim \ 
+	--build-arg QEMU_ARCH=i386 \ 
+	--build-arg QEMU_DIR=.qemu_static \ 
+	--build-arg QEMU_PREFIX=i386 \ 
+	--build-arg S6_ARCH=x86 \ 
+	--build-arg TARGET_ARCH_TAG=386 \ 
+	--build-arg TARGET_VERSION=3.6.15 \ 
+	-t moonbuggy2000/debian-slim-s6-python:3.6.15-386 .
+
+[NOOP]
+
+--- build (ppc64le) ---
+Target tag           3.6.15  
+Platform             linux/ppc64le
+Dockerfile           Dockerfile
+From                 ppc64le/python:3.6.15-slim
+QEMU arch            ppc64le 
+QEMU dir             .qemu_static
+QEMU prefix          ppc64le 
+S6 arch              ppc64le 
+Target arch          ppc64le 
+Python version       3.6.15  
+
+--- build command ---
+docker build --rm \ 
+	-f Dockerfile \ 
+	--build-arg FROM_IMAGE=ppc64le/python:3.6.15-slim \ 
+	--build-arg QEMU_ARCH=ppc64le \ 
+	--build-arg QEMU_DIR=.qemu_static \ 
+	--build-arg QEMU_PREFIX=ppc64le \ 
+	--build-arg S6_ARCH=ppc64le \ 
+	--build-arg TARGET_ARCH_TAG=ppc64le \ 
+	--build-arg TARGET_VERSION=3.6.15 \ 
+	-t moonbuggy2000/debian-slim-s6-python:3.6.15-ppc64le .
+
+[NOOP]
+
+--- build (s390x) ---
+Target tag           3.6.15  
+Platform             linux/s390x
+Dockerfile           Dockerfile
+From                 s390x/python:3.6.15-slim
+QEMU arch            s390x   
+QEMU dir             .qemu_static
+QEMU prefix          s390x   
+S6 arch              s390x   
+Target arch          s390x   
+Python version       3.6.15  
+
+--- build command ---
+docker build --rm \ 
+	-f Dockerfile \ 
+	--build-arg FROM_IMAGE=s390x/python:3.6.15-slim \ 
+	--build-arg QEMU_ARCH=s390x \ 
+	--build-arg QEMU_DIR=.qemu_static \ 
+	--build-arg QEMU_PREFIX=s390x \ 
+	--build-arg S6_ARCH=s390x \ 
+	--build-arg TARGET_ARCH_TAG=s390x \ 
+	--build-arg TARGET_VERSION=3.6.15 \ 
+	-t moonbuggy2000/debian-slim-s6-python:3.6.15-s390x .
+
+[NOOP]
+
+Building: moonbuggy2000/debian-slim-s6-python:3.7
+
+--- post_checkout ---
+Docker tag           3.7     
+Target tag           3.7.13  
+Configured arches    amd64 arm arm64v8 armv5 armv7 i386 ppc64le riscv64 s390x
+Source arches        amd64 arm arm64v8 armv5 armv7 i386 ppc64le s390x 
+Build arches         amd64 arm arm64v8 armv5 armv7 i386 ppc64le s390x
+Platforms            linux/amd64,linux/arm/v5,linux/arm64/v8,linux/arm/v5,linux/arm/v7,linux/386,linux/ppc64le,linux/s390x
+Source image         python:3.7.13-slim
+Python latest        3.10.4  
+Python major latest  3.10.4  
+Python minor latest  3.7.13  
+Python version       3.7.13  
+
+--- pre_build ---
+Registered QEMU interpreters.
+
+--- pre_build (QEMU) ---
+Importing: multiarch/qemu-user-static:x86_64-aarch64
+Status: [NOOP]
+Importing: multiarch/qemu-user-static:x86_64-arm
+Status: [NOOP]
+Importing: multiarch/qemu-user-static:x86_64-i386
+Status: [NOOP]
+Importing: multiarch/qemu-user-static:x86_64-ppc64le
+Status: [NOOP]
+Importing: multiarch/qemu-user-static:x86_64-s390x
+Status: [NOOP]
+
+
+--- build ---
+--- build (amd64) ---
+Target tag           3.7.13  
+Platform             linux/amd64
+Dockerfile           Dockerfile
+From                 amd64/python:3.7.13-slim
+S6 arch              amd64   
+Target arch          amd64   
+Python version       3.7.13  
+
+--- build command ---
+docker build --rm \ 
+	-f Dockerfile \ 
+	--build-arg FROM_IMAGE=amd64/python:3.7.13-slim \ 
+	--build-arg S6_ARCH=amd64 \ 
+	--build-arg TARGET_ARCH_TAG=amd64 \ 
+	--build-arg TARGET_VERSION=3.7.13 \ 
+	-t moonbuggy2000/debian-slim-s6-python:3.7.13-amd64 .
+
+[NOOP]
+
+--- build (arm) ---
+Target tag           3.7.13  
+Platform             linux/arm
+Dockerfile           Dockerfile
+From                 arm32v5/python:3.7.13-slim
+QEMU arch            arm     
+QEMU dir             .qemu_static
+QEMU prefix          arm32v5 
+S6 arch              arm     
+Target arch          armv5   
+Python version       3.7.13  
+
+--- build command ---
+docker build --rm \ 
+	-f Dockerfile \ 
+	--build-arg FROM_IMAGE=arm32v5/python:3.7.13-slim \ 
+	--build-arg QEMU_ARCH=arm \ 
+	--build-arg QEMU_DIR=.qemu_static \ 
+	--build-arg QEMU_PREFIX=arm32v5 \ 
+	--build-arg S6_ARCH=arm \ 
+	--build-arg TARGET_ARCH_TAG=armv5 \ 
+	--build-arg TARGET_VERSION=3.7.13 \ 
+	-t moonbuggy2000/debian-slim-s6-python:3.7.13-armv5 .
+
+[NOOP]
+
+--- build (arm64v8) ---
+Target tag           3.7.13  
+Platform             linux/arm64/v8
+Dockerfile           Dockerfile
+From                 arm64v8/python:3.7.13-slim
+QEMU arch            aarch64 
+QEMU dir             .qemu_static
+QEMU prefix          arm64v8 
+S6 arch              aarch64 
+Target arch          arm64v8 
+Python version       3.7.13  
+
+--- build command ---
+docker build --rm \ 
+	-f Dockerfile \ 
+	--build-arg FROM_IMAGE=arm64v8/python:3.7.13-slim \ 
+	--build-arg QEMU_ARCH=aarch64 \ 
+	--build-arg QEMU_DIR=.qemu_static \ 
+	--build-arg QEMU_PREFIX=arm64v8 \ 
+	--build-arg S6_ARCH=aarch64 \ 
+	--build-arg TARGET_ARCH_TAG=arm64v8 \ 
+	--build-arg TARGET_VERSION=3.7.13 \ 
+	-t moonbuggy2000/debian-slim-s6-python:3.7.13-arm64v8 .
+
+[NOOP]
+
+--- build (armv5) ---
+Target tag           3.7.13  
+Platform             linux/arm
+Dockerfile           Dockerfile
+From                 arm32v5/python:3.7.13-slim
+QEMU arch            arm     
+QEMU dir             .qemu_static
+QEMU prefix          arm32v5 
+S6 arch              arm     
+Target arch          armv5   
+Python version       3.7.13  
+
+--- build command ---
+docker build --rm \ 
+	-f Dockerfile \ 
+	--build-arg FROM_IMAGE=arm32v5/python:3.7.13-slim \ 
+	--build-arg QEMU_ARCH=arm \ 
+	--build-arg QEMU_DIR=.qemu_static \ 
+	--build-arg QEMU_PREFIX=arm32v5 \ 
+	--build-arg S6_ARCH=arm \ 
+	--build-arg TARGET_ARCH_TAG=armv5 \ 
+	--build-arg TARGET_VERSION=3.7.13 \ 
+	-t moonbuggy2000/debian-slim-s6-python:3.7.13-armv5 .
+
+[NOOP]
+
+--- build (armv7) ---
+Target tag           3.7.13  
+Platform             linux/arm/v7
+Dockerfile           Dockerfile
+From                 arm32v7/python:3.7.13-slim
+QEMU arch            arm     
+QEMU dir             .qemu_static
+QEMU prefix          arm32v7 
+S6 arch              armhf   
+Target arch          armv7   
+Python version       3.7.13  
+
+--- build command ---
+docker build --rm \ 
+	-f Dockerfile \ 
+	--build-arg FROM_IMAGE=arm32v7/python:3.7.13-slim \ 
+	--build-arg QEMU_ARCH=arm \ 
+	--build-arg QEMU_DIR=.qemu_static \ 
+	--build-arg QEMU_PREFIX=arm32v7 \ 
+	--build-arg S6_ARCH=armhf \ 
+	--build-arg TARGET_ARCH_TAG=armv7 \ 
+	--build-arg TARGET_VERSION=3.7.13 \ 
+	-t moonbuggy2000/debian-slim-s6-python:3.7.13-armv7 .
+
+[NOOP]
+
+--- build (i386) ---
+Target tag           3.7.13  
+Platform             linux/386
+Dockerfile           Dockerfile
+From                 i386/python:3.7.13-slim
+QEMU arch            i386    
+QEMU dir             .qemu_static
+QEMU prefix          i386    
+S6 arch              x86     
+Target arch          386     
+Python version       3.7.13  
+
+--- build command ---
+docker build --rm \ 
+	-f Dockerfile \ 
+	--build-arg FROM_IMAGE=i386/python:3.7.13-slim \ 
+	--build-arg QEMU_ARCH=i386 \ 
+	--build-arg QEMU_DIR=.qemu_static \ 
+	--build-arg QEMU_PREFIX=i386 \ 
+	--build-arg S6_ARCH=x86 \ 
+	--build-arg TARGET_ARCH_TAG=386 \ 
+	--build-arg TARGET_VERSION=3.7.13 \ 
+	-t moonbuggy2000/debian-slim-s6-python:3.7.13-386 .
+
+[NOOP]
+
+--- build (ppc64le) ---
+Target tag           3.7.13  
+Platform             linux/ppc64le
+Dockerfile           Dockerfile
+From                 ppc64le/python:3.7.13-slim
+QEMU arch            ppc64le 
+QEMU dir             .qemu_static
+QEMU prefix          ppc64le 
+S6 arch              ppc64le 
+Target arch          ppc64le 
+Python version       3.7.13  
+
+--- build command ---
+docker build --rm \ 
+	-f Dockerfile \ 
+	--build-arg FROM_IMAGE=ppc64le/python:3.7.13-slim \ 
+	--build-arg QEMU_ARCH=ppc64le \ 
+	--build-arg QEMU_DIR=.qemu_static \ 
+	--build-arg QEMU_PREFIX=ppc64le \ 
+	--build-arg S6_ARCH=ppc64le \ 
+	--build-arg TARGET_ARCH_TAG=ppc64le \ 
+	--build-arg TARGET_VERSION=3.7.13 \ 
+	-t moonbuggy2000/debian-slim-s6-python:3.7.13-ppc64le .
+
+[NOOP]
+
+--- build (s390x) ---
+Target tag           3.7.13  
+Platform             linux/s390x
+Dockerfile           Dockerfile
+From                 s390x/python:3.7.13-slim
+QEMU arch            s390x   
+QEMU dir             .qemu_static
+QEMU prefix          s390x   
+S6 arch              s390x   
+Target arch          s390x   
+Python version       3.7.13  
+
+--- build command ---
+docker build --rm \ 
+	-f Dockerfile \ 
+	--build-arg FROM_IMAGE=s390x/python:3.7.13-slim \ 
+	--build-arg QEMU_ARCH=s390x \ 
+	--build-arg QEMU_DIR=.qemu_static \ 
+	--build-arg QEMU_PREFIX=s390x \ 
+	--build-arg S6_ARCH=s390x \ 
+	--build-arg TARGET_ARCH_TAG=s390x \ 
+	--build-arg TARGET_VERSION=3.7.13 \ 
+	-t moonbuggy2000/debian-slim-s6-python:3.7.13-s390x .
+
+[NOOP]
+
+Building: moonbuggy2000/debian-slim-s6-python:3.8
+
+--- post_checkout ---
+Docker tag           3.8     
+Target tag           3.8.13  
+Configured arches    amd64 arm arm64v8 armv5 armv7 i386 ppc64le riscv64 s390x
+Source arches        amd64 arm arm64v8 armv5 armv7 i386 ppc64le s390x 
+Build arches         amd64 arm arm64v8 armv5 armv7 i386 ppc64le s390x
+Platforms            linux/amd64,linux/arm/v5,linux/arm64/v8,linux/arm/v5,linux/arm/v7,linux/386,linux/ppc64le,linux/s390x
+Source image         python:3.8.13-slim
+Python latest        3.10.4  
+Python major latest  3.10.4  
+Python minor latest  3.8.13  
+Python version       3.8.13  
+
+--- pre_build ---
+Registered QEMU interpreters.
+
+--- pre_build (QEMU) ---
+Importing: multiarch/qemu-user-static:x86_64-aarch64
+Status: [NOOP]
+Importing: multiarch/qemu-user-static:x86_64-arm
+Status: [NOOP]
+Importing: multiarch/qemu-user-static:x86_64-i386
+Status: [NOOP]
+Importing: multiarch/qemu-user-static:x86_64-ppc64le
+Status: [NOOP]
+Importing: multiarch/qemu-user-static:x86_64-s390x
+Status: [NOOP]
+
+
+--- build ---
+--- build (amd64) ---
+Target tag           3.8.13  
+Platform             linux/amd64
+Dockerfile           Dockerfile
+From                 amd64/python:3.8.13-slim
+S6 arch              amd64   
+Target arch          amd64   
+Python version       3.8.13  
+
+--- build command ---
+docker build --rm \ 
+	-f Dockerfile \ 
+	--build-arg FROM_IMAGE=amd64/python:3.8.13-slim \ 
+	--build-arg S6_ARCH=amd64 \ 
+	--build-arg TARGET_ARCH_TAG=amd64 \ 
+	--build-arg TARGET_VERSION=3.8.13 \ 
+	-t moonbuggy2000/debian-slim-s6-python:3.8.13-amd64 .
+
+[NOOP]
+
+--- build (arm) ---
+Target tag           3.8.13  
+Platform             linux/arm
+Dockerfile           Dockerfile
+From                 arm32v5/python:3.8.13-slim
+QEMU arch            arm     
+QEMU dir             .qemu_static
+QEMU prefix          arm32v5 
+S6 arch              arm     
+Target arch          armv5   
+Python version       3.8.13  
+
+--- build command ---
+docker build --rm \ 
+	-f Dockerfile \ 
+	--build-arg FROM_IMAGE=arm32v5/python:3.8.13-slim \ 
+	--build-arg QEMU_ARCH=arm \ 
+	--build-arg QEMU_DIR=.qemu_static \ 
+	--build-arg QEMU_PREFIX=arm32v5 \ 
+	--build-arg S6_ARCH=arm \ 
+	--build-arg TARGET_ARCH_TAG=armv5 \ 
+	--build-arg TARGET_VERSION=3.8.13 \ 
+	-t moonbuggy2000/debian-slim-s6-python:3.8.13-armv5 .
+
+[NOOP]
+
+--- build (arm64v8) ---
+Target tag           3.8.13  
+Platform             linux/arm64/v8
+Dockerfile           Dockerfile
+From                 arm64v8/python:3.8.13-slim
+QEMU arch            aarch64 
+QEMU dir             .qemu_static
+QEMU prefix          arm64v8 
+S6 arch              aarch64 
+Target arch          arm64v8 
+Python version       3.8.13  
+
+--- build command ---
+docker build --rm \ 
+	-f Dockerfile \ 
+	--build-arg FROM_IMAGE=arm64v8/python:3.8.13-slim \ 
+	--build-arg QEMU_ARCH=aarch64 \ 
+	--build-arg QEMU_DIR=.qemu_static \ 
+	--build-arg QEMU_PREFIX=arm64v8 \ 
+	--build-arg S6_ARCH=aarch64 \ 
+	--build-arg TARGET_ARCH_TAG=arm64v8 \ 
+	--build-arg TARGET_VERSION=3.8.13 \ 
+	-t moonbuggy2000/debian-slim-s6-python:3.8.13-arm64v8 .
+
+[NOOP]
+
+--- build (armv5) ---
+Target tag           3.8.13  
+Platform             linux/arm
+Dockerfile           Dockerfile
+From                 arm32v5/python:3.8.13-slim
+QEMU arch            arm     
+QEMU dir             .qemu_static
+QEMU prefix          arm32v5 
+S6 arch              arm     
+Target arch          armv5   
+Python version       3.8.13  
+
+--- build command ---
+docker build --rm \ 
+	-f Dockerfile \ 
+	--build-arg FROM_IMAGE=arm32v5/python:3.8.13-slim \ 
+	--build-arg QEMU_ARCH=arm \ 
+	--build-arg QEMU_DIR=.qemu_static \ 
+	--build-arg QEMU_PREFIX=arm32v5 \ 
+	--build-arg S6_ARCH=arm \ 
+	--build-arg TARGET_ARCH_TAG=armv5 \ 
+	--build-arg TARGET_VERSION=3.8.13 \ 
+	-t moonbuggy2000/debian-slim-s6-python:3.8.13-armv5 .
+
+[NOOP]
+
+--- build (armv7) ---
+Target tag           3.8.13  
+Platform             linux/arm/v7
+Dockerfile           Dockerfile
+From                 arm32v7/python:3.8.13-slim
+QEMU arch            arm     
+QEMU dir             .qemu_static
+QEMU prefix          arm32v7 
+S6 arch              armhf   
+Target arch          armv7   
+Python version       3.8.13  
+
+--- build command ---
+docker build --rm \ 
+	-f Dockerfile \ 
+	--build-arg FROM_IMAGE=arm32v7/python:3.8.13-slim \ 
+	--build-arg QEMU_ARCH=arm \ 
+	--build-arg QEMU_DIR=.qemu_static \ 
+	--build-arg QEMU_PREFIX=arm32v7 \ 
+	--build-arg S6_ARCH=armhf \ 
+	--build-arg TARGET_ARCH_TAG=armv7 \ 
+	--build-arg TARGET_VERSION=3.8.13 \ 
+	-t moonbuggy2000/debian-slim-s6-python:3.8.13-armv7 .
+
+[NOOP]
+
+--- build (i386) ---
+Target tag           3.8.13  
+Platform             linux/386
+Dockerfile           Dockerfile
+From                 i386/python:3.8.13-slim
+QEMU arch            i386    
+QEMU dir             .qemu_static
+QEMU prefix          i386    
+S6 arch              x86     
+Target arch          386     
+Python version       3.8.13  
+
+--- build command ---
+docker build --rm \ 
+	-f Dockerfile \ 
+	--build-arg FROM_IMAGE=i386/python:3.8.13-slim \ 
+	--build-arg QEMU_ARCH=i386 \ 
+	--build-arg QEMU_DIR=.qemu_static \ 
+	--build-arg QEMU_PREFIX=i386 \ 
+	--build-arg S6_ARCH=x86 \ 
+	--build-arg TARGET_ARCH_TAG=386 \ 
+	--build-arg TARGET_VERSION=3.8.13 \ 
+	-t moonbuggy2000/debian-slim-s6-python:3.8.13-386 .
+
+[NOOP]
+
+--- build (ppc64le) ---
+Target tag           3.8.13  
+Platform             linux/ppc64le
+Dockerfile           Dockerfile
+From                 ppc64le/python:3.8.13-slim
+QEMU arch            ppc64le 
+QEMU dir             .qemu_static
+QEMU prefix          ppc64le 
+S6 arch              ppc64le 
+Target arch          ppc64le 
+Python version       3.8.13  
+
+--- build command ---
+docker build --rm \ 
+	-f Dockerfile \ 
+	--build-arg FROM_IMAGE=ppc64le/python:3.8.13-slim \ 
+	--build-arg QEMU_ARCH=ppc64le \ 
+	--build-arg QEMU_DIR=.qemu_static \ 
+	--build-arg QEMU_PREFIX=ppc64le \ 
+	--build-arg S6_ARCH=ppc64le \ 
+	--build-arg TARGET_ARCH_TAG=ppc64le \ 
+	--build-arg TARGET_VERSION=3.8.13 \ 
+	-t moonbuggy2000/debian-slim-s6-python:3.8.13-ppc64le .
+
+[NOOP]
+
+--- build (s390x) ---
+Target tag           3.8.13  
+Platform             linux/s390x
+Dockerfile           Dockerfile
+From                 s390x/python:3.8.13-slim
+QEMU arch            s390x   
+QEMU dir             .qemu_static
+QEMU prefix          s390x   
+S6 arch              s390x   
+Target arch          s390x   
+Python version       3.8.13  
+
+--- build command ---
+docker build --rm \ 
+	-f Dockerfile \ 
+	--build-arg FROM_IMAGE=s390x/python:3.8.13-slim \ 
+	--build-arg QEMU_ARCH=s390x \ 
+	--build-arg QEMU_DIR=.qemu_static \ 
+	--build-arg QEMU_PREFIX=s390x \ 
+	--build-arg S6_ARCH=s390x \ 
+	--build-arg TARGET_ARCH_TAG=s390x \ 
+	--build-arg TARGET_VERSION=3.8.13 \ 
+	-t moonbuggy2000/debian-slim-s6-python:3.8.13-s390x .
+
+[NOOP]
+
+Building: moonbuggy2000/debian-slim-s6-python:3.9
+
+--- post_checkout ---
+Docker tag           3.9     
+Target tag           3.9.12  
+Configured arches    amd64 arm arm64v8 armv5 armv7 i386 ppc64le riscv64 s390x
+Source arches        amd64 arm arm64v8 armv5 armv7 i386 ppc64le s390x 
+Build arches         amd64 arm arm64v8 armv5 armv7 i386 ppc64le s390x
+Platforms            linux/amd64,linux/arm/v5,linux/arm64/v8,linux/arm/v5,linux/arm/v7,linux/386,linux/ppc64le,linux/s390x
+Source image         python:3.9.12-slim
+Python latest        3.10.4  
+Python major latest  3.10.4  
+Python minor latest  3.9.12  
+Python version       3.9.12  
+
+--- pre_build ---
+Registered QEMU interpreters.
+
+--- pre_build (QEMU) ---
+Importing: multiarch/qemu-user-static:x86_64-aarch64
+Status: [NOOP]
+Importing: multiarch/qemu-user-static:x86_64-arm
+Status: [NOOP]
+Importing: multiarch/qemu-user-static:x86_64-i386
+Status: [NOOP]
+Importing: multiarch/qemu-user-static:x86_64-ppc64le
+Status: [NOOP]
+Importing: multiarch/qemu-user-static:x86_64-s390x
+Status: [NOOP]
+
+
+--- build ---
+--- build (amd64) ---
+Target tag           3.9.12  
+Platform             linux/amd64
+Dockerfile           Dockerfile
+From                 amd64/python:3.9.12-slim
+S6 arch              amd64   
+Target arch          amd64   
+Python version       3.9.12  
+
+--- build command ---
+docker build --rm \ 
+	-f Dockerfile \ 
+	--build-arg FROM_IMAGE=amd64/python:3.9.12-slim \ 
+	--build-arg S6_ARCH=amd64 \ 
+	--build-arg TARGET_ARCH_TAG=amd64 \ 
+	--build-arg TARGET_VERSION=3.9.12 \ 
+	-t moonbuggy2000/debian-slim-s6-python:3.9.12-amd64 .
+
+[NOOP]
+
+--- build (arm) ---
+Target tag           3.9.12  
+Platform             linux/arm
+Dockerfile           Dockerfile
+From                 arm32v5/python:3.9.12-slim
+QEMU arch            arm     
+QEMU dir             .qemu_static
+QEMU prefix          arm32v5 
+S6 arch              arm     
+Target arch          armv5   
+Python version       3.9.12  
+
+--- build command ---
+docker build --rm \ 
+	-f Dockerfile \ 
+	--build-arg FROM_IMAGE=arm32v5/python:3.9.12-slim \ 
+	--build-arg QEMU_ARCH=arm \ 
+	--build-arg QEMU_DIR=.qemu_static \ 
+	--build-arg QEMU_PREFIX=arm32v5 \ 
+	--build-arg S6_ARCH=arm \ 
+	--build-arg TARGET_ARCH_TAG=armv5 \ 
+	--build-arg TARGET_VERSION=3.9.12 \ 
+	-t moonbuggy2000/debian-slim-s6-python:3.9.12-armv5 .
+
+[NOOP]
+
+--- build (arm64v8) ---
+Target tag           3.9.12  
+Platform             linux/arm64/v8
+Dockerfile           Dockerfile
+From                 arm64v8/python:3.9.12-slim
+QEMU arch            aarch64 
+QEMU dir             .qemu_static
+QEMU prefix          arm64v8 
+S6 arch              aarch64 
+Target arch          arm64v8 
+Python version       3.9.12  
+
+--- build command ---
+docker build --rm \ 
+	-f Dockerfile \ 
+	--build-arg FROM_IMAGE=arm64v8/python:3.9.12-slim \ 
+	--build-arg QEMU_ARCH=aarch64 \ 
+	--build-arg QEMU_DIR=.qemu_static \ 
+	--build-arg QEMU_PREFIX=arm64v8 \ 
+	--build-arg S6_ARCH=aarch64 \ 
+	--build-arg TARGET_ARCH_TAG=arm64v8 \ 
+	--build-arg TARGET_VERSION=3.9.12 \ 
+	-t moonbuggy2000/debian-slim-s6-python:3.9.12-arm64v8 .
+
+[NOOP]
+
+--- build (armv5) ---
+Target tag           3.9.12  
+Platform             linux/arm
+Dockerfile           Dockerfile
+From                 arm32v5/python:3.9.12-slim
+QEMU arch            arm     
+QEMU dir             .qemu_static
+QEMU prefix          arm32v5 
+S6 arch              arm     
+Target arch          armv5   
+Python version       3.9.12  
+
+--- build command ---
+docker build --rm \ 
+	-f Dockerfile \ 
+	--build-arg FROM_IMAGE=arm32v5/python:3.9.12-slim \ 
+	--build-arg QEMU_ARCH=arm \ 
+	--build-arg QEMU_DIR=.qemu_static \ 
+	--build-arg QEMU_PREFIX=arm32v5 \ 
+	--build-arg S6_ARCH=arm \ 
+	--build-arg TARGET_ARCH_TAG=armv5 \ 
+	--build-arg TARGET_VERSION=3.9.12 \ 
+	-t moonbuggy2000/debian-slim-s6-python:3.9.12-armv5 .
+
+[NOOP]
+
+--- build (armv7) ---
+Target tag           3.9.12  
+Platform             linux/arm/v7
+Dockerfile           Dockerfile
+From                 arm32v7/python:3.9.12-slim
+QEMU arch            arm     
+QEMU dir             .qemu_static
+QEMU prefix          arm32v7 
+S6 arch              armhf   
+Target arch          armv7   
+Python version       3.9.12  
+
+--- build command ---
+docker build --rm \ 
+	-f Dockerfile \ 
+	--build-arg FROM_IMAGE=arm32v7/python:3.9.12-slim \ 
+	--build-arg QEMU_ARCH=arm \ 
+	--build-arg QEMU_DIR=.qemu_static \ 
+	--build-arg QEMU_PREFIX=arm32v7 \ 
+	--build-arg S6_ARCH=armhf \ 
+	--build-arg TARGET_ARCH_TAG=armv7 \ 
+	--build-arg TARGET_VERSION=3.9.12 \ 
+	-t moonbuggy2000/debian-slim-s6-python:3.9.12-armv7 .
+
+[NOOP]
+
+--- build (i386) ---
+Target tag           3.9.12  
+Platform             linux/386
+Dockerfile           Dockerfile
+From                 i386/python:3.9.12-slim
+QEMU arch            i386    
+QEMU dir             .qemu_static
+QEMU prefix          i386    
+S6 arch              x86     
+Target arch          386     
+Python version       3.9.12  
+
+--- build command ---
+docker build --rm \ 
+	-f Dockerfile \ 
+	--build-arg FROM_IMAGE=i386/python:3.9.12-slim \ 
+	--build-arg QEMU_ARCH=i386 \ 
+	--build-arg QEMU_DIR=.qemu_static \ 
+	--build-arg QEMU_PREFIX=i386 \ 
+	--build-arg S6_ARCH=x86 \ 
+	--build-arg TARGET_ARCH_TAG=386 \ 
+	--build-arg TARGET_VERSION=3.9.12 \ 
+	-t moonbuggy2000/debian-slim-s6-python:3.9.12-386 .
+
+[NOOP]
+
+--- build (ppc64le) ---
+Target tag           3.9.12  
+Platform             linux/ppc64le
+Dockerfile           Dockerfile
+From                 ppc64le/python:3.9.12-slim
+QEMU arch            ppc64le 
+QEMU dir             .qemu_static
+QEMU prefix          ppc64le 
+S6 arch              ppc64le 
+Target arch          ppc64le 
+Python version       3.9.12  
+
+--- build command ---
+docker build --rm \ 
+	-f Dockerfile \ 
+	--build-arg FROM_IMAGE=ppc64le/python:3.9.12-slim \ 
+	--build-arg QEMU_ARCH=ppc64le \ 
+	--build-arg QEMU_DIR=.qemu_static \ 
+	--build-arg QEMU_PREFIX=ppc64le \ 
+	--build-arg S6_ARCH=ppc64le \ 
+	--build-arg TARGET_ARCH_TAG=ppc64le \ 
+	--build-arg TARGET_VERSION=3.9.12 \ 
+	-t moonbuggy2000/debian-slim-s6-python:3.9.12-ppc64le .
+
+[NOOP]
+
+--- build (s390x) ---
+Target tag           3.9.12  
+Platform             linux/s390x
+Dockerfile           Dockerfile
+From                 s390x/python:3.9.12-slim
+QEMU arch            s390x   
+QEMU dir             .qemu_static
+QEMU prefix          s390x   
+S6 arch              s390x   
+Target arch          s390x   
+Python version       3.9.12  
+
+--- build command ---
+docker build --rm \ 
+	-f Dockerfile \ 
+	--build-arg FROM_IMAGE=s390x/python:3.9.12-slim \ 
+	--build-arg QEMU_ARCH=s390x \ 
+	--build-arg QEMU_DIR=.qemu_static \ 
+	--build-arg QEMU_PREFIX=s390x \ 
+	--build-arg S6_ARCH=s390x \ 
+	--build-arg TARGET_ARCH_TAG=s390x \ 
+	--build-arg TARGET_VERSION=3.9.12 \ 
+	-t moonbuggy2000/debian-slim-s6-python:3.9.12-s390x .
+
+[NOOP]
+
+--- post_build ---
+
+--- push ---
+Base tags            2 2.7 2.7.18
+
+--- push (amd64) ---
+2-amd64                                  [NOOP]
+2.7-amd64                                [NOOP]
+2.7.18-amd64                             [NOOP]
+
+--- push (armv5 arm armel) ---
+2-armv5                                  [NOOP]
+2-arm                                    [NOOP]
+2-armel                                  [NOOP]
+2.7-armv5                                [NOOP]
+2.7-arm                                  [NOOP]
+2.7-armel                                [NOOP]
+2.7.18-armv5                             [NOOP]
+2.7.18-arm                               [NOOP]
+2.7.18-armel                             [NOOP]
+
+--- push (arm64v8 arm64) ---
+2-arm64v8                                [NOOP]
+2-arm64                                  [NOOP]
+2.7-arm64v8                              [NOOP]
+2.7-arm64                                [NOOP]
+2.7.18-arm64v8                           [NOOP]
+2.7.18-arm64                             [NOOP]
+
+--- push (armv5 arm armel) ---
+2-armv5                                  [NOOP]
+2-arm                                    [NOOP]
+2-armel                                  [NOOP]
+2.7-armv5                                [NOOP]
+2.7-arm                                  [NOOP]
+2.7-armel                                [NOOP]
+2.7.18-armv5                             [NOOP]
+2.7.18-arm                               [NOOP]
+2.7.18-armel                             [NOOP]
+
+--- push (armv7 armhf) ---
+2-armv7                                  [NOOP]
+2-armhf                                  [NOOP]
+2.7-armv7                                [NOOP]
+2.7-armhf                                [NOOP]
+2.7.18-armv7                             [NOOP]
+2.7.18-armhf                             [NOOP]
+
+--- push (386) ---
+2-386                                    [NOOP]
+2.7-386                                  [NOOP]
+2.7.18-386                               [NOOP]
+
+--- push (ppc64le) ---
+2-ppc64le                                [NOOP]
+2.7-ppc64le                              [NOOP]
+2.7.18-ppc64le                           [NOOP]
+
+--- push (s390x) ---
+2-s390x                                  [NOOP]
+2.7-s390x                                [NOOP]
+2.7.18-s390x                             [NOOP]
+
+--- push ---
+Base tags            3.3 3.3.7
+
+--- push (amd64) ---
+3.3-amd64                                [NOOP]
+3.3.7-amd64                              [NOOP]
+
+--- push (armv5 arm armel) ---
+3.3-armv5                                [NOOP]
+3.3-arm                                  [NOOP]
+3.3-armel                                [NOOP]
+3.3.7-armv5                              [NOOP]
+3.3.7-arm                                [NOOP]
+3.3.7-armel                              [NOOP]
+
+--- push (arm64v8 arm64) ---
+3.3-arm64v8                              [NOOP]
+3.3-arm64                                [NOOP]
+3.3.7-arm64v8                            [NOOP]
+3.3.7-arm64                              [NOOP]
+
+--- push (armv5 arm armel) ---
+3.3-armv5                                [NOOP]
+3.3-arm                                  [NOOP]
+3.3-armel                                [NOOP]
+3.3.7-armv5                              [NOOP]
+3.3.7-arm                                [NOOP]
+3.3.7-armel                              [NOOP]
+
+--- push (armv7 armhf) ---
+3.3-armv7                                [NOOP]
+3.3-armhf                                [NOOP]
+3.3.7-armv7                              [NOOP]
+3.3.7-armhf                              [NOOP]
+
+--- push (ppc64le) ---
+3.3-ppc64le                              [NOOP]
+3.3.7-ppc64le                            [NOOP]
+
+--- push (s390x) ---
+3.3-s390x                                [NOOP]
+3.3.7-s390x                              [NOOP]
+
+--- push ---
+Base tags            3.4 3.4.10
+
+--- push (amd64) ---
+3.4-amd64                                [NOOP]
+3.4.10-amd64                             [NOOP]
+
+--- push (armv5 arm armel) ---
+3.4-armv5                                [NOOP]
+3.4-arm                                  [NOOP]
+3.4-armel                                [NOOP]
+3.4.10-armv5                             [NOOP]
+3.4.10-arm                               [NOOP]
+3.4.10-armel                             [NOOP]
+
+--- push (arm64v8 arm64) ---
+3.4-arm64v8                              [NOOP]
+3.4-arm64                                [NOOP]
+3.4.10-arm64v8                           [NOOP]
+3.4.10-arm64                             [NOOP]
+
+--- push (armv5 arm armel) ---
+3.4-armv5                                [NOOP]
+3.4-arm                                  [NOOP]
+3.4-armel                                [NOOP]
+3.4.10-armv5                             [NOOP]
+3.4.10-arm                               [NOOP]
+3.4.10-armel                             [NOOP]
+
+--- push (armv7 armhf) ---
+3.4-armv7                                [NOOP]
+3.4-armhf                                [NOOP]
+3.4.10-armv7                             [NOOP]
+3.4.10-armhf                             [NOOP]
+
+--- push (386) ---
+3.4-386                                  [NOOP]
+3.4.10-386                               [NOOP]
+
+--- push (ppc64le) ---
+3.4-ppc64le                              [NOOP]
+3.4.10-ppc64le                           [NOOP]
+
+--- push (s390x) ---
+3.4-s390x                                [NOOP]
+3.4.10-s390x                             [NOOP]
+
+--- push ---
+Base tags            3.5 3.5.10
+
+--- push (amd64) ---
+3.5-amd64                                [NOOP]
+3.5.10-amd64                             [NOOP]
+
+--- push (armv5 arm armel) ---
+3.5-armv5                                [NOOP]
+3.5-arm                                  [NOOP]
+3.5-armel                                [NOOP]
+3.5.10-armv5                             [NOOP]
+3.5.10-arm                               [NOOP]
+3.5.10-armel                             [NOOP]
+
+--- push (arm64v8 arm64) ---
+3.5-arm64v8                              [NOOP]
+3.5-arm64                                [NOOP]
+3.5.10-arm64v8                           [NOOP]
+3.5.10-arm64                             [NOOP]
+
+--- push (armv5 arm armel) ---
+3.5-armv5                                [NOOP]
+3.5-arm                                  [NOOP]
+3.5-armel                                [NOOP]
+3.5.10-armv5                             [NOOP]
+3.5.10-arm                               [NOOP]
+3.5.10-armel                             [NOOP]
+
+--- push (armv7 armhf) ---
+3.5-armv7                                [NOOP]
+3.5-armhf                                [NOOP]
+3.5.10-armv7                             [NOOP]
+3.5.10-armhf                             [NOOP]
+
+--- push (386) ---
+3.5-386                                  [NOOP]
+3.5.10-386                               [NOOP]
+
+--- push (ppc64le) ---
+3.5-ppc64le                              [NOOP]
+3.5.10-ppc64le                           [NOOP]
+
+--- push (s390x) ---
+3.5-s390x                                [NOOP]
+3.5.10-s390x                             [NOOP]
+
+--- push ---
+Base tags            3.6 3.6.15
+
+--- push (amd64) ---
+3.6-amd64                                [NOOP]
+3.6.15-amd64                             [NOOP]
+
+--- push (armv5 arm armel) ---
+3.6-armv5                                [NOOP]
+3.6-arm                                  [NOOP]
+3.6-armel                                [NOOP]
+3.6.15-armv5                             [NOOP]
+3.6.15-arm                               [NOOP]
+3.6.15-armel                             [NOOP]
+
+--- push (arm64v8 arm64) ---
+3.6-arm64v8                              [NOOP]
+3.6-arm64                                [NOOP]
+3.6.15-arm64v8                           [NOOP]
+3.6.15-arm64                             [NOOP]
+
+--- push (armv5 arm armel) ---
+3.6-armv5                                [NOOP]
+3.6-arm                                  [NOOP]
+3.6-armel                                [NOOP]
+3.6.15-armv5                             [NOOP]
+3.6.15-arm                               [NOOP]
+3.6.15-armel                             [NOOP]
+
+--- push (armv7 armhf) ---
+3.6-armv7                                [NOOP]
+3.6-armhf                                [NOOP]
+3.6.15-armv7                             [NOOP]
+3.6.15-armhf                             [NOOP]
+
+--- push (386) ---
+3.6-386                                  [NOOP]
+3.6.15-386                               [NOOP]
+
+--- push (ppc64le) ---
+3.6-ppc64le                              [NOOP]
+3.6.15-ppc64le                           [NOOP]
+
+--- push (s390x) ---
+3.6-s390x                                [NOOP]
+3.6.15-s390x                             [NOOP]
+
+--- push ---
+Base tags            3.7 3.7.13
+
+--- push (amd64) ---
+3.7-amd64                                [NOOP]
+3.7.13-amd64                             [NOOP]
+
+--- push (armv5 arm armel) ---
+3.7-armv5                                [NOOP]
+3.7-arm                                  [NOOP]
+3.7-armel                                [NOOP]
+3.7.13-armv5                             [NOOP]
+3.7.13-arm                               [NOOP]
+3.7.13-armel                             [NOOP]
+
+--- push (arm64v8 arm64) ---
+3.7-arm64v8                              [NOOP]
+3.7-arm64                                [NOOP]
+3.7.13-arm64v8                           [NOOP]
+3.7.13-arm64                             [NOOP]
+
+--- push (armv5 arm armel) ---
+3.7-armv5                                [NOOP]
+3.7-arm                                  [NOOP]
+3.7-armel                                [NOOP]
+3.7.13-armv5                             [NOOP]
+3.7.13-arm                               [NOOP]
+3.7.13-armel                             [NOOP]
+
+--- push (armv7 armhf) ---
+3.7-armv7                                [NOOP]
+3.7-armhf                                [NOOP]
+3.7.13-armv7                             [NOOP]
+3.7.13-armhf                             [NOOP]
+
+--- push (386) ---
+3.7-386                                  [NOOP]
+3.7.13-386                               [NOOP]
+
+--- push (ppc64le) ---
+3.7-ppc64le                              [NOOP]
+3.7.13-ppc64le                           [NOOP]
+
+--- push (s390x) ---
+3.7-s390x                                [NOOP]
+3.7.13-s390x                             [NOOP]
+
+--- push ---
+Base tags            3.8 3.8.13
+
+--- push (amd64) ---
+3.8-amd64                                [NOOP]
+3.8.13-amd64                             [NOOP]
+
+--- push (armv5 arm armel) ---
+3.8-armv5                                [NOOP]
+3.8-arm                                  [NOOP]
+3.8-armel                                [NOOP]
+3.8.13-armv5                             [NOOP]
+3.8.13-arm                               [NOOP]
+3.8.13-armel                             [NOOP]
+
+--- push (arm64v8 arm64) ---
+3.8-arm64v8                              [NOOP]
+3.8-arm64                                [NOOP]
+3.8.13-arm64v8                           [NOOP]
+3.8.13-arm64                             [NOOP]
+
+--- push (armv5 arm armel) ---
+3.8-armv5                                [NOOP]
+3.8-arm                                  [NOOP]
+3.8-armel                                [NOOP]
+3.8.13-armv5                             [NOOP]
+3.8.13-arm                               [NOOP]
+3.8.13-armel                             [NOOP]
+
+--- push (armv7 armhf) ---
+3.8-armv7                                [NOOP]
+3.8-armhf                                [NOOP]
+3.8.13-armv7                             [NOOP]
+3.8.13-armhf                             [NOOP]
+
+--- push (386) ---
+3.8-386                                  [NOOP]
+3.8.13-386                               [NOOP]
+
+--- push (ppc64le) ---
+3.8-ppc64le                              [NOOP]
+3.8.13-ppc64le                           [NOOP]
+
+--- push (s390x) ---
+3.8-s390x                                [NOOP]
+3.8.13-s390x                             [NOOP]
+
+--- push ---
+Base tags            3.9 3.9.12
+
+--- push (amd64) ---
+3.9-amd64                                [NOOP]
+3.9.12-amd64                             [NOOP]
+
+--- push (armv5 arm armel) ---
+3.9-armv5                                [NOOP]
+3.9-arm                                  [NOOP]
+3.9-armel                                [NOOP]
+3.9.12-armv5                             [NOOP]
+3.9.12-arm                               [NOOP]
+3.9.12-armel                             [NOOP]
+
+--- push (arm64v8 arm64) ---
+3.9-arm64v8                              [NOOP]
+3.9-arm64                                [NOOP]
+3.9.12-arm64v8                           [NOOP]
+3.9.12-arm64                             [NOOP]
+
+--- push (armv5 arm armel) ---
+3.9-armv5                                [NOOP]
+3.9-arm                                  [NOOP]
+3.9-armel                                [NOOP]
+3.9.12-armv5                             [NOOP]
+3.9.12-arm                               [NOOP]
+3.9.12-armel                             [NOOP]
+
+--- push (armv7 armhf) ---
+3.9-armv7                                [NOOP]
+3.9-armhf                                [NOOP]
+3.9.12-armv7                             [NOOP]
+3.9.12-armhf                             [NOOP]
+
+--- push (386) ---
+3.9-386                                  [NOOP]
+3.9.12-386                               [NOOP]
+
+--- push (ppc64le) ---
+3.9-ppc64le                              [NOOP]
+3.9.12-ppc64le                           [NOOP]
+
+--- push (s390x) ---
+3.9-s390x                                [NOOP]
+3.9.12-s390x                             [NOOP]
+
+
+--- post_push (2 2.7 2.7.18) ---
+2                    [NOOP]
+2.7                  [NOOP]
+2.7.18               [NOOP]
+
+--- post_push (3.3 3.3.7) ---
+3.3                  [NOOP]
+3.3.7                [NOOP]
+
+--- post_push (3.4 3.4.10) ---
+3.4                  [NOOP]
+3.4.10               [NOOP]
+
+--- post_push (3.5 3.5.10) ---
+3.5                  [NOOP]
+3.5.10               [NOOP]
+
+--- post_push (3.6 3.6.15) ---
+3.6                  [NOOP]
+3.6.15               [NOOP]
+
+--- post_push (3.7 3.7.13) ---
+3.7                  [NOOP]
+3.7.13               [NOOP]
+
+--- post_push (3.8 3.8.13) ---
+3.8                  [NOOP]
+3.8.13               [NOOP]
+
+--- post_push (3.9 3.9.12) ---
+3.9                  [NOOP]
+3.9.12               [NOOP]
+
+--- clean ---
+Removing temp files..
+
+Done.
+
