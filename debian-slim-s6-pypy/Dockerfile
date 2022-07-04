@@ -54,10 +54,13 @@ ARG QEMU_DIR
 ARG QEMU_ARCH
 COPY _dummyfile "${QEMU_DIR}/qemu-${QEMU_ARCH}-static*" /usr/bin/
 
-RUN apt-get update && apt-get install -qy --no-install-recommends \
+RUN export DEBIAN_FRONTEND="noninteractive" \
+	&& apt update \
+	&& apt-get install -qy --no-install-recommends \
 		libexpat1 \
 		libtinfo5 \
-	&& rm -rf /var/lib/apt/lists/*
+	&& apt-get clean
+	# && rm -rf /var/lib/apt/lists/*
 
 ARG FETCHER_ROOT
 COPY --from=fetcher "${FETCHER_ROOT}/" /

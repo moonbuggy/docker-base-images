@@ -22,7 +22,8 @@ RUN export DEBIAN_FRONTEND="noninteractive" \
 		nginx="${NGINX_VERSION}*" \
 	&& rm -rf /var/www/localhost >/dev/null 2>&1 \
 	&& mkdir -p "${WEB_ROOT}" \
-	&& apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+	&& apt-get clean
+	# && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 ARG	NGINX_PORT
 RUN add-contenv \

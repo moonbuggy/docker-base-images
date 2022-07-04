@@ -23,11 +23,8 @@ RUN add-contenv \
 		${PHP_PACKAGE}=~${PHP_VERSION} \
 		${PHP_PACKAGE}-fpm=~${PHP_VERSION}
 
-COPY ./etc/nginx /etc/nginx
-COPY ./etc/${PHP_PACKAGE} /etc/${PHP_PACKAGE}
 COPY ./etc/cont-init.d /etc/cont-init.d
 COPY ./etc/services.d /etc/services.d
-
 COPY ./etc/s6-overlay /etc/s6-overlay
 
 # determine the s6 overlay major version in use, remove any uneeded config
@@ -37,6 +34,9 @@ RUN if [ -d "/etc/s6" ]; then \
   elif [ -d "/etc/s6-overlay" ]; then \
     rm -rvf /etc/cont-init.d /etc/services.d /etc/fix-attrs.d 2>/dev/null; \
   fi
+
+COPY ./etc/nginx /etc/nginx
+COPY ./etc/${PHP_PACKAGE} /etc/${PHP_PACKAGE}
 
 RUN rm -f "/usr/bin/qemu-${QEMU_ARCH}-static" > /dev/null 2>&1
 

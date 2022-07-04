@@ -70,10 +70,10 @@ get_url () {
 # git_api_data <repo> <request>
 git_api_data () {	get_url "https://api.github.com/repos/${1}/${2}"; }
 
-# git_api_element <repo> <request> <tag>
+# git_api_element <repo> <request> <element>
 git_api_element () { git_api_data "${1}" "${2}" | sed -En 's|.*"'"${3}"'"\W+"([^"]+)".*|\1|p'; }
 
-# git_latest_release <repo> <tag_name>
+# git_latest_release <repo> (<element>)
 git_latest_release () { git_api_element "${1}" 'releases/latest' "${2:-tag_name}"; }
 
 # alpine_package_version <package> <alpine version> <repos>
@@ -169,7 +169,7 @@ py_required_version () {
 	echo "${modver}"
 }
 
-# take a string that includes some or all elements of the wheel iamge tag pattern
+# take a string that includes some or all elements of the wheel image tag pattern
 # and parse it to see if we can it to return a module name+version string
 #
 # wheel tag pattern: <module>(-<ssl_library)<mod_version>-py<py_version>-<arch>
