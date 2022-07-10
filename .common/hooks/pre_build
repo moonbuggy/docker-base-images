@@ -6,7 +6,7 @@ echo "--- pre_build ---"
 
 touch '_dummyfile'
 
-if [ -z "${NO_QEMU}" ]; then
+if [ -z "${NO_QEMU}" ] || [ -z "${BUILD_BUILDX}" ]; then
 	## register qemu-*-static for all supported processors except the current one
 	docker run --rm --privileged multiarch/qemu-user-static:register --reset >/dev/null \
 		&& echo 'Registered QEMU interpreters.'

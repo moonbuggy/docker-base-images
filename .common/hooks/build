@@ -19,6 +19,8 @@ for arch in ${build_arches:-}; do
 
 	if [ -z "${SOURCE_IMAGE}" ]; then
 		true
+	elif [ ! -z "${BUILD_BUILDX}" ]; then
+		FROM_IMAGE="${SOURCE_IMAGE}"
 	elif [ -n "${SOURCE_ARCH_PREFIX}" ]; then
 		# [ -n "${QEMU_ARCH:-}" ] \
 		# 	&& FROM_IMAGE="${QEMU_PREFIX}/${SOURCE_IMAGE}" \
@@ -77,7 +79,7 @@ for arch in ${build_arches:-}; do
 
 	[ -z "${BUILD_BUILDX+set}" ] \
 		&& build_cmd=(docker build --rm) \
-		|| build_cmd=(docker buildx build --progress=plain --rm)
+		|| build_cmd=(docker buildx build --platform="${PLATFORM}" --progress="${BUILD_BUILDX_PROGRESS:-auto}" --load --rm)
 
 	[ ! -z "${BUILD_NO_CACHE+set}" ] && build_cmd+=('--no-cache')
 	[ -n "${BUILD_SQUASH}" ] && [ -z "${NO_BUILD_SQUASH+set}" ] \

@@ -28,20 +28,50 @@ DOCKER_FILE='Dockerfile'
 . "build.conf" || { echo 'No build.conf!'; exit 1; }
 
 ## handling writing and printing of parameters
-#	del_param       <key>
-#	add_param       <value> <key>
+#	del_param       <param>
+#	add_param       <value> <param>
 #	print_param     <value> <desc>
-#	add_print_param <value> <key> <desc>
+#	add_print_param <value> <param> <desc>
 del_param() { sed "/${1}/d" -i "${CONFIG_YAML}"; }
 add_param () {
-	key="${2}"
+	local value
 	value="$(echo "${1}" | xargs)"
-	del_param "${key}"
-	echo "${key}: ${value}" >> "${CONFIG_YAML}"
-	declare -g "${key}=${value}"
+	del_param "${2}"
+	echo "${2}: ${value}" >> "${CONFIG_YAML}"
+	declare -g "${2}=${value}"
 }
-print_param () { printf '%-20s %-8s\n' "${2}" "${1}"; }
+print_param () { printf '%-40s %-8s\n' "${2}" "${1}"; }
 add_print_param () { add_param "${1}" "${2}"; print_param "${1}" "${3:-${2}}"; }
+
+# only execute code to determine the parameter if it's unset, otherwise use the
+# existing set value
+#
+# these have arguments in different positions than the add/print_param functions
+#
+#	eval_param_if       <param> <command>
+#	eval_print_param_if <param> <desc> <command>
+eval_param_if () {
+	local param
+	local command
+	local value
+
+	param="${1}"
+	IFS=' ' read -a command <<< "${2}"
+
+	[ -z "${!param}" ] \
+		&& value="$(eval "${command[*]}")" \
+		|| value="${!param}"
+
+	add_param "${value}" "${param}"
+}
+
+eval_print_param_if () {
+	local desc
+	[ ! -z "${3}" ] && desc="${2}"
+
+	eval_param_if "${1}" "${3:-${2}}"
+	print_param "${!1}" "${desc:-${1}}"
+}
 
 ## curl the provided URL, handle errors and cache
 # get_url <URL>
@@ -76,6 +106,9 @@ git_api_element () { git_api_data "${1}" "${2}" | sed -En 's|.*"'"${3}"'"\W+"([^
 # git_latest_release <repo> (<element>)
 git_latest_release () { git_api_element "${1}" 'releases/latest' "${2:-tag_name}"; }
 
+# git_latest_tag <repo> (<element>)
+git_latest_tag () {	git_api_element "${1}" 'tags' "${2:-name}" | sort -uV | tail -n1; }
+
 # alpine_package_version <package> <alpine version> <repos>
 #
 # <repos> is a list, defaults to "main community"
@@ -106,6 +139,9 @@ pypi_api_latest_version () { pypi_api_versions "${1}" | tail -n1; }
 # py_musl_wheel_XXXX <wheel string>
 py_musl_wheel_versions () { docker_api_repo_tags "${WHEEL_REPO}" | grep -oP "${1}\K([0-9.]+)(?=-py)" | sort -uV; }
 py_musl_wheel_latest () { py_musl_wheel_versions "${1}" | tail -n1; }
+
+parse_version_major () { echo "${1}" | awk -F \. '{print $1}'; }
+parse_version_minor () { echo "${1}" | awk -F \. '{print $1"."$2}'; }
 
 #
 # py_requireed_vesion() and python_get_module_from_string() needs a refactor,

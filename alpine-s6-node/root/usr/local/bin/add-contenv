@@ -1,0 +1,8 @@
+#!/bin/sh
+[ ! -f '/etc/contenv_extra' ] \
+  && touch /etc/contenv_extra
+
+for arg in "$@"; do
+  sed -e "/^${arg%%=*}=/d" -i /etc/contenv_extra
+  echo "${arg%%=*}=${arg#*=}"  >> /etc/contenv_extra
+done

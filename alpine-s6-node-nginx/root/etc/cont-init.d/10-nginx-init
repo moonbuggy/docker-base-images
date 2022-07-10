@@ -1,0 +1,38 @@
+#! with-contenv /bin/sh
+# shellcheck shell=sh
+
+# set PUID and PGID for www-data user/group
+#
+PUID=${PUID:-1000}
+PGID=${PGID:-1000}
+
+echo "[${0##*/}] uid: ${PUID}, gid: ${PGID}"
+
+groupmod -o -g "$PGID" www-data
+usermod -o -u "$PUID" -g "$PGID" www-data >/dev/null 2>&1
+
+# do this here instead of fix-attrs.d and leave permissions intact
+[ ! -d '/var/lib/nginx' ] \
+	&& mkdir -p /var/lib/nginx
+chown -R ${PUID}:${PGID} /var/lib/nginx
+
+
+# server configuration
+#
+NGINX_PORT=${NGINX_PORT:-8080}
+NODE_PORT=${NODE_PORT:-3000}
+
+sed -r \
+	-e "s|^(\s+listen\D+)(\d+)(\D.*)$|\1${NGINX_PORT}\3|g" \
+	-e "s|^(\s+proxy_pass\s+http:\/\/[^\:]*\D+)(\d+)(\D+)$|\1${NODE_PORT}\3|g" \
+	-i /etc/nginx/http.d/default.conf
+
+# enable logging of 200 and 300 HTTP codes
+#
+if [ ! -z "${NGINX_LOG_ALL+set}" ]; then
+	case $(echo $NGINX_LOG_ALL | tr '[A-Z]' '[a-z]') in
+		true|on|yes)
+			sed -i 's|/dev/stdout combined if=$loggable;|/dev/stdout main;|' /etc/nginx/nginx.conf
+			;;
+	esac
+fi

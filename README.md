@@ -23,6 +23,8 @@ Docker Hub:
 *   <https://hub.docker.com/r/moonbuggy2000/alpine-s6-nginx>
 *   <https://hub.docker.com/r/moonbuggy2000/alpine-s6-nginx-php-fpm>
 *   <https://hub.docker.com/r/moonbuggy2000/alpine-s6-nginx-uwsgi>
+*   <https://hub.docker.com/r/moonbuggy2000/alpine-s6-node>
+*   <https://hub.docker.com/r/moonbuggy2000/alpine-s6-node-nginx>
 *   <https://hub.docker.com/r/moonbuggy2000/alpine-s6-pypy>
 *   <https://hub.docker.com/r/moonbuggy2000/alpine-s6-python>
 *   <https://hub.docker.com/r/moonbuggy2000/debian-builder>

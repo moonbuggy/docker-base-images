@@ -6,6 +6,14 @@
 push_platforms () {
 	[ -n "${platforms:-}" ] || { echo "No platforms to push."; return 0; }
 
+	# remove duplicates
+	clean_platforms=''
+	for platform in $(echo ${platforms} | xargs -d',' -n1); do
+		echo "${clean_platforms}" | xargs -d',' | grep -q "${platform}" \
+			|| clean_platforms+=",${platform}"
+	done
+	platforms="${clean_platforms:1}"
+
 	local base_tag
 	[ -n "${2}" ] && base_tag="${2}" || base_tag="${1}"
 
@@ -18,8 +26,9 @@ push_platforms () {
 	IFS=' ' read -r -a manifest_cmd <<< "$(get_manifest_tool)"
 	manifest_cmd+=(push from-args --platforms "${platforms}" --template "${DOCKER_REPO}:${base_tag}ARCHVARIANT" --target "${DOCKER_REPO}:${target_tag}")
 
-	# pretty_manifest_cmd="$(echo "${manifest_cmd[*]}" | sed -r -e "s/(--)/\\\ \n\t\1/g")"
-	# echo '--- manifest command ---' && printf '%s\n' "${pretty_manifest_cmd}"
+	[ ! -z "${DEBUG+set}" ] \
+		&& pretty_manifest_cmd="$(echo "${manifest_cmd[*]}" | sed -r -e "s/(--)/\\\ \n\t\1/g")" \
+		&& echo '--- manifest command ---' && printf '%s\n' "${pretty_manifest_cmd}"
 
 	printf '%-20s ' "${target_tag}"
 
