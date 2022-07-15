@@ -1,32 +1,65 @@
 amd64:
   TARGET_ARCH_TAG: amd64
+  EXTRA_ARCH_TAGs: x86_64
   S6_ARCH: x86_64
+  S6_V2_ARCH: amd64
   PLATFORM: linux/amd64
 
 arm64:
-  TARGET_ARCH_TAG: aarch64
+  TARGET_ARCH_TAG: arm64v8
+  EXTRA_ARCH_TAGS: aarch64 arm64
   S6_ARCH: aarch64
-  PLATFORM: linux/arm64
+  PLATFORM: linux/arm64/v8
 
 arm:
   TARGET_ARCH_TAG: arm
   S6_ARCH: arm
   PLATFORM: linux/arm
+  SCRATCH_ARCH_TAG: armv7
 
 armhf:
   TARGET_ARCH_TAG: armhf
   S6_ARCH: armhf
   PLATFORM: linux/arm
+  SCRATCH_ARCH_TAG: armv6
+
+armv6:
+  TARGET_ARCH_TAG: armv6
+  EXTRA_ARCH_TAGS: arm32v6
+  S6_ARCH: armhf
+  PLATFORM: linux/arm/v6
+
+armv7:
+  TARGET_ARCH_TAG: armv7
+  EXTRA_ARCH_TAGS: arm32v7
+  S6_ARCH: armhf
+  PLATFORM: linux/arm/v7
 
 i386:
-  TARGET_ARCH_TAG: x86
+  TARGET_ARCH_TAG: 386
+  EXTRA_ARCH_TAGS: x86 i386
+  S6_ARCH: x86
+  PLATFORM: linux/386
+  SCRATCH_ARCH_TAG: 386
+
+i486:
+  TARGET_ARCH_TAG: 386
+  EXTRA_ARCH_TAGS: x86 i386 i486
+  S6_ARCH: i486
+  PLATFORM: linux/386
+  SCRATCH_ARCH_TAG: 386
+
+i686:
+  TARGET_ARCH_TAG: 686
+  EXTRA_ARCH_TAGs: i686
   S6_ARCH: i686
   PLATFORM: linux/386
+  SCRATCH_ARCH_TAG: 386
 
-# ppc64le:
-#   TARGET_ARCH_TAG: ppc64le
-#   S6_ARCH: ppc64le
-#   PLATFORM: linux/ppc64le
+ppc64le:
+  TARGET_ARCH_TAG: ppc64le
+  S6_ARCH: ppc64le
+  PLATFORM: linux/ppc64le
 
 riscv64:
   TARGET_ARCH_TAG: riscv64
