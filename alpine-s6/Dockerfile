@@ -1,39 +1,28 @@
-# syntax=docker/dockerfile:1.3-labs
+# syntax = docker/dockerfile:1.4.0
 
-ARG TARGET_VERSION="3.14.2"
-ARG S6_VERSION="latest"
-ARG S6_ARCH="amd64"
+ARG ALPINE_VERSION="3.16.0"
+ARG S6_VERSION="3.1.0.1"
 
-ARG TARGET_ARCH_TAG="amd64"
+ARG FROM_IMAGE="alpine:${ALPINE_VERSION}"
 
-ARG FROM_IMAGE="alpine:${TARGET_VERSION}"
+## prepare config files
+#
+FROM "${FROM_IMAGE}" AS config
 
+COPY root/ /config_root/
 
-## get s6 overlay
-FROM "moonbuggy2000/s6:${S6_VERSION}-${S6_ARCH}" AS s6
-
-## collect everything we need
-FROM "${FROM_IMAGE}" AS builder
-
-# QEMU static binaries from pre_build
-ARG QEMU_DIR=""
-ARG QEMU_ARCH=""
-COPY _dummyfile "${QEMU_DIR}/qemu-${QEMU_ARCH}-static*" /usr/bin/
-
-# enable use of TZ enviornment variable
-RUN apk -U add --no-cache tzdata
-
-COPY --from=s6 / /
-COPY root/ /
+WORKDIR /config_root/etc/
 
 # determine the s6 overlay major version in use, remove any uneeded config
 #   v2.* uses /etc/s6,  v3.* uses /etc/s6-overlay
-RUN if [ -d "/etc/s6" ]; then \
-    rm -rvf /etc/s6-overlay 2>/dev/null; \
-  elif [ -d "/etc/s6-overlay" ]; then \
-    rm -rvf /etc/cont-init.d /etc/services.d /etc/fix-attrs.d 2>/dev/null; \
-  fi
+RUN case "${S6_VERSION%%.*}" in \
+    "2") rm -rvf s6-overlay 2>/dev/null ;; \
+    *) rm -rvf cont-init.d services.d fix-attrs.d 2>/dev/null ;; \
+  esac
 
+# configure environment
+ARG ALPINE_VERSION
+RUN echo "ALPINE_VERSION=${ALPINE_VERSION}" >> contenv_extra
 
 # if we want to inject 'contenv' deeper in the init process:
 #
@@ -58,16 +47,16 @@ RUN if [ -d "/etc/s6" ]; then \
 #   && cd / \
 #   && rm -rf "${TEMP_ROOT}"
 
-ARG TARGET_VERSION
-RUN add-contenv "ALPINE_VERSION=${TARGET_VERSION}"
 
-# remove QEMU static binaries
-RUN rm -f "/usr/bin/qemu-${QEMU_ARCH}-static" >/dev/null 2>&1
+## build the image
+#
+FROM "${FROM_IMAGE}"
 
+# enable use of TZ enviornment variable and install s6-overlay
+RUN apk -U add --no-cache \
+    s6-overlay \
+    tzdata
 
-## build the final image
-FROM "moonbuggy2000/scratch:${TARGET_ARCH_TAG}"
-
-COPY --from=builder / /
+COPY --from=config /config_root/ /
 
 ENTRYPOINT ["/init"]

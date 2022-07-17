@@ -8,7 +8,7 @@
 
 DOCKER_REPO="${DOCKER_REPO:-moonbuggy2000/alpine-s6}"
 
-all_tags='3.5 3.6 3.7 3.8 3.9 3.10 3.11 3.12 3.13 3.14 3.15'
+all_tags='3.5 3.6 3.7 3.8 3.9 3.10 3.11 3.12 3.13 3.14 3.15 3.16'
 default_tag='latest'
 
 . "hooks/.build.sh"
