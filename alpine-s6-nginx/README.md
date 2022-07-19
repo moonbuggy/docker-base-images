@@ -3,6 +3,7 @@
 ## Container Details
 *   exposed port: `8080`
 *   webroot: `/var/www/html`
+*   conf: `/etc/nginx/http.d/`
 
 ## Environment
 *   `PUID`          - user ID to run as

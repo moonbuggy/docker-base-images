@@ -1,0 +1,12 @@
+#!/usr/bin/with-contenv /bin/sh
+# shellcheck shell=sh
+
+UWSGI_INI="/etc/nginx/uwsgi.ini"
+
+if [ ! -z ${UWSGI_LOG+set} ]; then
+	case $UWSGI_LOG in
+		true|True|TRUE|on|On)
+			sed "s|^disable-logging.*|disable-logging = false|" -i $UWSGI_INI
+			;;
+	esac
+fi

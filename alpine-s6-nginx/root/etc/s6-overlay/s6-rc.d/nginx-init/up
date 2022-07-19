@@ -1,0 +1,60 @@
+with-contenv
+
+## set PUID/GUID
+#
+importas -D "1000" PUID PUID
+importas -D "1000" PGID PGID
+
+background { echo "nginx-init: info: uid: ${PUID}, gid: ${PGID}" }
+foreground { groupmod -o -g "${PGID}" www-data }
+foreground { usermod -o -u "${PUID}" -g "${PGID}" www-data }
+
+
+## fix owndership
+#
+importas -D "/var/www/html" WEB_ROOT WEB_ROOT
+
+ifelse -nX { test -d "${WEB_ROOT}" } { mkdir -p "${WEB_ROOT}" }
+foreground { chown -R ${PUID}:${PGID} ${WEB_ROOT} }
+
+ifelse -nX { test -d "/var/lib/nginx" }
+	{ mkdir -p /var/lib/nginx }
+foreground { chown -R ${PUID}:${PGID} /var/lib/nginx }
+
+
+# server configuration
+#
+importas -D "8080" NGINX_PORT NGINX_PORT
+
+background { echo "nginx-init: info: set nginx port: ${NGINX_PORT}" }
+background { echo "nginx-init: info: set nginx web root: ${WEB_ROOT}" }
+
+foreground { sed -E -i /etc/nginx/http.d/default.conf
+	-e "s|^(\\s+listen\\D+)(\\d+)(\\D.*)|\\1${NGINX_PORT}\\3|g"
+	-e "s|^\\s+root.*|\\troot\\t\\t${WEB_ROOT};|g" }
+
+importas -D "" NGINX_INDEX NGINX_INDEX
+foreground
+{
+	if -Xt { test -n "${NGINX_INDEX}" }
+		foreground { sed -E -i /etc/nginx/http.d/default.conf -e "s|^\\s+index.*|\\tindex\\t\\t${NGINX_INDEX};|g" }
+		echo "nginx-init: info: set nginx index: ${NGINX_INDEX}"
+}
+
+
+# enable logging of 200 and 300 HTTP codes
+#
+importas -D "" NGINX_LOG_ALL NGINX_LOG_ALL
+
+if -Xt { test -n "${NGINX_LOG_ALL}" }
+	foreground {
+		backtick log_setting { pipeline { echo "${NGINX_LOG_ALL}" } tr '[A-Z]' '[a-z]' }
+		importas log_setting log_setting
+		case ${log_setting} {
+			"yes|true|on" {
+				foreground { echo "nginx-init: info: NGINX_LOG_ALL enabled" }
+				sed -e "s|/dev/stdout combined if=\$loggable;|/dev/stdout main;|" -i /etc/nginx/nginx.conf
+			}
+		}
+		echo "nginx-init: info: NGINX_LOG_ALL disabled"
+	}
