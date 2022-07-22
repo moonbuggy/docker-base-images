@@ -18,6 +18,7 @@ RUN apt-get update && apt-get install -qy --no-install-recommends \
 		autoconf \
 		bison \
 		build-essential \
+		clang \
 		flex \
 		git \
 		sudo \

@@ -19,8 +19,10 @@ RUN apk -U add --no-cache \
 		alpine-sdk \
 		autoconf \
 		bison \
+		clang \
 		flex \
 		git \
+		linux-headers \
 		sudo \
 	&& adduser -D -h /build/ -G abuild builder \
 	&& chown -R builder:abuild /build \
