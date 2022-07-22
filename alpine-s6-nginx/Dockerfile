@@ -35,7 +35,7 @@ FROM "${FROM_IMAGE}"
 
 ARG NGINX_VERSION
 ARG	WEB_ROOT="/var/www/html"
-RUN apk add --no-cache \
+RUN apk -U add --no-cache \
 		nginx=~"${NGINX_VERSION}" \
 		shadow \
 	&& rm -rf /etc/nginx/conf.d 2>/dev/null \

@@ -12,8 +12,7 @@ foreground { usermod -o -u "${PUID}" -g "${PGID}" www-data }
 
 ## fix owndership
 #
-importas -D "/var/www/html" DEFAULT_WEB_ROOT DEFAULT_WEB_ROOT
-importas -D "${DEFAULT_WEB_ROOT}" WEB_ROOT WEB_ROOT
+importas -D "/var/www/html" WEB_ROOT WEB_ROOT
 
 ifelse -nX { test -d "${WEB_ROOT}" } { mkdir -p "${WEB_ROOT}" }
 foreground { chown -R ${PUID}:${PGID} ${WEB_ROOT} }
@@ -25,18 +24,22 @@ foreground { chown -R ${PUID}:${PGID} /var/lib/nginx }
 
 # server configuration
 #
-importas -D "8080" DEFAULT_NGINX_PORT DEFAULT_NGINX_PORT
-importas -D "${DEFAULT_NGINX_PORT}" NGINX_PORT NGINX_PORT
-importas -D "index.html index.htm" NGINX_INDEX NGINX_INDEX
+importas -D "8080" NGINX_PORT NGINX_PORT
 
-background { echo "nginx-init: info: nginx port: ${NGINX_PORT}" }
-background { echo "nginx-init: info: nginx index: ${NGINX_INDEX}" }
-background { echo "nginx-init: info: nginx web root: ${WEB_ROOT}" }
+background { echo "nginx-init: info: set nginx port: ${NGINX_PORT}" }
+background { echo "nginx-init: info: set nginx web root: ${WEB_ROOT}" }
 
-foreground { sed -E -i /etc/nginx/conf.d/default.conf
+foreground { sed -E -i /etc/nginx/http.d/default.conf
 	-e "s|^(\\s+listen\\D+)(\\d+)(\\D.*)|\\1${NGINX_PORT}\\3|g"
-	-e "s|^\\s+index.*|\\tindex\\t\\t${NGINX_INDEX};|g"
 	-e "s|^\\s+root.*|\\troot\\t\\t${WEB_ROOT};|g" }
+
+importas -D "" NGINX_INDEX NGINX_INDEX
+foreground
+{
+	if -Xt { test -n "${NGINX_INDEX}" }
+		foreground { sed -E -i /etc/nginx/http.d/default.conf -e "s|^\\s+index.*|\\tindex\\t\\t${NGINX_INDEX};|g" }
+		echo "nginx-init: info: set nginx index: ${NGINX_INDEX}"
+}
 
 
 # enable logging of 200 and 300 HTTP codes

@@ -82,16 +82,16 @@ get_url () {
 	cache_file="${DATA_DIR}/$(echo "${1}" | md5sum | cut -d' ' -f1)"
 
 	if [ -f "${cache_file}" ] && [ "$(( $(date +"%s") - $(date -r "${cache_file}" +"%s") ))" -lt "${CACHE_EXPIRY}" ]; then
-#		>&2 echo "Using cache: ${cache_file}"
 		cat "${cache_file}"
 	else
-#		>&2 echo "Downloading: ${1}"
 		page_data="$(curl -sL -w "%{http_code}\n" "${1}")"
 		http_code="${page_data:(-3)}"
 		if [ "${http_code}" = "200" ]; then
 			echo "${page_data%???}" | tee "${cache_file}"
 		else
-			echo "HTTP Error: ${http_code}"
+			>&2 echo "URL: ${1}"
+			>&2 echo "cache file: $(echo "${1}" | md5sum | cut -d' ' -f1)"
+			>&2 echo "HTTP Error: ${http_code}"
 			return 1
 		fi
 	fi
@@ -114,10 +114,11 @@ git_latest_tag () {	git_api_element "${1}" 'tags' "${2:-name}" | sort -uV | tail
 # <repos> is a list, defaults to "main community"
 #
 alpine_package_version () {
+	local alpine_version
 	alpine_version="$(echo "${2}" | awk -F \. '{print $1"."$2}')"
-	repos="${3:-main community}"
+	local repos && repos="${3:-main community}"
 
-	packages=''
+	local package && packages=''
 	for repo in ${repos}; do
 		packages="$(printf '%s\n%s' \
 			"$(get_url "https://dl-cdn.alpinelinux.org/alpine/v${alpine_version}/${repo}/x86_64/" | grep -oP "^<a.*>\K[^<]*apk(?=<)")" \
@@ -129,6 +130,23 @@ alpine_package_version () {
 	# printf '%s\n%s' "${repo_main}" "${repo_community}" | grep -oP "^${1}-\K[0-9.]*"
 
 	echo "${packages}" | grep -oP "^${1}-\K[0-9.]*"
+}
+
+# debian_package_version <package> <debian release>
+#
+debian_package_version () {
+	local package && package="${1}"
+	local debian_release && debian_release="${2}"
+
+	if [ -z "${package}" ] || [ -z "${debian_release}" ]; then
+		return
+	fi
+
+	# either of these works
+#	package_version="$(get_url "https://sources.debian.org/api/src/${package}/" | grep -oP "\"suites\"[^}]*${debian_release}\"[^}]*version\D*\K[0-9\.\-]*")"
+	package_version="$(get_url "https://sources.debian.org/api/src/nginx/${debian_release}/" | grep -oP 'version"\:"\K([^\"]*)' | cut -d'+' -f1)"
+
+	echo "${package_version}"
 }
 
 # pypi_api_XXXX <project>
