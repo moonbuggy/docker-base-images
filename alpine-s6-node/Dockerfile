@@ -5,11 +5,16 @@ ARG ALPINE_VERSION="3.16"
 
 ARG FROM_IMAGE="node:${NODE_VERSION}-alpine${ALPINE_VERSION}"
 
+ARG BUILDPLATFORM="linux/amd64"
+FROM --platform="${BUILDPLATFORM}" moonbuggy2000/s6-add-contenv:s6-overlay-v3 AS add_contenv
+
 ## prepare config files
 #
 FROM "${FROM_IMAGE}" AS config
 
 COPY root/ /config_root/
+COPY --from=add_contenv / /config_root/
+
 WORKDIR /config_root/etc/
 
 # determine the s6 overlay major version in use, remove any uneeded config

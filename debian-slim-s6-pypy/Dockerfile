@@ -44,7 +44,7 @@ RUN ln -sf "../../../${PYPY_DIR}/bin/${PYPY_PACKAGE}" "./${PYPY_PACKAGE}" \
 
 ## build the image
 #
-FROM "${FROM_IMAGE}" AS builder
+FROM "${FROM_IMAGE}"
 
 RUN export DEBIAN_FRONTEND="noninteractive" \
 	&& apt update \

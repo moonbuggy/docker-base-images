@@ -15,7 +15,10 @@ foreground { usermod -o -u "${PUID}" -g "${PGID}" www-data }
 importas -D "/var/www/html" WEB_ROOT WEB_ROOT
 
 ifelse -nX { test -d "${WEB_ROOT}" } { mkdir -p "${WEB_ROOT}" }
-foreground { chown -R ${PUID}:${PGID} ${WEB_ROOT} }
+
+# this is really slow for large sites, so it's probably best not to do it by
+# default and let the downstream images deal with it if it's necessary
+# foreground { chown -R ${PUID}:${PGID} ${WEB_ROOT} }
 
 ifelse -nX { test -d "/var/lib/nginx" }
 	{ mkdir -p /var/lib/nginx }

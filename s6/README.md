@@ -1,5 +1,5 @@
-# s6
-Containers with nothing but [s6-overlay][s6-repo] inside. These can be used during multi-stage builds to install s6-overlay into an image.
+# s6-overlay
+Images with [s6-overlay][s6-repo] and [s6-add-contenv](https://github.com/moonbuggy/docker-base-images/tree/master/s6-add-contenv) inside. These can be used during multi-stage builds to install s6-overlay into an image.
 
 It's easier than making sure any s6-fetching stages in multi-arch builds are identical across different projects and relying on `docker build` caching the layer.
 

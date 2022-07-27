@@ -5,6 +5,7 @@ ARG FROM_IMAGE="moonbuggy2000/alpine-s6-node:${NODE_VERSION}"
 
 ## prepare config files
 #
+ARG BUILDPLATFORM="linux/amd64"
 FROM "${FROM_IMAGE}" AS config
 
 COPY root/ /config_root/

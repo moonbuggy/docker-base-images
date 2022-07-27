@@ -1,0 +1,11 @@
+#! /usr/bin/execlineb -P
+
+define ENV_FILE "/etc/contenv_extra"
+
+if -X { test -f "${ENV_FILE}" }
+	forbacktickx line { cat "${ENV_FILE}" }
+	importas line line
+	multidefine -d"=" "${line}" { key value }
+	foreground { echo "add-contenv: info: ${key}=${value}" }
+	redirfd -w 1 "/var/run/s6/container_environment/${key}"
+	printf "${value}"

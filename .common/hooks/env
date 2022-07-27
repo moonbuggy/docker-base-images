@@ -48,9 +48,9 @@ add_print_param () { add_param "${1}" "${2}"; print_param "${1}" "${3:-${2}}"; }
 #
 # these have arguments in different positions than the add/print_param functions
 #
-#	eval_param_if       <param> <command>
-#	eval_print_param_if <param> <desc> <command>
-eval_param_if () {
+#	eval_param_ifn       <param> <command>
+#	eval_print_param_ifn <param> <desc> <command>
+eval_param_ifn () {
 	local param
 	local command
 	local value
@@ -65,11 +65,11 @@ eval_param_if () {
 	add_param "${value}" "${param}"
 }
 
-eval_print_param_if () {
+eval_print_param_ifn () {
 	local desc
 	[ ! -z "${3}" ] && desc="${2}"
 
-	eval_param_if "${1}" "${3:-${2}}"
+	eval_param_ifn "${1}" "${3:-${2}}"
 	print_param "${!1}" "${desc:-${1}}"
 }
 

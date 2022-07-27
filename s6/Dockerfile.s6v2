@@ -2,26 +2,31 @@
 
 ARG FROM_IMAGE="moonbuggy2000/fetcher:latest"
 
-ARG S6_OVERLAY_VERSION="v2.2.0.3"
-ARG S6_ARCH="amd64"
 ARG TARGET_ARCH_TAG="amd64"
 ARG SCRATCH_ARCH_TAG="${TARGET_ARCH_TAG}"
 
+ARG BUILDPLATFORM="linux/amd64"
+
 ## get s6 overlay
 #
-FROM "moonbuggy2000/fetcher:latest" AS s6
+FROM --platform="${BUILDPLATFORM}" "moonbuggy2000/fetcher:latest" AS s6
 
-ARG S6_ARCH
+ARG S6_ARCH="amd64"
 ARG S6_V2_ARCH
-ARG S6_OVERLAY_VERSION
+ARG S6_OVERLAY_VERSION="v2.2.0.3"
 ARG S6_URL="https://github.com/just-containers/s6-overlay/releases/download/${S6_OVERLAY_VERSION}"
 ARG S6_BINARY_FILE="s6-overlay-${S6_V2_ARCH:-$S6_ARCH}.tar.gz"
 
 WORKDIR /s6/
 RUN wget --no-check-certificate -qO- "${S6_URL}/${S6_BINARY_FILE}" | tar xzf -
 
+## get add-contenv
+#
+FROM --platform="${BUILDPLATFORM}" moonbuggy2000/s6-add-contenv:s6-overlay-v2 AS add_contenv
+
 ## build final image
 #
 FROM "moonbuggy2000/scratch:${SCRATCH_ARCH_TAG}"
 
 COPY --from=s6 /s6/ /
+COPY --from=add_contenv / /

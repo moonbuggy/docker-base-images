@@ -1,7 +1,6 @@
 # syntax = docker/dockerfile:1.4.0
 
 ARG ALPINE_VERSION="3.16.0"
-ARG FROM_IMAGE="moonbuggy2000/alpine-builder:${ALPINE_VERSION}"
 
 ARG S6_ARCH="amd64"
 ARG TARGET_ARCH_TAG="amd64"
@@ -10,9 +9,6 @@ ARG SCRATCH_ARCH_TAG="${TARGET_ARCH_TAG}"
 ARG PLATFORM="linux/amd64"
 ARG TARGETPLATFORM="${PLATFORM}"
 ARG BUILDPLATFORM="linux/amd64"
-
-ARG FETCHER="moonbuggy2000/fetcher:latest"
-ARG BUILDER="moonbuggy2000/alpine-builder:${ALPINE_VERSION}-${TARGET_ARCH_TAG}"
 
 ARG BEARSSL_VERSION="0.6"
 ARG BEARSSL_REPO="bearssl.org/git/BearSSL"
@@ -28,7 +24,8 @@ ARG S6_LINUX_UTILS_VERSION="v2.6.0.0"
 ARG S6_LINUX_UTILS_REPO="skarnet/s6-linux-utils"
 ARG S6_NETWORKING_VERSION="v2.5.1.1"
 ARG S6_NETWORKING_REPO="skarnet/s6-networking"
-ARG S6_OVERLAY_VERSION="3.1.1.2"
+ARG S6_OVERLAY_VERSION="v3.1.1.2"
+ARG S6_OVERLAY_MAJOR="3"
 ARG S6_OVERLAY_REPO="just-containers/s6-overlay"
 ARG S6_OVERLAY_HELPERS_VERSION="v0.1.0.0"
 ARG S6_OVERLAY_HELPERS_REPO="just-containers/s6-overlay-helpers"
@@ -40,90 +37,83 @@ ARG SKALIBS_VERSION="v2.12.0.1"
 ARG SKALIBS_REPO="skarnet/skalibs"
 ARG XX_VERSION="1.1.1"
 
-## prepare images
+## prepare base images
 #
 FROM --platform="${BUILDPLATFORM}" moonbuggy2000/fetcher:latest AS fetcher
+WORKDIR /src
+
 FROM --platform="${BUILDPLATFORM}" "tonistiigi/xx:${XX_VERSION}" AS xx
 
 FROM --platform="${BUILDPLATFORM}" "alpine:${ALPINE_VERSION}" AS builder-base
-
 RUN apk -U --no-cache add bash clang llvm make
 COPY --from=xx / /
 ARG TARGETPLATFORM
 RUN xx-apk add clang-dev g++ gcc musl-dev linux-headers
 ENV XX_CC_PREFER_LINKER="ld"
 
+## get add-contenv
+#
+FROM --platform="${BUILDPLATFORM}" "moonbuggy2000/s6-add-contenv:s6-overlay-v${S6_OVERLAY_MAJOR}" AS add_contenv
+
 ## get source
 #
 FROM fetcher AS src_bearssl
 ARG BEARSSL_REPO
-WORKDIR /src
 RUN git clone --depth 1 "https://${BEARSSL_REPO}" .
 
 FROM fetcher AS src_execline
 ARG EXECLINE_REPO
 ARG EXECLINE_VERSION
-WORKDIR /src
 RUN wget --no-check-certificate -qO- "https://github.com/${EXECLINE_REPO}/archive/refs/tags/${EXECLINE_VERSION}.tar.gz" | tar xzf - --strip 1
 
 FROM fetcher AS src_s6
 ARG S6_REPO
 ARG S6_VERSION
-WORKDIR /src
 RUN wget --no-check-certificate -qO- "https://github.com/${S6_REPO}/archive/refs/tags/${S6_VERSION}.tar.gz" | tar xzf - --strip 1
 
 FROM fetcher AS src_s6_dns
 ARG S6_DNS_REPO
 ARG S6_DNS_VERSION
-WORKDIR /src
 RUN wget --no-check-certificate -qO- "https://github.com/${S6_DNS_REPO}/archive/refs/tags/${S6_DNS_VERSION}.tar.gz" | tar xzf - --strip 1
 
 FROM fetcher AS src_s6_linux_init
 ARG S6_LINUX_INIT_REPO
 ARG S6_LINUX_INIT_VERSION
-WORKDIR /src
 RUN wget --no-check-certificate -qO- "https://github.com/${S6_LINUX_INIT_REPO}/archive/refs/tags/${S6_LINUX_INIT_VERSION}.tar.gz" | tar xzf - --strip 1
 
 FROM fetcher AS src_s6_linux_utils
 ARG S6_LINUX_UTILS_REPO
 ARG S6_LINUX_UTILS_VERSION
-WORKDIR /src
 RUN wget --no-check-certificate -qO- "https://github.com/${S6_LINUX_UTILS_REPO}/archive/refs/tags/${S6_LINUX_UTILS_VERSION}.tar.gz" | tar xzf - --strip 1
 
 FROM fetcher AS src_s6_networking
 ARG S6_NETWORKING_REPO
 ARG S6_NETWORKING_VERSION
-WORKDIR /src
 RUN wget --no-check-certificate -qO- "https://github.com/${S6_NETWORKING_REPO}/archive/refs/tags/${S6_NETWORKING_VERSION}.tar.gz" | tar xzf - --strip 1
 
 FROM fetcher AS src_s6_overlay
 ARG S6_OVERLAY_REPO
 ARG S6_OVERLAY_VERSION
-WORKDIR /src
 RUN wget --no-check-certificate -qO- "https://github.com/${S6_OVERLAY_REPO}/archive/refs/tags/${S6_OVERLAY_VERSION}.tar.gz" | tar xzf - --strip 1
 
 FROM fetcher AS src_s6_overlay_helpers
 ARG S6_OVERLAY_HELPERS_REPO
 ARG S6_OVERLAY_HELPERS_VERSION
-WORKDIR /src
 RUN wget --no-check-certificate -qO- "https://github.com/${S6_OVERLAY_HELPERS_REPO}/archive/refs/tags/${S6_OVERLAY_HELPERS_VERSION}.tar.gz" | tar xzf - --strip 1
 
 FROM fetcher AS src_s6_portable_utils
 ARG S6_PORTABLE_UTILS_REPO
 ARG S6_PORTABLE_UTILS_VERSION
-WORKDIR /src
 RUN wget --no-check-certificate -qO- "https://github.com/${S6_PORTABLE_UTILS_REPO}/archive/refs/tags/${S6_PORTABLE_UTILS_VERSION}.tar.gz" | tar xzf - --strip 1
 
 FROM fetcher AS src_s6_rc
 ARG S6_RC_REPO
 ARG S6_RC_VERSION
-WORKDIR /src
 RUN wget --no-check-certificate -qO- "https://github.com/${S6_RC_REPO}/archive/refs/tags/${S6_RC_VERSION}.tar.gz" | tar xzf - --strip 1
 
 FROM fetcher AS src_skalibs
 ARG SKALIBS_REPO
 ARG SKALIBS_VERSION
-WORKDIR /src
 RUN wget --no-check-certificate -qO- "https://github.com/${SKALIBS_REPO}/archive/refs/tags/${SKALIBS_VERSION}.tar.gz" | tar xzf - --strip 1
 
 
@@ -215,9 +205,9 @@ COPY --from=src_s6_overlay /src .
 ARG S6_OVERLAY_VERSION
 
 RUN set -ex \
-  # cleanup
+  # cleanup \
   && rm -rf /out/package/*/*/include /out/package/*/*/library \
-  # s6-overlay
+  # s6-overlay \
   && if [[ "${S6_OVERLAY_VERSION}" =~ ^v ]]; then S6_OVERLAY_VERSION="${S6_OVERLAY_VERSION:1}"; fi \
   && find ./layout/rootfs-overlay -type f -name .empty -print | xargs rm -f -- \
   && find ./layout/rootfs-overlay -name '*@VERSION@*' -print | while read name; do \
@@ -226,14 +216,14 @@ RUN set -ex \
   && find ./layout/rootfs-overlay -type f -size +0c -print | xargs sed -i -e "s|@SHEBANGDIR@|/command|g; s/@VERSION@/$S6_OVERLAY_VERSION/g;" -- \
   && (cd /out/package/admin/ ; ln -s s6-overlay-$S6_OVERLAY_VERSION s6-overlay) \
   && cp -rf ./layout/rootfs-overlay/* /out/ \
-  # s6-syslogd-overlay
+  # s6-syslogd-overlay \
   # && find ./layout/syslogd-overlay -type f -name .empty -print | xargs rm -f -- \
   # && find ./layout/syslogd-overlay -name '*@VERSION@*' -print | while read name; do \
   #   mv -f "$name" $(echo "$name" | sed -e "s/@VERSION@/$S6_OVERLAY_VERSION/"); \
   # done \
   # && find ./layout/syslogd-overlay -type f -size +0c -print | xargs sed -i -e "s|@SHEBANGDIR@|/command|g; s/@VERSION@/$S6_OVERLAY_VERSION/g;" -- \
   # && cp -rf ./layout/syslogd-overlay/* /out/ \
-  # symlinks
+  # symlinks \
   && mkdir -p /out/usr/bin \
   && for i in $(ls -1 /out/command); do \
     ln -s "../../command/$i" /out/usr/bin/; \
@@ -243,4 +233,6 @@ RUN set -ex \
 ## build final image
 #
 FROM "moonbuggy2000/scratch:${SCRATCH_ARCH_TAG}"
+
 COPY --from=builder /out /
+COPY --from=add_contenv / /

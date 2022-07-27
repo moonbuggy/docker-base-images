@@ -6,11 +6,15 @@ ARG S6_VERSION="3.1.0.1"
 
 ARG FROM_IMAGE="python:${PYTHON_VERSION}-alpine${ALPINE_VERSION}"
 
+ARG BUILDPLATFORM="linux/amd64"
+FROM --platform="${BUILDPLATFORM}" moonbuggy2000/s6-add-contenv:s6-overlay-v3 AS add_contenv
+
 ## prepare config files
 #
 FROM "${FROM_IMAGE}" AS config
 
 COPY root/ /config_root/
+COPY --from=add_contenv / /config_root/
 
 WORKDIR /config_root/etc/
 

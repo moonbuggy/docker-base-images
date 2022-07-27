@@ -100,7 +100,7 @@ else
 	#
 	if [ -n "${SOURCE_ARCHES:-}" ]; then
 		source_arches="${SOURCE_ARCHES}"
-	elif [ ! -z "${SOURCE_ARCH_PREFIX+set}" ]; then
+	elif [ ! -z "${SOURCE_ARCH_PREFIX+set}" ] && [ -z "${BUILD_BUILDX}" ]; then
 		unset source_arches
 		for arch in ${configured_arches}; do
 			arch_prefix_var="${arch}_QEMU_PREFIX"
@@ -108,6 +108,7 @@ else
 			[ -s "$(get_manifest "${import_image}")" ] && source_arches+="${arch} "
 		done
 	else
+		print_param "${SOURCE_MANIFEST}" 'Source manifest'
 		source_arches="$(sed -n -e 'N;s/.*Arch:\s*\(\w*\)\n.*Variant:\s*\(\w*\)/\1\2/p;D;' "${SOURCE_MANIFEST}" \
 			| sed -e 's/[^\w]*386/i386/' | sort -u | xargs)"
 	fi

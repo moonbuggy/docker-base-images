@@ -43,4 +43,10 @@ FROM "${FROM_IMAGE}"
 
 COPY --from=config /config_root/ /
 
+# when using buildx apt-get throws errors about missing binaries in some arches \
+RUN { [ ! -f "/usr/sbin/dpkg-deb" ] && ln -s /usr/bin/dpkg-deb /usr/sbin/dpkg-deb; } \
+  && { [ ! -f "/usr/sbin/dpkg-split" ] && ln -s /usr/bin/dpkg-split /usr/sbin/dpkg-split; } \
+  && { [ ! -f "/usr/sbin/rm" ] && ln -s /bin/rm /usr/sbin/rm; } \
+  && { [ ! -f "/usr/sbin/tar" ] && ln -s /bin/tar /usr/sbin/tar; }
+
 ENTRYPOINT ["/init"]

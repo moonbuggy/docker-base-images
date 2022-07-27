@@ -10,7 +10,8 @@ ARG PHP_BINARY="php-fpm7"
 
 ## prepare config files
 #
-FROM "${FROM_IMAGE}" AS config
+ARG BUILDPLATFORM="linux/amd64"
+FROM --platform="${BUILDPLATFORM}" "${FROM_IMAGE}" AS config
 
 COPY root/ /config_root/
 WORKDIR /config_root/etc/

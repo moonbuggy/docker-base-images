@@ -6,7 +6,7 @@
 
 DOCKER_REPO="${DOCKER_REPO:-moonbuggy2000/debian-slim-s6-nginx}"
 
-#all_tags='1.12 1.14 1.16 1.18'
+all_tags='latest'
 default_tag='latest'
 
 . "hooks/.build.sh"

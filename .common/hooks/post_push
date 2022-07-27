@@ -66,6 +66,12 @@ else
 fi
 echo
 
+# push README.md
+if [ ! -z "${PUSH_README}" ] && [ -f "./README.md" ]; then
+	echo "Pushing README.md.."
+	docker pushrm "${DOCKER_REPO}" -f ./README.md
+fi
+
 ##	call any post_push_end() from build.conf
 #
 ifFuncExec post_push_end
