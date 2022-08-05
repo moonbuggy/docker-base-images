@@ -12,13 +12,14 @@ RUN add-contenv <var1>=<value1> <var2>=<value2> ...
 
 The `add-contenv` environment variables are set by the `add-contenv` service in s6-overlay v3+. This service should be set a dependency for any other services that require these variables, which will be available in the normal way via `with-contenv`.
 
-See [add-contenv](https://github.com/moonbuggy/docker-base-images/tree/master/s6-add-contenv) for more details.
+See [add-contenv](https://github.com/moonbuggy/docker-s6-add-contenv) for more details.
 
 
 ## Links
 GitHub:
 *   <https://github.com/moonbuggy/docker-base-images>
 *   <https://github.com/moonbuggy/docker-s6-overlay>
+*   <https://github.com/moonbuggy/docker-s6-add-contenv>
 
 Docker Hub:
 *   <https://hub.docker.com/r/moonbuggy2000/alpine-builder>
