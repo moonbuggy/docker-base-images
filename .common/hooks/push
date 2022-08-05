@@ -13,8 +13,10 @@ base_tags+=("${TARGET_TAG}")
 IFS=' ' read -r -a base_tags <<< "$(echo "${base_tags[*]}" | xargs -n1 | sort -u | xargs)"
 print_param "${base_tags[*]}" "Base tags"
 
-if [ -z "${SKIP_BUILD+set}" ]; then
-	echo
+if [ ! -z "${SKIP_BUILD+set}" ]; then
+	echo "Skipping."
+	echo	echo
+else
 	[ -z "${NO_DEFAULT_PUSH}" ] && for arch in ${build_arches:-}; do
 	#	echo "--- push (${arch}) ---"
 
@@ -59,7 +61,4 @@ if [ -z "${SKIP_BUILD+set}" ]; then
 	##	call any push_end() from build.conf
 	#
 	ifFuncExec push_end
-else
-	echo "Skipping."
-	echo
 fi

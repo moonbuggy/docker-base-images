@@ -20,7 +20,7 @@ ifFunc post_checkout_start && post_checkout_start
 ## parse Docker environment variables
 #
 case "${DOCKER_TAG##*-}" in
-	i*86|amd64|arm*|ppc64*|riscv64|s390x)
+	i*86|amd64|arm*|ppc64*|mips*|riscv64|s390x)
 		[ -z "${TARGET_TAG+set}" ] && \
 			TARGET_TAG="${DOCKER_TAG%-*}"
 		add_param "${DOCKER_TAG##*-}" 'BUILD_ARCH'

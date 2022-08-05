@@ -9,7 +9,7 @@ ARG S6_ARCH="amd64"
 
 ## get s6 overlay
 #
-FROM "moonbuggy2000/s6:${S6_VERSION}-alpine${ALPINE_VERSION}-${S6_ARCH}" AS s6
+FROM "moonbuggy2000/s6-overlay:${S6_VERSION}-${S6_ARCH}" AS s6-overlay
 
 ## build the image
 #
@@ -18,7 +18,7 @@ FROM "${FROM_IMAGE}"
 # enable use of TZ enviornment variable
 RUN apk -U add --no-cache tzdata
 
-COPY --from=s6 / /
+COPY --from=s6-overlay / /
 COPY ./root /
 
 ARG ALPINE_VERSION

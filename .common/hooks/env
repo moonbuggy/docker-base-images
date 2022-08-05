@@ -32,7 +32,7 @@ DOCKER_FILE='Dockerfile'
 #	add_param       <value> <param>
 #	print_param     <value> <desc>
 #	add_print_param <value> <param> <desc>
-del_param() { sed "/${1}/d" -i "${CONFIG_YAML}"; }
+del_param() { sed "/^${1}:/d" -i "${CONFIG_YAML}"; }
 add_param () {
 	local value
 	value="$(echo "${1}" | xargs)"
@@ -57,6 +57,8 @@ eval_param_ifn () {
 
 	param="${1}"
 	IFS=' ' read -a command <<< "${2}"
+
+	# >&2 echo "command: ${command[*]}"
 
 	[ -z "${!param}" ] \
 		&& value="$(eval "${command[*]}")" \
@@ -106,8 +108,13 @@ git_api_element () { git_api_data "${1}" "${2}" | sed -En 's|.*"'"${3}"'"\W+"([^
 # git_latest_release <repo> (<element>)
 git_latest_release () { git_api_element "${1}" 'releases/latest' "${2:-tag_name}"; }
 
+# git_repo_tags <repo> (<element>)
+git_repo_tags () { git_api_element "${1}" 'tags' "${2:-name}" | sort -uV;
+}
+
 # git_latest_tag <repo> (<element>)
-git_latest_tag () {	git_api_element "${1}" 'tags' "${2:-name}" | sort -uV | tail -n1; }
+# git_latest_tag () {	git_api_element "${1}" 'tags' "${2:-name}" | sort -uV | tail -n1; }
+git_latest_tag () {	git_repo_tags "${1}" | tail -n1; }
 
 # alpine_package_version <package> <alpine version> <repos>
 #
@@ -333,7 +340,7 @@ docker_container_contents () {
 	local output_dir &&	output_dir="${2:-./}"
 	local tar_args && tar_args="${3}"
 
-	echo "Importing: ${import_image}"
+	echo "Importing files from ${import_image} to ${output_dir}"
 
 	[ -n "${NOOP+set}" ] && [ -z "${WHEELS_FORCE_PULL+set}" ] && echo 'Status: [NOOP]' && return
 

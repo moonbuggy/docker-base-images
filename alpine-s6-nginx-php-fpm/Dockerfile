@@ -8,6 +8,7 @@ ARG PHP_VERSION="7.4"
 ARG PHP_PACKAGE="php7"
 ARG PHP_BINARY="php-fpm7"
 
+
 ## prepare config files
 #
 ARG BUILDPLATFORM="linux/amd64"
@@ -15,16 +16,6 @@ FROM --platform="${BUILDPLATFORM}" "${FROM_IMAGE}" AS config
 
 COPY root/ /config_root/
 WORKDIR /config_root/etc/
-
-# determine the s6 overlay major version in use, remove any uneeded config
-#   v2.* uses /etc/s6,  v3.* uses /etc/s6-overlay
-RUN if [ -d "/etc/s6" ]; then \
-    echo "*** Removing s6-overlay V3 init scripts.."; \
-    rm -rvf s6-overlay 2>/dev/null; \
-  elif [ -d "/etc/s6-overlay" ]; then \
-    echo "*** Removing s6-overlay V2 init scripts.."; \
-    rm -rvf cont-init.d services.d fix-attrs.d 2>/dev/null; \
-  fi
 
 # remove unecessary php configs
 ARG PHP_PACKAGE
@@ -60,5 +51,3 @@ ARG NGINX_PORT="8080"
 EXPOSE "${NGINX_PORT}"
 
 ENTRYPOINT ["/init"]
-
-HEALTHCHECK --start-period=10s --timeout=10s CMD /healthcheck.sh

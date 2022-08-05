@@ -1,29 +1,23 @@
 # syntax = docker/dockerfile:1.4.0
 
-ARG PYTHON_VERSION="3.10.5"
-ARG ALPINE_VERSION="3.16.0"
-ARG S6_VERSION="3.1.0.1"
+ARG PYTHON_VERSION="3.10.6"
+ARG ALPINE_VERSION="3.16"
 
 ARG FROM_IMAGE="python:${PYTHON_VERSION}-alpine${ALPINE_VERSION}"
-
 ARG BUILDPLATFORM="linux/amd64"
+
+## get s6-add-contenv
+#
 FROM --platform="${BUILDPLATFORM}" moonbuggy2000/s6-add-contenv:s6-overlay-v3 AS add_contenv
 
 ## prepare config files
 #
-FROM "${FROM_IMAGE}" AS config
+FROM --platform="${BUILDPLATFORM}" "${FROM_IMAGE}" AS config
 
-COPY root/ /config_root/
 COPY --from=add_contenv / /config_root/
+COPY root/ /config_root/
 
 WORKDIR /config_root/etc/
-
-# determine the s6 overlay major version in use, remove any uneeded config
-#   v2.* uses /etc/s6,  v3.* uses /etc/s6-overlay
-RUN case "${S6_VERSION%%.*}" in \
-    "2") rm -rvf s6-overlay 2>/dev/null ;; \
-    *) rm -rvf cont-init.d services.d fix-attrs.d 2>/dev/null ;; \
-  esac
 
 # configure environment
 ARG ALPINE_VERSION
@@ -32,17 +26,15 @@ RUN echo "ALPINE_VERSION=${ALPINE_VERSION}" >> contenv_extra \
   && echo "PYTHON_VERSION=$(echo ${PYTHON_VERSION} | awk -F \. '{print $1"."$2}')" >> contenv_extra \
 	&& echo "PYTHON_PACKAGE=python$(echo ${PYTHON_VERSION} | awk -F \. '{print $1}')" >> contenv_extra
 
-
 ## build the image
 #
 FROM "${FROM_IMAGE}"
 
-# enable use of TZ enviornment variable and install s6-overlay
+# install s6-overlay and enable use of TZ enviornment variable
 RUN apk -U add --no-cache \
     s6-overlay \
     tzdata
 
 COPY --from=config /config_root/ /
-
 
 ENTRYPOINT ["/init"]

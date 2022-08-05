@@ -35,7 +35,23 @@ push_platforms () {
 	[ -n "${NOOP+set}" ] && echo '[NOOP]' && return 0
 	[ -n "${NO_PUSH+set}" ] && echo '[NO_PUSH]' && return 0
 #	{ "${manifest_cmd[@]}" | grep -i Digest | cut -d' ' -f2; } || { echo 'Could not push manifest.'; return 1; }
-	"${manifest_cmd[@]}" || { echo 'Could not push manifest.'; return 1; }
+#	"${manifest_cmd[@]}" || { echo 'Could not push manifest.'; return 1; }
+	local error
+	error="$("${manifest_cmd[@]}" 2>&1)";
+
+	if [ -n "${error}" ]; then
+		case ${error} in
+			*toomanyrequests*)
+				echo 'rate limited, exiting.'
+				exit 1
+				;;
+			*)
+				printf 'unknown error:\n%s\n' "${error}"
+				exit 1
+				;;
+		esac
+		return 1
+	fi
 	echo
 }
 
@@ -45,6 +61,8 @@ elif [ ! -z "${SKIP_BUILD+set}" ]; then
 	echo "Skipping."
 elif [ -n "${NO_MANIFEST+set}" ]; then
 	echo "NO_MANIFEST is set, skipping post_push."
+elif [ -n "${NO_POST_PUSH+set}" ]; then
+	echo "NO_POST_PUSH is set, skipping post_push."
 else
 	manifest_tags=()
 
