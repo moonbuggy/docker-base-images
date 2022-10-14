@@ -14,7 +14,7 @@ if [ -z "${NO_QEMU}" ]; then
 	echo
 
 	## don't need the arch-specific static binaries with buildx
-	if [ ! -z "${BUILD_BUILDX}" ]; then
+	if [ -z "${BUILD_BUILDX}" ]; then
 		# get qemu-*-static for all build architectures
 		mkdir -p "${QEMU_DIR}/"
 
@@ -39,6 +39,8 @@ if [ -z "${NO_QEMU}" ]; then
 			done
 			echo
 		fi
+	else
+		echo "Not getting QEMU."
 	fi
 fi
 

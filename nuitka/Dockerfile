@@ -1,9 +1,8 @@
 #ARG ALPINE_VERSION="3.13"
 ARG BUILD_PYTHON_VERSION="3.9"
-ARG NUITKA_VERSION="0.6.16.4"
+ARG NUITKA_VERSION="1.1.3"
 
 ARG FROM_IMAGE="python:${BUILD_PYTHON_VERSION}-alpine"
-#ARG FROM_IMAGE="alpine:${ALPINE_VERSION}"
 
 ## build the image
 #
@@ -16,10 +15,15 @@ COPY _dummyfile "${QEMU_DIR}/qemu-${QEMU_ARCH}-static*" /usr/bin/
 
 ARG BUILD_PYTHON_VERSION
 
+# rust-stdlib accounts for roughly half the final image's size
+# putting it in a separate layers should make pushes to Docker Hub more reliable
+RUN apk add --no-cache rust-stdlib
+
 RUN apk add --no-cache \
 		cargo \
 		ccache \
 		chrpath \
+		clang \
 		gcc \
 		libffi-dev \
 		make \
@@ -63,7 +67,9 @@ ARG NUITKA_VERSION=""
 ENV LIBSODIUM_MAKE_ARGS="-j4"
 
 RUN python3 -m pip install --no-cache-dir --upgrade pip \
-	&& pip3 install --no-cache-dir --find-links "/${IMPORTS_DIR}/" nuitka=="${NUITKA_VERSION}"
+	&& python3 -m pip install --no-cache-dir --find-links "/${IMPORTS_DIR}/" \
+		nuitka=="${NUITKA_VERSION}" \
+		orderedset
 
 # cleanup, if we're squashing
 RUN rm -rf "/${IMPORTS_DIR}/"

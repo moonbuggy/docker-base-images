@@ -21,6 +21,7 @@ RUN apt-get update \
 		cargo \
 		ccache \
 		chrpath \
+		clang \
 #		python3-dev \
 #		python3-pip \
 #		python3-wheel \
@@ -52,7 +53,9 @@ ARG NUITKA_VERSION=""
 ENV LIBSODIUM_MAKE_ARGS="-j4"
 
 RUN python3 -m pip install --no-cache-dir --upgrade pip \
-	&& pip3 install --no-cache-dir nuitka=="${NUITKA_VERSION}"
+	&& python3 -m pip install --no-cache-dir \
+		nuitka=="${NUITKA_VERSION}" \
+		orderedset
 
 ENTRYPOINT ["python3","-m","nuitka"]
 

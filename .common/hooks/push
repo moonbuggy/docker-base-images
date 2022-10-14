@@ -51,7 +51,11 @@ else
 					[ -n "${NOOP}" ] && { echo '[NOOP]'; } && continue
 					[ -n "${NO_PUSH}" ] && { echo '[NO_PUSH]'; } && continue
 
-					docker push "${target_image}" | grep -i digest | cut -d' ' -f3
+					# docker push "${target_image}" | grep -i digest | cut -d' ' -f3
+					push_result="$(docker push "${target_image}")"
+					[ ! -z "${DEBUG+set}" ] \
+						&& echo "${push_result}" \
+						|| echo "${push_result}" | grep -i digest | cut -d' ' -f3
 				fi
 			done
 		done
