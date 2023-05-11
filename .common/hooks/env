@@ -187,7 +187,7 @@ debian_package_version () {
 
 	# either of these works
 #	package_version="$(get_url "https://sources.debian.org/api/src/${package}/" | grep -oP "\"suites\"[^}]*${debian_release}\"[^}]*version\D*\K[0-9\.\-]*")"
-	package_version="$(get_url "https://sources.debian.org/api/src/nginx/${debian_release}/" | grep -oP 'version"\:"\K([^\"]*)' | cut -d'+' -f1)"
+	package_version="$(get_url "https://sources.debian.org/api/src/${package}/${debian_release}/" | grep -oP 'version"\:"\K([^\"]*)' | cut -d'+' -f1)"
 
 	echo "${package_version}"
 }
@@ -201,8 +201,11 @@ pypi_api_latest_version () { pypi_api_versions "${1}" | tail -n1; }
 py_musl_wheel_versions () { docker_api_repo_tags "${WHEEL_REPO}" | grep -oP "${1}\K([0-9.]+)(?=-py)" | sort -uV; }
 py_musl_wheel_latest () { py_musl_wheel_versions "${1}" | tail -n1; }
 
-parse_version_major () { echo "${1}" | awk -F \. '{print $1}'; }
-parse_version_minor () { echo "${1}" | awk -F \. '{print $1"."$2}'; }
+# return the 'X' for any 'X.Y.Z' versions provided as arguments
+parse_version_major () { echo "${1}" | xargs -n1 | grep -oP '(^\d*)' | sort -uV ; }
+
+# return the 'X.Y' for any 'X.Y.Z' versions provided as arguments
+parse_version_minor () { echo "${1}" | xargs -n1 | grep -oP '(^\d*\.\d*)' | sort -uV; }
 
 #
 # py_required_vesion() and python_get_module_from_string() needs a refactor,

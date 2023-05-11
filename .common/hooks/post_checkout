@@ -7,7 +7,7 @@ echo '--- post_checkout ---'
 
 [ ! -d "${DATA_DIR}" ] && mkdir -p "${DATA_DIR}"
 
-cat "${ARCH_YAML}" > "${CONFIG_YAML}"
+cat "${ARCH_YAML}" > "${CONFIG_YAML}" || exit 0
 
 ## parse arch config
 #

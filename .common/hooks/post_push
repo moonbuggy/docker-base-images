@@ -85,10 +85,19 @@ fi
 echo
 
 # push README.md
-if [ ! -z "${PUSH_README}" ] && [ -f "./README.md" ]; then
-	echo "Pushing README.md.."
-	docker pushrm "${DOCKER_REPO}" -f ./README.md
+if [ -f "./README.md" ]; then
+	if [ -n "${NO_PUSH}" ]; then
+		echo "NO_PUSH is set, not pushing README.md."
+	elif [ -n "${NO_POST_PUSH+set}" ]; then
+		echo "NO_POST_PUSH is set, not pushing README.md."
+	else
+		echo "Pushing README.md.."
+		docker pushrm "${DOCKER_REPO}" -f ./README.md
+	fi
+else
+	echo "No README.md to push."
 fi
+echo
 
 ##	call any post_push_end() from build.conf
 #

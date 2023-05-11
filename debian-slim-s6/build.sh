@@ -7,7 +7,9 @@
 
 DOCKER_REPO="${DOCKER_REPO:-moonbuggy2000/debian-slim-s6}"
 
-all_tags='jessie stretch buster bullseye'
-default_tag='buster'
+#all_tags='jessie stretch buster bullseye'
+default_tag='bullseye'
+
+TARGET_VERSION_TYPE='major'
 
 . "hooks/.build.sh"
