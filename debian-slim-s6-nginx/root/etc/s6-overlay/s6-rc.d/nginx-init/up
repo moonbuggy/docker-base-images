@@ -1,5 +1,6 @@
 with-contenv
 
+
 ## set PUID/GUID
 #
 importas -D "1000" PUID PUID
@@ -14,11 +15,11 @@ foreground { usermod -o -u "${PUID}" -g "${PGID}" www-data }
 #
 importas -D "/var/www/html" WEB_ROOT WEB_ROOT
 
-ifelse -nX { test -d "${WEB_ROOT}" } { mkdir -p "${WEB_ROOT}" }
+foreground { if -nX { test -d "${WEB_ROOT}" } mkdir -p "${WEB_ROOT}" }
 foreground { chown -R ${PUID}:${PGID} ${WEB_ROOT} }
 
-ifelse -nX { test -d "/var/lib/nginx" }
-	{ mkdir -p /var/lib/nginx }
+foreground { if -nX { test -d "/var/lib/nginx" } mkdir -p /var/lib/nginx }
+
 foreground { chown -R ${PUID}:${PGID} /var/lib/nginx }
 
 
@@ -30,7 +31,7 @@ background { echo "nginx-init: info: set nginx port: ${NGINX_PORT}" }
 background { echo "nginx-init: info: set nginx web root: ${WEB_ROOT}" }
 
 foreground { sed -E -i /etc/nginx/http.d/default.conf
-	-e "s|^(\\s+listen\\D+)(\\d+)(\\D.*)|\\1${NGINX_PORT}\\3|g"
+	-e "s|^(\\s+listen[^0-9]+)([0-9]+)|\\1${NGINX_PORT}|g"
 	-e "s|^\\s+root.*|\\troot\\t\\t${WEB_ROOT};|g" }
 
 importas -D "" NGINX_INDEX NGINX_INDEX
