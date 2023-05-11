@@ -11,9 +11,7 @@ SOURCE_REPO='moonbuggy2000/debian-slim-s6'
 all_tags='latest'
 default_tag='latest'
 
-custom_repo_latest() {
-  echo "${REPO_VERSIONS}" | xargs -n1 | grep -Po "(${1}[\.\d]+)" | sort -uV | tail -n1
-}
+TARGET_VERSION_TYPE='custom'
 
 ## get the latest package version from the APT repo
 #
@@ -24,9 +22,11 @@ custom_source_latest() {
     1.22*)  deb_release='bookworm'  ;;
   esac
 
-  echo "$(debian_package_version 'nginx' "${deb_release}" | cut -d'-' -f1)"
+  echo "$(debian_package_version 'nginx' "${deb_release}" | cut -d'-' -f1,2)"
 }
 
-TARGET_VERSION_TYPE='custom'
+custom_repo_latest()  {
+  echo "${REPO_TAGS}" | xargs -n1 | grep -Po "(^${1}\.[\.0-9]*)(-[\.0-9]*)(?=-)" | sort -uV | tail -n1
+}
 
 . "hooks/.build.sh"

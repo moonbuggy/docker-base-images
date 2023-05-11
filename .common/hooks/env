@@ -491,10 +491,10 @@ get_manifest() {
 		# pretty_manifest_cmd="$(echo "${manifest_cmd[*]}" | sed -r -e "s/(--)/\\\ \n\t\1/g")"
 		# >&2 printf '\n--- manifest command ---\n%s\n' "${pretty_manifest_cmd}"
 
-
+		# the spinner used in this way prevents 'error' being set
 		local error
-		error="$("${manifest_cmd[@]}" 2>&1 1>"${manifest_file}")" &
-		>&2 spinner
+		error="$("${manifest_cmd[@]}" 2>&1 1>"${manifest_file}")" #&
+		# >&2 spinner
 
 		# if there's an error try and determine the cause so we can decide whether to
 		# cache the failure by keeping the empty manifest file:
