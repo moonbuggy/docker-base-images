@@ -1,0 +1,89 @@
+with-contenv
+
+## unlink the default 'unconfigured' config, since we're working directly with
+## the main config file and don't want it overriden
+#
+background { rm -f /etc/lighttpd/conf-enabled/99-unconfigured.conf }
+
+## set PUID/GUID
+#
+importas -D "1000" PUID PUID
+importas -D "1000" PGID PGID
+background { echo "lighttpd-init: info: uid: ${PUID}, gid: ${PGID}" }
+foreground { groupmod -o -g "${PGID}" www-data }
+foreground { usermod -o -u "${PUID}" -g "${PGID}" www-data }
+
+## fix permissions and ownership
+#
+importas -D "/var/www/html" WEB_ROOT WEB_ROOT
+foreground { if -nX { test -d "${WEB_ROOT}" } mkdir -p "${WEB_ROOT}" }
+foreground { chown -R ${PUID}:${PGID} ${WEB_ROOT} }
+foreground { chown -R ${PUID}:${PGID} /var/cache/lighttpd }
+foreground { chmod 0777 /dev/stderr }
+
+## server configuration
+#
+importas -D "8080" LIGHTTPD_PORT LIGHTTPD_PORT
+
+background { echo "lighttpd-init: info: set lighttpd port: ${LIGHTTPD_PORT}" }
+background { echo "lighttpd-init: info: set lighttpd web root: ${WEB_ROOT}" }
+
+foreground { sed -E -i /etc/lighttpd/lighttpd.conf
+	-e "s|(server\\.port\\s*=\\s*).*|\\1${LIGHTTPD_PORT}|"
+	-e "s|(server\\.document-root\\s*=\\s*).*|\\1\"${WEB_ROOT}\"|" }
+
+## set the index files
+#
+importas -D "index.html index.htm index.lighttpd.html" LIGHTTPD_INDEX LIGHTTPD_INDEX
+foreground {
+	backtick indexes {
+		pipeline { echo "\"${LIGHTTPD_INDEX}\"" } sed -Ee "s|\\s|\", \"|g" }
+	importas indexes indexes
+
+	foreground { sed -E -i /etc/lighttpd/lighttpd.conf
+		-e "s|(index-file\\.names\\s*=\\s*).*|\\1( ${indexes} )|" }
+	echo "lighttpd-init: info: set lighttpd index: ${LIGHTTPD_INDEX}"
+}
+
+## log to stderr
+#
+foreground {
+	sed -E -i /etc/lighttpd/lighttpd.conf
+		-e "s|(server\\.errorlog\\s*=\\s*).*|\\1\"/dev/stderr\"|"
+}
+
+## enable access logs
+#
+importas -D "" LIGHTTPD_ACCESS_LOG LIGHTTPD_ACCESS_LOG
+if -Xt { test -n "${LIGHTTPD_ACCESS_LOG}" }
+	foreground {
+		backtick log_setting { pipeline { echo "${LIGHTTPD_ACCESS_LOG}" } tr '[A-Z]' '[a-z]' }
+		importas log_setting log_setting
+
+		case ${log_setting} {
+			"yes|true|on" {
+				foreground { echo "lighttpd-init: info: LIGHTTPD_ACCESS_LOG enabled" }
+				ln -s "/etc/lighttpd/conf-available/10-accesslog.conf" "/etc/lighttpd/conf-enabled/10-accesslog.conf"
+			}
+		}
+		echo "lighttpd-init: info: LIGHTTPD_ACCESS_LOG disabled"
+	}
+
+## enable debug logs
+#
+importas -D "" LIGHTTPD_DEBUG_LOG LIGHTTPD_DEBUG_LOG
+
+if -Xt { test -n "${LIGHTTPD_DEBUG_LOG}" }
+	foreground {
+		backtick log_setting {
+			pipeline { echo "${LIGHTTPD_DEBUG_LOG}" } tr '[A-Z]' '[a-z]' }
+		importas log_setting log_setting
+
+		case ${log_setting} {
+			"yes|true|on" {
+				foreground { echo "lighttpd-init: info: LIGHTTPD_DEBUG_LOG enabled" }
+				ln -s "/etc/lighttpd/conf-available/10-debuglog.conf""/etc/lighttpd/conf-enabled/10-debuglog.conf"
+			}
+		}
+		echo "lighttpd-init: info: LIGHTTPD_DEBUG_LOG disabled"
+	}
