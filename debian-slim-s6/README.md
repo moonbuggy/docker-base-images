@@ -7,7 +7,7 @@
 *   `11`, `11.7`, `11.7-bullseye`, `bullseye`
 
 ## Environment
-*   `TZ`          - timezone
+*   `TZ`            - set timezone
 
 ## Links
 GitHub: <https://github.com/moonbuggy/docker-base-images>

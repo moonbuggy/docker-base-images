@@ -1,27 +1,41 @@
 with-contenv
 
+importas -D "" PHP_VERSION PHP_VERSION
+define php_ini "/etc/php/${PHP_VERSION}/fpm/php.ini"
+ifelse -Xn { test -f "${php_ini}" } {
+	foreground { echo "php-fpm-init: ERROR: can't find PHP config: ${php_ini}" }
+	exit 1
+}
+
 #	configure timezone
 #
-foreground
-{
+foreground {
 	importas -D "" TZ TZ
-	ifelse -X { test -n "${TZ}" }
-	{
-		importas -D "" PHP_VERSION PHP_VERSION
-		define php_ini "/etc/php/${PHP_VERSION}/fpm/php.ini"
-
-		ifelse -Xn { test -f "${php_ini}" }
-		{
-			foreground { echo "php-fpm-init: ERROR: can't find PHP config: ${php_ini}" }
-			exit 1
-		}
+	ifelse -X { test -n "${TZ}" } {
 		foreground { sed -E -i "${php_ini}" -e "s|^;?\\s*date\\.timezone.*|date.timezone = ${TZ}|g" }
 		echo "php-fpm-init: info: set timezone: ${TZ}"
 	}
 }
 
-# this is done in nginx-init
+# make 'phpinfo.php' in the web root, for testing
 #
-# importas -D "index.php index.html index.htm" NGINX_INDEX NGINX_INDEX
-# foreground { sed -E -i /etc/nginx/http.d/default.conf -e "s|^\\s+index.*|\\tindex\\t\\t${NGINX_INDEX};|g" }
-# echo "nginx-init: info: set nginx index: ${NGINX_INDEX}"
+importas -D "" MAKE_PHPINFO MAKE_PHPINFO
+if -Xt { test -n "${MAKE_PHPINFO}" }
+	foreground {
+		backtick make_phpinfo { pipeline { echo "${MAKE_PHPINFO}" } tr '[A-Z]' '[a-z]' }
+		importas make_phpinfo make_phpinfo
+		case ${make_phpinfo} {
+			"yes|true|on" {
+				foreground { echo "php-fpm-init: info: MAKE_PHPINFO enabled" }
+				importas -D "/var/www/html" WEB_ROOT WEB_ROOT
+				foreground {
+					redirfd -a 1 "${WEB_ROOT}/phpinfo.php"
+					echo "<?php phpinfo(); ?>"
+				}
+				importas -D "1000" PUID PUID
+				importas -D "1000" PGID PGID
+				foreground { chown -R ${PUID}:${PGID} "${WEB_ROOT}/phpinfo.php" }
+			}
+		}
+		echo "php-fpm-init: info: MAKE_PHPINFO desabled"
+	}

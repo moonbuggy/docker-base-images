@@ -12,7 +12,7 @@
 *   `NGINX_INDEX`   - index files (default: `index.html index.htm`)
 *   `NGINX_PORT`    - default: `8080`
 *   `WEB_ROOT`      - default: `/var/www/html`
-*   `TZ`            - set timezone
+*   `TZ`            - set timezone in OS
 
 ## Links
 GitHub: <https://github.com/moonbuggy/docker-base-images>
