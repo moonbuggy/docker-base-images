@@ -11,7 +11,9 @@ set_repo_data () {
 	eval_param_ifn REPO_TAGS "docker_api_repo_tags ${DOCKER_REPO}"
 	# if this is a new image there won't be any repo tags to pull.
 	if [ ! -z "${REPO_TAGS}" ]; then
-		eval_param_ifn 'REPO_VERSIONS' "echo \"${REPO_TAGS}\" | xargs -n1 | grep -Eo \"${VERSION_REGEX//\\/\\\\}\" | sort -uV | xargs"
+		ifFunc 'custom_repo_versions' \
+			&& eval_param_ifn 'REPO_VERSIONS' "custom_repo_versions \"${DOCKER_TAGS}\"" \
+			|| eval_param_ifn 'REPO_VERSIONS' "echo \"${REPO_TAGS}\" | xargs -n1 | grep -Eo \"${VERSION_REGEX//\\/\\\\}\" | sort -uV | xargs"
 		eval_param_ifn 'REPO_MAJOR_VERSIONS' "parse_version_major \"${REPO_VERSIONS}\""
 		eval_param_ifn 'REPO_MINOR_VERSIONS' "parse_version_minor \"${REPO_VERSIONS}\""
 	else
@@ -87,7 +89,7 @@ check_updates () {
 		major)	vers="$(parse_version_major "${1}")"	;;
 		*)
 			ifFunc 'custom_versions' \
-				&& target_versions="$(custom_versions "${1}")" \
+				&& vers="$(custom_versions "${1}")" \
 				|| vers="${1}"
 			;;
 	esac

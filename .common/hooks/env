@@ -11,6 +11,10 @@ IMPORTS_DIR='.imports'
 ARCH_YAML='arch.yaml'
 CONFIG_YAML="${CONFIG_YAML_OVERRIDE:-${DATA_DIR}/config.${DOCKER_TAG}${CONFIG_SUFFIX}.yaml}"
 
+# names of debian releases
+debian_names=('null' 'buzz' 'hamm' 'woody' 'etch' 'lenny' 'squeeze' 'wheezy' 'jessie' 'stretch' 'buster' 'bullseye' 'bookworm' 'trixie')
+
+
 #BUILD_PLATFORM_ARG='true'
 
 # 1 day
@@ -186,8 +190,8 @@ debian_package_version () {
 	fi
 
 	# either of these works
-#	package_version="$(get_url "https://sources.debian.org/api/src/${package}/" | grep -oP "\"suites\"[^}]*${debian_release}\"[^}]*version\D*\K[0-9\.\-]*")"
-	package_version="$(get_url "https://sources.debian.org/api/src/${package}/${debian_release}/" | grep -oP 'version"\:"\K([^\"]*)' | cut -d'+' -f1)"
+	package_version="$(get_url "https://sources.debian.org/api/src/${package}/" | grep -oP "\"suites\"[^}]*${debian_release}\"[^}]*version\D*\K[0-9\.\-]*")"
+	# package_version="$(get_url "https://sources.debian.org/api/src/${package}/${debian_release}/" | grep -oP 'version"\:"\K([^\"]*)' | cut -d'+' -f1)"
 
 	echo "${package_version}"
 }

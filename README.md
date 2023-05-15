@@ -34,6 +34,7 @@ Docker Hub:
 *   <https://hub.docker.com/r/moonbuggy2000/debian-builder>
 *   <https://hub.docker.com/r/moonbuggy2000/debian-slim-s6>
 *   <https://hub.docker.com/r/moonbuggy2000/debian-slim-s6-lighttpd>
+*   <https://hub.docker.com/r/moonbuggy2000/debian-slim-s6-lighttpd-php-cgi>
 *   <https://hub.docker.com/r/moonbuggy2000/debian-slim-s6-nginx>
 *   <https://hub.docker.com/r/moonbuggy2000/debian-slim-s6-nginx-php-fpm>
 *   <https://hub.docker.com/r/moonbuggy2000/debian-slim-s6-pypy>
