@@ -6,12 +6,7 @@ ARG FROM_IMAGE="python:${BUILD_PYTHON_VERSION}-alpine"
 
 ## build the image
 #
-FROM "${FROM_IMAGE}"
-
-# QEMU static binaries from pre_build
-ARG QEMU_DIR=""
-ARG QEMU_ARCH=""
-COPY _dummyfile "${QEMU_DIR}/qemu-${QEMU_ARCH}-static*" /usr/bin/
+FROM --platform="${TARGETPLATFORM}" "${FROM_IMAGE}"
 
 ARG BUILD_PYTHON_VERSION
 
@@ -51,6 +46,11 @@ ENV	VIRTUAL_ENV="${BUILDER_ROOT}/venv" \
 		PYTHONDONTWRITEBYTECODE="1" \
 		MAKEFLAGS="-j$(nproc)"
 
+ARG PYPI_INDEX="https://pypi.org/simple"
+RUN printf '%s\n' '[global]' "  index-url = ${PYPI_INDEX}" \
+	"  trusted-host = $(echo "${PYPI_INDEX}" | cut -d'/' -f3 | cut -d':' -f1)" \
+	> /etc/pip.conf
+
 RUN python -m pip install --upgrade virtualenv
 
 RUN python -m virtualenv --download "${VIRTUAL_ENV}"
@@ -68,12 +68,10 @@ ENV LIBSODIUM_MAKE_ARGS="-j4"
 
 RUN python3 -m pip install --no-cache-dir --upgrade pip \
 	&& python3 -m pip install --no-cache-dir --find-links "/${IMPORTS_DIR}/" \
-		nuitka=="${NUITKA_VERSION}" \
-		orderedset
+		nuitka=="${NUITKA_VERSION}"
+		# orderedset
 
 # cleanup, if we're squashing
 RUN rm -rf "/${IMPORTS_DIR}/"
 
 ENTRYPOINT ["python3","-m","nuitka"]
-
-# in this case retain the QEMU start binaries

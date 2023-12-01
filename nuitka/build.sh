@@ -7,7 +7,7 @@
 
 DOCKER_REPO="${DOCKER_REPO:-moonbuggy2000/nuitka}"
 
-python_versions='3.8 3.9 3.10'
+python_versions='3.8 3.9 3.10 3.11 3.12'
 
 all_alpine=""
 all_debian=""
