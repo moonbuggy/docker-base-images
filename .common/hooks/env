@@ -81,17 +81,20 @@ eval_print_param () {
 eval_param_ifn () {
 	local param
 	local command
+	local value
 
 	param="${1}"
 	IFS=' ' read -a command <<< "${2}"
 
 	if [ -z "${!param}" ]; then
-		eval_param "${param}" "${command[*]}"
+		value="$(eval "${command[*]}")"
 	else
 		# [ ! -z "${DEBUG+set}" ] \
 		# 	&& >&2 echo "eval_param_ifn: value exists"
-		add_param "${!param}" "${param}"
+		value="${!param}"
 	fi
+
+	add_param "${value}" "${param}"
 }
 
 eval_print_param_ifn () {
