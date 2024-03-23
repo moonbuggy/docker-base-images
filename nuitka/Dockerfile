@@ -1,8 +1,8 @@
-#ARG ALPINE_VERSION="3.13"
+ARG ALPINE_VERSION="3.18"
 ARG BUILD_PYTHON_VERSION="3.9"
-ARG NUITKA_VERSION="1.1.3"
+ARG NUITKA_VERSION="2.1.2"
 
-ARG FROM_IMAGE="python:${BUILD_PYTHON_VERSION}-alpine"
+ARG FROM_IMAGE="python:${BUILD_PYTHON_VERSION}-alpine${ALPINE_VERSION}"
 
 ## build the image
 #
@@ -10,8 +10,20 @@ FROM --platform="${TARGETPLATFORM}" "${FROM_IMAGE}"
 
 ARG BUILD_PYTHON_VERSION
 
+# use a local APK caching proxy, if one is provided
+ARG APK_PROXY=""
+ARG ALPINE_VERSION
+RUN if [ ! -z "${APK_PROXY}" ]; then \
+		mv /etc/apk/repositories /etc/apk/repositories.bak; \
+		echo "${APK_PROXY}/alpine/v${ALPINE_VERSION}/main" >/etc/apk/repositories; \
+		echo "${APK_PROXY}/alpine/v${ALPINE_VERSION}/community" >>/etc/apk/repositories; \
+	fi
+
+# break up the layers to make pushing easier
+RUN apk add --no-cache gcc
+
 # rust-stdlib accounts for roughly half the final image's size
-# putting it in a separate layers should make pushes to Docker Hub more reliable
+# putting it in a separate layer should make pushes to Docker Hub more reliable
 RUN apk add --no-cache rust-stdlib
 
 RUN apk add --no-cache \
@@ -19,7 +31,6 @@ RUN apk add --no-cache \
 		ccache \
 		chrpath \
 		clang \
-		gcc \
 		libffi-dev \
 		make \
 		musl-dev \
@@ -69,9 +80,14 @@ ENV LIBSODIUM_MAKE_ARGS="-j4"
 RUN python3 -m pip install --no-cache-dir --upgrade pip \
 	&& python3 -m pip install --no-cache-dir --find-links "/${IMPORTS_DIR}/" \
 		nuitka=="${NUITKA_VERSION}"
-		# orderedset
 
 # cleanup, if we're squashing
 RUN rm -rf "/${IMPORTS_DIR}/"
+
+# remove the PyPi index and APK proxy, if they've been added
+RUN rm -f /etc/pip.conf >/dev/null 2>&1 || true
+RUN [ -f /etc/apk/repositories.bak ] \
+	&& mv /etc/apk/repositories.bak /etc/apk/repositories \
+	|| true
 
 ENTRYPOINT ["python3","-m","nuitka"]
