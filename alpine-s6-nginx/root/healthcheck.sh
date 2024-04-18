@@ -1,4 +1,5 @@
 #! /usr/bin/with-contenv /bin/sh
+# shellcheck shell=sh
 
 nginx="$(wget -qO- http://localhost:${NGINX_PORT:-8080}/nginx-ping)"
 

@@ -15,7 +15,15 @@ ARG BUILD_DIR=/build
 
 WORKDIR "${BUILD_DIR}"
 
-RUN apk -U add --no-cache \
+# use a local APK caching proxy, if one is provided
+ARG APK_PROXY=""
+ARG ALPINE_MINOR
+RUN if [ ! -z "${APK_PROXY}" ]; then \
+    mv /etc/apk/repositories /etc/apk/repositories.bak; \
+		echo "${APK_PROXY}/alpine/v${ALPINE_MINOR}/main" >/etc/apk/repositories; \
+		echo "${APK_PROXY}/alpine/v${ALPINE_MINOR}/community" >>/etc/apk/repositories; \
+	fi \
+  && apk -U add --no-cache \
 		alpine-sdk \
 		autoconf \
 		bison \
@@ -30,7 +38,8 @@ RUN apk -U add --no-cache \
 	&& chmod g+w /var/cache/distfiles/ \
 	&& echo "builder	ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers \
 	&& echo "Set disable_coredump false" >> /etc/sudo.conf \
-	&& abuild-keygen -a -i -n
+	&& abuild-keygen -a -i -n \
+  && (mv -f /etc/apk/repositories.bak /etc/apk/repositories || true)
 
 #USER builder
 

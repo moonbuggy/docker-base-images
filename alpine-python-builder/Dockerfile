@@ -71,9 +71,7 @@ RUN python -m pip install --upgrade pip
 RUN python -m pip install auditwheel
 
 # remove the PyPi index and APK proxy, if they've been added
-RUN rm -f /etc/pip.conf >/dev/null 2>&1 || true
-RUN [ -f /etc/apk/repositories.bak ] \
-	&& cp /etc/apk/repositories.bak /etc/apk/repositories \
-	|| true
+RUN (rm -f /etc/pip.conf >/dev/null 2>&1 || true) \
+	&& (mv -f /etc/apk/repositories.bak /etc/apk/repositories || true)
 
 CMD ["/bin/ash"]

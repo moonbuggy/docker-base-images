@@ -69,7 +69,7 @@ RUN python3 -m pip install --no-cache-dir --upgrade pip \
 		nuitka=="${NUITKA_VERSION}"
 
 # remove the PyPi index and APT proxy, if they've been added
-RUN rm -f /etc/pip.conf >/dev/null 2>&1 || true
-RUN rm -f /etc/apt/apt.conf.d/proxy 2>&1 || true
+RUN (rm -f /etc/pip.conf >/dev/null 2>&1 || true) \
+	&& (rm -f /etc/apt/apt.conf.d/proxy 2>&1 || true)
 
 ENTRYPOINT ["python3","-m","nuitka"]

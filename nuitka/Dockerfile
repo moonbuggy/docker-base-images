@@ -85,9 +85,7 @@ RUN python3 -m pip install --no-cache-dir --upgrade pip \
 RUN rm -rf "/${IMPORTS_DIR}/"
 
 # remove the PyPi index and APK proxy, if they've been added
-RUN rm -f /etc/pip.conf >/dev/null 2>&1 || true
-RUN [ -f /etc/apk/repositories.bak ] \
-	&& mv /etc/apk/repositories.bak /etc/apk/repositories \
-	|| true
+RUN (rm -f /etc/pip.conf >/dev/null 2>&1 || true) \
+	&& (mv -f /etc/apk/repositories.bak /etc/apk/repositories || true)
 
 ENTRYPOINT ["python3","-m","nuitka"]

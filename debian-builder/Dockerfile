@@ -14,7 +14,11 @@ ARG BUILD_DIR="/build"
 ARG PUID="${PUID:-1000}"
 ARG GUID="${GUID:-1000}"
 
-RUN apt-get update && apt-get install -qy --no-install-recommends \
+# use a local APT caching proxy, if one is provided
+ARG APT_CACHE=""
+RUN if [ ! -z "${APT_CACHE}" ]; then \
+		echo "Acquire::http { Proxy \"${APT_CACHE}\"; }" > /etc/apt/apt.conf.d/proxy; fi \
+	&& apt-get update && apt-get install -qy --no-install-recommends \
 		autoconf \
 		bison \
 		build-essential \
@@ -25,7 +29,8 @@ RUN apt-get update && apt-get install -qy --no-install-recommends \
 	&& rm -rf /var/lib/apt/lists/* \
 	&& addgroup --system --gid "${GUID}" builder \
 	&& adduser --system --uid "${PUID}" --home "${BUILD_DIR}" --ingroup builder builder \
-	&& echo "builder	ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+	&& echo "builder	ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers \
+	&& (rm -f /etc/apt/apt.conf.d/proxy 2>&1 || true)
 
 WORKDIR "${BUILD_DIR}"
 #USER builder

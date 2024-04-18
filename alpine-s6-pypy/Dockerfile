@@ -16,7 +16,17 @@ FROM "moonbuggy2000/s6-overlay:${S6_VERSION}-${S6_ARCH}" AS s6-overlay
 FROM "${FROM_IMAGE}"
 
 # enable use of TZ enviornment variable
-RUN apk -U add --no-cache tzdata
+# use a local APK caching proxy, if one is provided
+ARG APK_PROXY=""
+ARG ALPINE_MINOR
+RUN if [ ! -z "${APK_PROXY}" ]; then \
+    mv /etc/apk/repositories /etc/apk/repositories.bak; \
+		echo "${APK_PROXY}/alpine/v${ALPINE_MINOR}/main" >/etc/apk/repositories; \
+		echo "${APK_PROXY}/alpine/v${ALPINE_MINOR}/community" >>/etc/apk/repositories; \
+	fi \
+  && apk -U add --no-cache \
+    tzdata \
+  && (mv -f /etc/apk/repositories.bak /etc/apk/repositories || true)
 
 COPY --from=s6-overlay / /
 COPY ./root /

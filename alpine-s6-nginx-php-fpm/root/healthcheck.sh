@@ -1,4 +1,5 @@
 #! /usr/bin/with-contenv /bin/sh
+# shellcheck shell=sh
 
 php_fpm="$(wget -qO- http://localhost:${NGINX_PORT:-8080}/fpm-ping)"
 

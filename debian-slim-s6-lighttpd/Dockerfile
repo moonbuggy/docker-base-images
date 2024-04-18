@@ -9,7 +9,11 @@ FROM "${FROM_IMAGE}"
 
 ARG LIGHTTPD_VERSION="1.4.59"
 ARG	WEB_ROOT="/var/www/html"
+# use a local APT caching proxy, if one is provided
+ARG APT_CACHE=""
 RUN export DEBIAN_FRONTEND="noninteractive" \
+	&& if [ ! -z "${APT_CACHE}" ]; then \
+		echo "Acquire::http { Proxy \"${APT_CACHE}\"; }" > /etc/apt/apt.conf.d/proxy; fi \
 	&& apt update \
 	&& apt-get install -qy --no-install-recommends \
 		lighttpd="${LIGHTTPD_VERSION}*" \
@@ -18,7 +22,8 @@ RUN export DEBIAN_FRONTEND="noninteractive" \
 	&& rm -rf /var/www/localhost >/dev/null 2>&1 \
 	&& mkdir -p "${WEB_ROOT}" \
 	&& chown -R www-data:www-data "${WEB_ROOT}" \
-	&& add-contenv LIGHTTPD_VERSION="${LIGHTTPD_VERSION}"
+	&& add-contenv LIGHTTPD_VERSION="${LIGHTTPD_VERSION}" \
+	&& (rm -f /etc/apt/apt.conf.d/proxy 2>&1 || true)
 
 COPY root/ /
 

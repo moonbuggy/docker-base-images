@@ -8,7 +8,7 @@
 
 DOCKER_REPO="${DOCKER_REPO:-moonbuggy2000/alpine-s6-nginx-php-fpm}"
 
-# all_tags='5.6 7.2 7.3 7.4 8.0 8.1'
+# all_tags='5.6 7.2 7.3 7.4 8.0 8.1 8.2 8.3'
 default_tag='latest'
 
 TARGET_VERSION_TYPE='custom'

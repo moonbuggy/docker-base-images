@@ -46,12 +46,18 @@ RUN ln -sf "../../../${PYPY_DIR}/bin/${PYPY_PACKAGE}" "./${PYPY_PACKAGE}" \
 #
 FROM "${FROM_IMAGE}"
 
+# use a local APT caching proxy, if one is provided
+ARG APT_CACHE=""
+
 RUN export DEBIAN_FRONTEND="noninteractive" \
+	&& if [ ! -z "${APT_CACHE}" ]; then \
+		echo "Acquire::http { Proxy \"${APT_CACHE}\"; }" > /etc/apt/apt.conf.d/proxy; fi \
 	&& apt update \
 	&& apt-get install -qy --no-install-recommends \
 		libexpat1 \
 		libtinfo5 \
-	&& apt-get clean
+	&& apt-get clean \
+	&& (rm -f /etc/apt/apt.conf.d/proxy 2>&1 || true)
 
 COPY --from=fetcher /fetcher-root/ /
 

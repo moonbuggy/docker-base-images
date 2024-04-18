@@ -9,7 +9,16 @@ FROM "${FROM_IMAGE}"
 
 ARG NGINX_VERSION="1.22"
 ARG	WEB_ROOT="/var/www/html"
-RUN apk -U add --no-cache \
+
+# use a local APK caching proxy, if one is provided
+ARG APK_PROXY=""
+ARG ALPINE_MINOR
+RUN if [ ! -z "${APK_PROXY}" ]; then \
+    mv /etc/apk/repositories /etc/apk/repositories.bak; \
+		echo "${APK_PROXY}/alpine/v${ALPINE_MINOR}/main" >/etc/apk/repositories; \
+		echo "${APK_PROXY}/alpine/v${ALPINE_MINOR}/community" >>/etc/apk/repositories; \
+	fi \
+	&& apk -U add --no-cache \
 		nginx=~"${NGINX_VERSION}" \
 		shadow \
 	&& rm -rf /etc/nginx/conf.d 2>/dev/null \
@@ -19,7 +28,8 @@ RUN apk -U add --no-cache \
 	&& adduser -DH -G www-data www-data \
 	&& chown -R www-data:www-data "${WEB_ROOT}" \
 	&& chown -R www-data:www-data /var/lib/nginx \
-  && add-contenv NGINX_VERSION="${NGINX_VERSION}"
+  && add-contenv NGINX_VERSION="${NGINX_VERSION}" \
+  && (mv -f /etc/apk/repositories.bak /etc/apk/repositories || true)
 
 COPY root/ /
 
