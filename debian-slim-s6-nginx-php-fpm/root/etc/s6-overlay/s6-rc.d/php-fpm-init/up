@@ -1,7 +1,11 @@
 with-contenv
 
+## find the 'php.ini' and 'www.conf' files
+#
 importas -D "" PHP_VERSION PHP_VERSION
 define php_ini "/etc/php/${PHP_VERSION}/fpm/php.ini"
+define www_conf "/etc/php/${PHP_VERSION}/fpm/pool.d/www.conf"
+
 ifelse -Xn { test -f "${php_ini}" } {
 	foreground { echo "php-fpm-init: ERROR: can't find PHP config: ${php_ini}" }
 	exit 1
@@ -19,23 +23,47 @@ foreground {
 
 # make 'phpinfo.php' in the web root, for testing
 #
-importas -D "" MAKE_PHPINFO MAKE_PHPINFO
-if -Xt { test -n "${MAKE_PHPINFO}" }
-	foreground {
-		backtick make_phpinfo { pipeline { echo "${MAKE_PHPINFO}" } tr '[A-Z]' '[a-z]' }
-		importas make_phpinfo make_phpinfo
-		case ${make_phpinfo} {
-			"yes|true|on" {
-				foreground { echo "php-fpm-init: info: MAKE_PHPINFO enabled" }
-				importas -D "/var/www/html" WEB_ROOT WEB_ROOT
-				foreground {
-					redirfd -a 1 "${WEB_ROOT}/phpinfo.php"
-					echo "<?php phpinfo(); ?>"
+foreground {
+	importas -D "" MAKE_PHPINFO MAKE_PHPINFO
+	if -Xt { test -n "${MAKE_PHPINFO}" }
+		foreground {
+			backtick make_phpinfo { pipeline { echo "${MAKE_PHPINFO}" } tr '[A-Z]' '[a-z]' }
+			importas make_phpinfo make_phpinfo
+			case ${make_phpinfo} {
+				"yes|true|on" {
+					background { echo "php-fpm-init: info: MAKE_PHPINFO: true" }
+					importas -D "/var/www/html" WEB_ROOT WEB_ROOT
+					foreground {
+						redirfd -a 1 "${WEB_ROOT}/phpinfo.php"
+						echo "<?php phpinfo(); ?>"
+					}
+					importas -D "1000" PUID PUID
+					importas -D "1000" PGID PGID
+					foreground { chown -R ${PUID}:${PGID} "${WEB_ROOT}/phpinfo.php" }
 				}
-				importas -D "1000" PUID PUID
-				importas -D "1000" PGID PGID
-				foreground { chown -R ${PUID}:${PGID} "${WEB_ROOT}/phpinfo.php" }
+			}
+			echo "php-fpm-init: info: MAKE_PHPINFO: false"
+		}
+}
+
+# enable or disable clear_env
+#
+ifelse -Xn { test -f "${www_conf}" } {
+	foreground { echo "php-fpm-init: ERROR: can't find PHP config: ${www_conf}" }
+	exit 1
+}
+
+importas -D "" PHP_CLEAR_ENV PHP_CLEAR_ENV
+if -Xt { test -n "${MAKE_PHP_CLEAR_ENV}" }
+	foreground {
+		backtick php_clear_env { pipeline { echo "${PHP_CLEAR_ENV}" } tr '[A-Z]' '[a-z]' }
+		importas php_clear_env php_clear_env
+		case ${php_clear_env} {
+			"no|false|off" {
+				background { echo "php-fpm-init: info: PHP_CLEAR_ENV: false" }
+				foreground { sed -E -i "${www_conf}" -e "s|^\\s*;?\\s*clear_env.*|clear_env = no|g" }
 			}
 		}
-		echo "php-fpm-init: info: MAKE_PHPINFO desabled"
+		background { echo "php-fpm-init: info: PHP_CLEAR_ENV: true" }
+		foreground { sed -E -i "${www_conf}" -e "s|^\\s*;?\\s*clear_env.*|clear_env = yes|g" }
 	}
