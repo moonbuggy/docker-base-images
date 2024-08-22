@@ -2,14 +2,16 @@ ARG ALPINE_VERSION="3.13.2"
 ARG SOURCE_TAG="${ALPINE_VERSION}"
 ARG FROM_IMAGE="alpine:${ALPINE_VERSION}"
 
+ARG QEMU_ARCH="arm"
+
 ## build the image
 #
+FROM multiarch/qemu-user-static:x86_64-${QEMU_ARCH} AS qemu
 FROM "${FROM_IMAGE}"
 
 # QEMU static binaries from pre_build
-ARG QEMU_DIR
 ARG QEMU_ARCH
-COPY _dummyfile "${QEMU_DIR}/qemu-${QEMU_ARCH}-static*" /usr/bin/
+COPY --from=qemu /usr/bin/qemu-${QEMU_ARCH}-static /usr/bin
 
 ARG BUILD_DIR=/build
 
