@@ -30,7 +30,7 @@ RUN if [ ! -z "${APT_CACHE}" ]; then \
 	&& addgroup --system --gid "${GUID}" builder \
 	&& adduser --system --uid "${PUID}" --home "${BUILD_DIR}" --ingroup builder builder \
 	&& echo "builder	ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers \
-	&& (rm -f /etc/apt/apt.conf.d/proxy 2>&1 || true)
+	&& (rm -f /etc/apt/apt.conf.d/proxy >/dev/null 2>&1 || true)
 
 WORKDIR "${BUILD_DIR}"
 #USER builder

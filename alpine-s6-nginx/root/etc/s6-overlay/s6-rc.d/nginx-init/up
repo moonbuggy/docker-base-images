@@ -15,29 +15,42 @@ foreground { usermod -o -u "${PUID}" -g "${PGID}" www-data }
 #
 importas -D "/var/www/html" WEB_ROOT WEB_ROOT
 
-foreground { if -nX { test -d "${WEB_ROOT}" } mkdir -p "${WEB_ROOT}" }
-foreground { chown -R ${PUID}:${PGID} ${WEB_ROOT} }
+foreground { if -nX { eltest -d "${WEB_ROOT}" } mkdir -p "${WEB_ROOT}" }
+foreground { if -nX { eltest -d "/var/lib/nginx" } mkdir -p /var/lib/nginx }
 
-foreground { if -nX { test -d "/var/lib/nginx" } mkdir -p /var/lib/nginx }
-
-foreground { chown -R ${PUID}:${PGID} /var/lib/nginx }
+# this is really slow for large sites, so it's probably best not to do it by
+# default and let the downstream images deal with it if it's necessary
+importas -D "" FIX_PERMISSIONS FIX_PERMISSIONS
+if -Xt { eltest -n "${FIX_PERMISSIONS}" }
+	foreground {
+		backtick perms_setting { pipeline { echo "${FIX_PERMISSIONS}" } tr '[A-Z]' '[a-z]' }
+		importas perms_setting perms_setting
+		case ${perms_setting} {
+			"yes|true|on" {
+				foreground { echo "nginx-init: info: fixing permissions: ${WEB_ROOT}" }
+				foreground { chown -R ${PUID}:${PGID} ${WEB_ROOT} }
+				foreground { echo "nginx-init: info: fixing permissions: /var/lib/nginx" }
+				chown -R ${PUID}:${PGID} /var/lib/nginx
+			}
+		}
+		echo "nginx-init: info: FIX_PERMISSIONS disabled"
+	}
 
 
 # server configuration
 #
 importas -D "8080" NGINX_PORT NGINX_PORT
 
-background { echo "nginx-init: info: set nginx port: ${NGINX_PORT}" }
-background { echo "nginx-init: info: set nginx web root: ${WEB_ROOT}" }
-
 foreground { sed -E -i /etc/nginx/http.d/default.conf
 	-e "s|^(\\s+listen[^0-9]+)([0-9]+)|\\1${NGINX_PORT}|g"
 	-e "s|^\\s+root.*|\\troot\\t\\t${WEB_ROOT};|g" }
 
+background { echo "nginx-init: info: set nginx port: ${NGINX_PORT}" }
+background { echo "nginx-init: info: set nginx web root: ${WEB_ROOT}" }
+
 importas -D "" NGINX_INDEX NGINX_INDEX
-foreground
-{
-	if -Xt { test -n "${NGINX_INDEX}" }
+foreground {
+	if -Xt { eltest -n "${NGINX_INDEX}" }
 		foreground { sed -E -i /etc/nginx/http.d/default.conf -e "s|^\\s+index.*|\\tindex\\t\\t${NGINX_INDEX};|g" }
 		echo "nginx-init: info: set nginx index: ${NGINX_INDEX}"
 }
@@ -47,7 +60,7 @@ foreground
 #
 importas -D "" NGINX_LOG_ALL NGINX_LOG_ALL
 
-if -Xt { test -n "${NGINX_LOG_ALL}" }
+if -Xt { eltest -n "${NGINX_LOG_ALL}" }
 	foreground {
 		backtick log_setting { pipeline { echo "${NGINX_LOG_ALL}" } tr '[A-Z]' '[a-z]' }
 		importas log_setting log_setting

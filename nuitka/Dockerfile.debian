@@ -14,7 +14,7 @@ ARG BUILD_PYTHON_VERSION
 # use a local APT caching proxy, if one is provided
 ARG APT_CACHE=""
 RUN [ ! -z "${APT_CACHE}" ] \
-		&& echo "Acquire::http { Proxy \"${APT_CACHE}\"; }" > /etc/apt/apt.conf.d/proxy
+    && echo "Acquire::http { Proxy \"${APT_CACHE}\"; }" > /etc/apt/apt.conf.d/proxy
 
 # break up the layers to make pushing easier
 RUN apt-get update \
@@ -70,6 +70,6 @@ RUN python3 -m pip install --no-cache-dir --upgrade pip \
 
 # remove the PyPi index and APT proxy, if they've been added
 RUN (rm -f /etc/pip.conf >/dev/null 2>&1 || true) \
-	&& (rm -f /etc/apt/apt.conf.d/proxy 2>&1 || true)
+	&& (rm -f /etc/apt/apt.conf.d/proxy >/dev/null 2>&1 || true)
 
 ENTRYPOINT ["python3","-m","nuitka"]

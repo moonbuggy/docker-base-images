@@ -1,13 +1,13 @@
 # syntax = docker/dockerfile:1.4.0
 
-ARG DEBIAN_VERSION="11.14"
+ARG DEBIAN_VERSION="12.7"
 ARG FROM_IMAGE="moonbuggy2000/debian-slim-s6:${DEBIAN_VERSION}"
 
 ARG TARGET_ARCH_TAG="amd64"
 ARG PYPY_PACKAGE="pypy3"
 
-ARG PYTHON_VERSION="3.9"
-ARG PYPY_VERSION="7.3.9"
+ARG PYTHON_VERSION="3.10"
+ARG PYPY_VERSION="7.3.16"
 ARG PYPY_DIR="pypy-${PYPY_VERSION}"
 
 ## get pypy and prepare files
@@ -50,14 +50,14 @@ FROM "${FROM_IMAGE}"
 ARG APT_CACHE=""
 
 RUN export DEBIAN_FRONTEND="noninteractive" \
-	&& if [ ! -z "${APT_CACHE}" ]; then \
-		echo "Acquire::http { Proxy \"${APT_CACHE}\"; }" > /etc/apt/apt.conf.d/proxy; fi \
+	&& ([ ! -z "${APT_CACHE}" ] \
+    && echo "Acquire::http { Proxy \"${APT_CACHE}\"; }" >/etc/apt/apt.conf.d/proxy) \
 	&& apt update \
 	&& apt-get install -qy --no-install-recommends \
 		libexpat1 \
 		libtinfo5 \
 	&& apt-get clean \
-	&& (rm -f /etc/apt/apt.conf.d/proxy 2>&1 || true)
+	&& (rm -f /etc/apt/apt.conf.d/proxy >/dev/null 2>&1 || true)
 
 COPY --from=fetcher /fetcher-root/ /
 

@@ -15,26 +15,27 @@ FROM "moonbuggy2000/s6-overlay:${S6_VERSION}-${S6_ARCH}" AS s6-overlay
 #
 FROM "${FROM_IMAGE}"
 
+COPY --from=s6-overlay / /
+
 # enable use of TZ enviornment variable
 # use a local APK caching proxy, if one is provided
 ARG APK_PROXY=""
-ARG ALPINE_MINOR
-RUN if [ ! -z "${APK_PROXY}" ]; then \
-    mv /etc/apk/repositories /etc/apk/repositories.bak; \
-		echo "${APK_PROXY}/alpine/v${ALPINE_MINOR}/main" >/etc/apk/repositories; \
-		echo "${APK_PROXY}/alpine/v${ALPINE_MINOR}/community" >>/etc/apk/repositories; \
-	fi \
-  && apk -U add --no-cache \
-    tzdata \
-  && (mv -f /etc/apk/repositories.bak /etc/apk/repositories || true)
-
-COPY --from=s6-overlay / /
-COPY ./root /
 
 ARG ALPINE_VERSION
-RUN add-contenv ALPINE_VERSION="${ALPINE_VERSION}" \
+RUN if [ ! -z "${APK_PROXY}" ]; then \
+    alpine_minor_ver="$(grep -o 'VERSION_ID.*' /etc/os-release | grep -oE '([0-9]+\.[0-9]+)')"; \
+    mv /etc/apk/repositories /etc/apk/repositories.bak; \
+    echo "${APK_PROXY}/alpine/v${alpine_minor_ver}/main" >/etc/apk/repositories; \
+    echo "${APK_PROXY}/alpine/v${alpine_minor_ver}/community" >>/etc/apk/repositories; \
+  fi \
+  && apk -U add --no-cache \
+    tzdata \
+  && (mv -f /etc/apk/repositories.bak /etc/apk/repositories || true) \
+  && add-contenv ALPINE_VERSION="${ALPINE_VERSION}" \
   && if [ ! -f /usr/local/bin/pypy ] && [ -f /usr/local/bin/pypy3 ]; then \
     ln -s /usr/local/bin/pypy3 /usr/local/bin/pypy; \
   fi
+
+COPY ./root /
 
 ENTRYPOINT ["/init"]

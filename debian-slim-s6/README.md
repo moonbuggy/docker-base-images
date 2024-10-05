@@ -1,10 +1,11 @@
 # debian-slim-s6
 
 ## Tags
-*   `8`, `8.11`, `8.11-jessie`, `jessie`
-*   `9`, `9.13`, `9.13-stretch`, `stretch`
-*   `10`, `10.13`, `10.13-buster`, `buster`
-*   `11`, `11.7`, `11.7-bullseye`, `bullseye`
+*   `8`, `8.11`, `jessie`
+*   `9`, `9.13`, `stretch`
+*   `10`, `10.13`, `buster`
+*   `11`, `11.11`, `bullseye`
+*   `12`, `12.7`, `bookworm`
 
 ## Environment
 *   `TZ`            - set timezone

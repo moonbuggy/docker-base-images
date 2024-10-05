@@ -1,6 +1,7 @@
 # alpine-s6-node-nginx
 
-Nginx is configured as reverse proxy, proxying to a Node.js app running on `NODE_PORT`.
+Nginx is configured as reverse proxy, proxying to a Node.js app running on
+`NODE_PORT`.
 
 ## Container Details
 *   exposed port: `8080`

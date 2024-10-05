@@ -1,9 +1,5 @@
 #! /bin/bash
-
-#NOOP='true'
-#DO_PUSH='true'
-##[ -z "${DO_PUSH+set}" ] && NO_PUSH='true'
-#NO_BUILD='true'
+# shellcheck shell=bash disable=SC2034
 
 DOCKER_REPO="${DOCKER_REPO:-moonbuggy2000/fetcher}"
 

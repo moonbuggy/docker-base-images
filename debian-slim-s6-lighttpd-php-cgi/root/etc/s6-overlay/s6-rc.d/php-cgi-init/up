@@ -4,7 +4,7 @@ with-contenv
 #
 importas -D "" PHP_VERSION PHP_VERSION
 define php_ini "/etc/php/${PHP_VERSION}/cgi/php.ini"
-ifelse -Xn { test -f "${php_ini}" } {
+ifelse -Xn { eltest -f "${php_ini}" } {
 	foreground { echo "php-cgi-init: ERROR: can't find PHP config: ${php_ini}" }
 	exit 1
 }
@@ -13,7 +13,7 @@ ifelse -Xn { test -f "${php_ini}" } {
 #
 foreground {
 	importas -D "" TZ TZ
-	ifelse -X { test -n "${TZ}" } {
+	ifelse -X { eltest -n "${TZ}" } {
 		foreground { sed -E -i "${php_ini}" -e "s|^;?\\s*date\\.timezone.*|date.timezone = ${TZ}|g" }
 		echo "php-cgi-init: info: set timezone: ${TZ}"
 	}
@@ -35,7 +35,7 @@ foreground { sed -E -i "${php_ini}" -e "s|^;?\\s*cgi\\.fix_pathinfo.*|cgi.fix_pa
 # make 'phpinfo.php' in the web root, for testing
 #
 importas -D "" MAKE_PHPINFO MAKE_PHPINFO
-if -Xt { test -n "${MAKE_PHPINFO}" }
+if -Xt { eltest -n "${MAKE_PHPINFO}" }
 	foreground {
 		backtick make_phpinfo { pipeline { echo "${MAKE_PHPINFO}" } tr '[A-Z]' '[a-z]' }
 		importas make_phpinfo make_phpinfo
