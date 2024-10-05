@@ -7,7 +7,6 @@ amd64:
 
 arm64v8:
   TARGET_ARCH_TAG: arm64v8
-  EXTRA_ARCH_TAGS: arm64
   QEMU_ARCH: aarch64
   S6_ARCH: aarch64
   QEMU_PREFIX: arm64v8

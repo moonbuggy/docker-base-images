@@ -12,12 +12,12 @@ ARG PHP_BINARY="php-fpm${PHP_VERSION}"
 ARG BUILDPLATFORM="linux/amd64"
 FROM --platform="${BUILDPLATFORM}" "${FROM_IMAGE}" AS config
 
-COPY root/ /config_root/
-
 WORKDIR /config_root
+COPY root/ ./
+
 RUN chmod a+x healthcheck.sh
 
-WORKDIR /config_root/etc/
+WORKDIR /config_root/etc
 
 ARG PHP_VERSION
 # remove unecessary php configs and rename folder for minor version
@@ -47,13 +47,13 @@ ARG PHP_VERSION
 ARG APT_CACHE=""
 
 RUN export DEBIAN_FRONTEND="noninteractive" \
-  && if [ ! -z "${APT_CACHE}" ]; then \
-    echo "Acquire::http { Proxy \"${APT_CACHE}\"; }" > /etc/apt/apt.conf.d/proxy; fi \
+  && ([ ! -z "${APT_CACHE}" ] \
+    && echo "Acquire::http { Proxy \"${APT_CACHE}\"; }" >/etc/apt/apt.conf.d/proxy) \
   && apt update \
   && apt-get install -qy --no-install-recommends \
     "php${PHP_VERSION}-fpm" \
   && apt-get clean \
-  && (rm -f /etc/apt/apt.conf.d/proxy 2>&1 || true)
+  && (rm -f /etc/apt/apt.conf.d/proxy >/dev/null 2>&1 || true)
 
 COPY --from=config /config_root/ /
 

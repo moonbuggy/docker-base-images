@@ -1,10 +1,10 @@
 with-contenv
 importas -D "" TZ TZ
-ifelse -Xn { test -n "${TZ}" } { exit }
+ifelse -Xn { eltest -n "${TZ}" } { exit }
 
 define tz_file "/usr/share/zoneinfo/${TZ}"
 
-ifelse -X { test -f "${tz_file}" }
+ifelse -X { eltest -f "${tz_file}" }
   {
     foreground { cp "${tz_file}" "/etc/localtime" }
     foreground { redirfd -w 1 /etc/timezone echo "${TZ}" }

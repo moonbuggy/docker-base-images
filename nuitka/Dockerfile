@@ -12,11 +12,12 @@ ARG BUILD_PYTHON_VERSION
 
 # use a local APK caching proxy, if one is provided
 ARG APK_PROXY=""
-ARG ALPINE_VERSION
+
 RUN if [ ! -z "${APK_PROXY}" ]; then \
-		mv /etc/apk/repositories /etc/apk/repositories.bak; \
-		echo "${APK_PROXY}/alpine/v${ALPINE_VERSION}/main" >/etc/apk/repositories; \
-		echo "${APK_PROXY}/alpine/v${ALPINE_VERSION}/community" >>/etc/apk/repositories; \
+    alpine_minor_ver="$(grep -o 'VERSION_ID.*' /etc/os-release | grep -oE '([0-9]+\.[0-9]+)')"; \
+    mv /etc/apk/repositories /etc/apk/repositories.bak; \
+    echo "${APK_PROXY}/alpine/v${alpine_minor_ver}/main" >/etc/apk/repositories; \
+    echo "${APK_PROXY}/alpine/v${alpine_minor_ver}/community" >>/etc/apk/repositories; \
 	fi
 
 # break up the layers to make pushing easier
@@ -86,6 +87,6 @@ RUN rm -rf "/${IMPORTS_DIR}/"
 
 # remove the PyPi index and APK proxy, if they've been added
 RUN (rm -f /etc/pip.conf >/dev/null 2>&1 || true) \
-	&& (mv -f /etc/apk/repositories.bak /etc/apk/repositories || true)
+	&& (mv -f /etc/apk/repositories.bak /etc/apk/repositories >/dev/null 2>&1 || true)
 
 ENTRYPOINT ["python3","-m","nuitka"]

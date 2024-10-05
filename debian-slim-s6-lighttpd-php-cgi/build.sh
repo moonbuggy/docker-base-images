@@ -1,15 +1,12 @@
 #! /bin/bash
 # shellcheck disable=SC2034
 
-#NOOP='true'
-#DO_PUSH='true'
-##[ -z "${DO_PUSH+set}" ] && NO_PUSH='true'
-#NO_BUILD='true'
-
 DOCKER_REPO="${DOCKER_REPO:-moonbuggy2000/debian-slim-s6-lighttpd-php-cgi}"
 SOURCE_REPO='moonbuggy2000/debian-slim-s6-lighttpd'
 
-all_tags='latest'
+all_tags='7.3 7.4 8.2'
 default_tag='latest'
+
+TARGET_VERSION_TYPE='minor'
 
 . "hooks/.build.sh"

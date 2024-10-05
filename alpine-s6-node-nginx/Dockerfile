@@ -11,6 +11,7 @@ ARG	WEB_ROOT="/var/www/html"
 
 # use a local APK caching proxy, if one is provided
 ARG APK_PROXY=""
+
 RUN if [ ! -z "${APK_PROXY}" ]; then \
 		alpine_minor_ver="$(grep -o 'VERSION_ID.*' /etc/os-release | grep -oE '([0-9]+\.[0-9]+)')"; \
     mv /etc/apk/repositories /etc/apk/repositories.bak; \
@@ -20,14 +21,14 @@ RUN if [ ! -z "${APK_PROXY}" ]; then \
   && apk -U add --no-cache \
 		nginx \
 		shadow \
+	&& (mv -f /etc/apk/repositories.bak /etc/apk/repositories >/dev/null 2>&1 || true) \
 	&& rm -rf /etc/nginx/conf.d 2>/dev/null \
 	&& ln -sf /etc/nginx/http.d /etc/nginx/conf.d \
 	&& rm -rf /var/www/localhost 2>/dev/null \
 	&& mkdir -p "${WEB_ROOT}" \
 	&& adduser -DH -G www-data www-data \
 	&& chown -R www-data:www-data "${WEB_ROOT}" \
-	&& chown -R www-data:www-data /var/lib/nginx \
-  && (mv -f /etc/apk/repositories.bak /etc/apk/repositories || true)
+	&& chown -R www-data:www-data /var/lib/nginx
 
 COPY root/ /
 

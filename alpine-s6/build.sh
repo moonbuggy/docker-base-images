@@ -1,9 +1,6 @@
 #! /bin/bash
 # shellcheck disable=SC2034
 
-# Enable for extra output to the shell
-# DEBUG='true'
-
 DOCKER_REPO="${DOCKER_REPO:-moonbuggy2000/alpine-s6}"
 SOURCE_REPO='alpine'
 

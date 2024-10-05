@@ -10,11 +10,12 @@ FROM "${FROM_IMAGE}"
 
 # use a local APK caching proxy, if one is provided
 ARG APK_PROXY=""
-ARG ALPINE_VERSION
+
 RUN if [ ! -z "${APK_PROXY}" ]; then \
-		mv /etc/apk/repositories /etc/apk/repositories.bak; \
-		echo "${APK_PROXY}/alpine/v${ALPINE_VERSION}/main" >/etc/apk/repositories; \
-		echo "${APK_PROXY}/alpine/v${ALPINE_VERSION}/community" >>/etc/apk/repositories; \
+    alpine_minor_ver="$(grep -o 'VERSION_ID.*' /etc/os-release | grep -oE '([0-9]+\.[0-9]+)')"; \
+    mv /etc/apk/repositories /etc/apk/repositories.bak; \
+    echo "${APK_PROXY}/alpine/v${alpine_minor_ver}/main" >/etc/apk/repositories; \
+    echo "${APK_PROXY}/alpine/v${alpine_minor_ver}/community" >>/etc/apk/repositories; \
 	fi
 
 RUN apk -U add \
@@ -35,7 +36,7 @@ RUN apk add cargo
 
 # version check in case we accidentally upgraded Python along the way
 ARG PYTHON_VERSION
-RUN _pyver="$(python --version 2>&1 | sed -En 's|Python\s+([0-9.]*)|\1|p' | awk -F \. '{print $1"."$2}')" \
+RUN _pyver="$(python --version 2>&1 | sed -En 's|Python\s+([0-9.]*)|\1|p')" \
 	&& if [ "x${_pyver}" != "x${PYTHON_VERSION}" ]; then \
 		echo "ERROR: Python reports version ${_pyver}, doesn't match build version ${PYTHON_VERSION}"; \
 		echo "Exiting"; exit 1; fi
@@ -72,6 +73,6 @@ RUN python -m pip install auditwheel
 
 # remove the PyPi index and APK proxy, if they've been added
 RUN (rm -f /etc/pip.conf >/dev/null 2>&1 || true) \
-	&& (mv -f /etc/apk/repositories.bak /etc/apk/repositories || true)
+	&& (mv -f /etc/apk/repositories.bak /etc/apk/repositories >/dev/null 2>&1 || true)
 
 CMD ["/bin/ash"]

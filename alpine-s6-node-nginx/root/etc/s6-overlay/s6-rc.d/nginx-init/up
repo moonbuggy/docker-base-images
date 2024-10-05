@@ -11,7 +11,7 @@ foreground { usermod -o -u "${PUID}" -g "${PGID}" www-data }
 
 ## fix owndership
 #
-ifelse -nX { test -d "/var/lib/nginx" }
+ifelse -nX { eltest -d "/var/lib/nginx" }
 	{ mkdir -p /var/lib/nginx }
 foreground { chown -R ${PUID}:${PGID} /var/lib/nginx }
 
@@ -31,7 +31,7 @@ foreground { sed -E -i /etc/nginx/http.d/default.conf
 #
 importas -D "" NGINX_LOG_ALL NGINX_LOG_ALL
 
-if -Xt { test -n "${NGINX_LOG_ALL}" }
+if -Xt { eltest -n "${NGINX_LOG_ALL}" }
 	foreground {
 		backtick log_setting { pipeline { echo "${NGINX_LOG_ALL}" } tr '[A-Z]' '[a-z]' }
 		importas log_setting log_setting

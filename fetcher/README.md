@@ -1,14 +1,12 @@
 # fetcher
-
-This is an Alpine container for fetching files, for use as part of a multi-stage build.
+An Alpine container for fetching files, for use as part of a multi-stage build.
 
 ## Installed Packages
-
-* curl
-* git
-* jq
+*   curl
+*   git
+*   jq
 
 ## Links
-GitHub: https://github.com/moonbuggy/docker-base-images
+GitHub: <https://github.com/moonbuggy/docker-base-images>
 
-Docker Hub: https://hub.docker.com/r/moonbuggy2000/fetcher
+Docker Hub: <https://hub.docker.com/r/moonbuggy2000/fetcher>

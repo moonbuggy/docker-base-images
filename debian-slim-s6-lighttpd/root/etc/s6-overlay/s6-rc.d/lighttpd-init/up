@@ -16,7 +16,7 @@ foreground { usermod -o -u "${PUID}" -g "${PGID}" www-data }
 ## fix permissions and ownership
 #
 importas -D "/var/www/html" WEB_ROOT WEB_ROOT
-foreground { if -nX { test -d "${WEB_ROOT}" } mkdir -p "${WEB_ROOT}" }
+foreground { if -nX { eltest -d "${WEB_ROOT}" } mkdir -p "${WEB_ROOT}" }
 foreground { chown -R ${PUID}:${PGID} ${WEB_ROOT} }
 foreground { chown -R ${PUID}:${PGID} /var/cache/lighttpd }
 foreground { chmod 0777 /dev/stderr }
@@ -55,7 +55,7 @@ foreground {
 ## enable access logs
 #
 importas -D "" LIGHTTPD_ACCESS_LOG LIGHTTPD_ACCESS_LOG
-if -Xt { test -n "${LIGHTTPD_ACCESS_LOG}" }
+if -Xt { eltest -n "${LIGHTTPD_ACCESS_LOG}" }
 	foreground {
 		backtick log_setting { pipeline { echo "${LIGHTTPD_ACCESS_LOG}" } tr '[A-Z]' '[a-z]' }
 		importas log_setting log_setting
@@ -73,7 +73,7 @@ if -Xt { test -n "${LIGHTTPD_ACCESS_LOG}" }
 #
 importas -D "" LIGHTTPD_DEBUG_LOG LIGHTTPD_DEBUG_LOG
 
-if -Xt { test -n "${LIGHTTPD_DEBUG_LOG}" }
+if -Xt { eltest -n "${LIGHTTPD_DEBUG_LOG}" }
 	foreground {
 		backtick log_setting {
 			pipeline { echo "${LIGHTTPD_DEBUG_LOG}" } tr '[A-Z]' '[a-z]' }

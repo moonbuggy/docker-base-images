@@ -39,20 +39,25 @@ RUN add-contenv \
 #
 FROM "${FROM_IMAGE}"
 
-ARG PHP_VERSION
-ARG PHP_PACKAGE
 # use a local APK caching proxy, if one is provided
 ARG APK_PROXY=""
-ARG ALPINE_MINOR
+
+ARG PHP_VERSION
+ARG PHP_PACKAGE
 RUN if [ ! -z "${APK_PROXY}" ]; then \
+    alpine_minor_ver="$(grep -o 'VERSION_ID.*' /etc/os-release | grep -oE '([0-9]+\.[0-9]+)')"; \
     mv /etc/apk/repositories /etc/apk/repositories.bak; \
-		echo "${APK_PROXY}/alpine/v${ALPINE_MINOR}/main" >/etc/apk/repositories; \
-		echo "${APK_PROXY}/alpine/v${ALPINE_MINOR}/community" >>/etc/apk/repositories; \
+    echo "${APK_PROXY}/alpine/v${alpine_minor_ver}/main" >/etc/apk/repositories; \
+    echo "${APK_PROXY}/alpine/v${alpine_minor_ver}/community" >>/etc/apk/repositories; \
 	fi \
-  && apk add --no-cache \
+  && apk -U add --no-cache \
 		${PHP_PACKAGE}=~${PHP_VERSION} \
 		${PHP_PACKAGE}-fpm=~${PHP_VERSION} \
-  && (mv -f /etc/apk/repositories.bak /etc/apk/repositories || true)
+  && (mv -f /etc/apk/repositories.bak /etc/apk/repositories || true) \
+  && if [ "${PHP_VERSION%%.*}" = "5" ]; then \
+    mkdir -p /etc/php5/php-fpm.d/; \
+    ln -s /etc/php5/php-fpm.conf /etc/php5/php-fpm.d/www.conf; \
+  fi
 
 COPY --from=config /config_root/ /
 

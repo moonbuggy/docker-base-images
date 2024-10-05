@@ -12,11 +12,12 @@ ARG	WEB_ROOT="/var/www/html"
 
 # use a local APK caching proxy, if one is provided
 ARG APK_PROXY=""
-ARG ALPINE_MINOR
+
 RUN if [ ! -z "${APK_PROXY}" ]; then \
+    alpine_minor_ver="$(grep -o 'VERSION_ID.*' /etc/os-release | grep -oE '([0-9]+\.[0-9]+)')"; \
     mv /etc/apk/repositories /etc/apk/repositories.bak; \
-		echo "${APK_PROXY}/alpine/v${ALPINE_MINOR}/main" >/etc/apk/repositories; \
-		echo "${APK_PROXY}/alpine/v${ALPINE_MINOR}/community" >>/etc/apk/repositories; \
+    echo "${APK_PROXY}/alpine/v${alpine_minor_ver}/main" >/etc/apk/repositories; \
+    echo "${APK_PROXY}/alpine/v${alpine_minor_ver}/community" >>/etc/apk/repositories; \
 	fi \
 	&& apk -U add --no-cache \
 		nginx=~"${NGINX_VERSION}" \

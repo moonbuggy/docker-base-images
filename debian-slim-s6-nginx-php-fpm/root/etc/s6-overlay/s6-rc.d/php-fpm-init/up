@@ -6,7 +6,7 @@ importas -D "" PHP_VERSION PHP_VERSION
 define php_ini "/etc/php/${PHP_VERSION}/fpm/php.ini"
 define www_conf "/etc/php/${PHP_VERSION}/fpm/pool.d/www.conf"
 
-ifelse -Xn { test -f "${php_ini}" } {
+ifelse -Xn { eltest -f "${php_ini}" } {
 	foreground { echo "php-fpm-init: ERROR: can't find PHP config: ${php_ini}" }
 	exit 1
 }
@@ -15,7 +15,7 @@ ifelse -Xn { test -f "${php_ini}" } {
 #
 foreground {
 	importas -D "" TZ TZ
-	ifelse -X { test -n "${TZ}" } {
+	ifelse -X { eltest -n "${TZ}" } {
 		foreground { sed -E -i "${php_ini}" -e "s|^;?\\s*date\\.timezone.*|date.timezone = ${TZ}|g" }
 		echo "php-fpm-init: info: set timezone: ${TZ}"
 	}
@@ -25,7 +25,7 @@ foreground {
 #
 foreground {
 	importas -D "" MAKE_PHPINFO MAKE_PHPINFO
-	if -Xt { test -n "${MAKE_PHPINFO}" }
+	if -Xt { eltest -n "${MAKE_PHPINFO}" }
 		foreground {
 			backtick make_phpinfo { pipeline { echo "${MAKE_PHPINFO}" } tr '[A-Z]' '[a-z]' }
 			importas make_phpinfo make_phpinfo
@@ -48,13 +48,13 @@ foreground {
 
 # enable or disable clear_env
 #
-ifelse -Xn { test -f "${www_conf}" } {
+ifelse -Xn { eltest -f "${www_conf}" } {
 	foreground { echo "php-fpm-init: ERROR: can't find PHP config: ${www_conf}" }
 	exit 1
 }
 
 importas -D "" PHP_CLEAR_ENV PHP_CLEAR_ENV
-if -Xt { test -n "${MAKE_PHP_CLEAR_ENV}" }
+if -Xt { eltest -n "${MAKE_PHP_CLEAR_ENV}" }
 	foreground {
 		backtick php_clear_env { pipeline { echo "${PHP_CLEAR_ENV}" } tr '[A-Z]' '[a-z]' }
 		importas php_clear_env php_clear_env

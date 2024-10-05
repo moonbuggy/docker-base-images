@@ -1,14 +1,23 @@
 #! /bin/bash
 # shellcheck disable=SC2034
 
-#NOOP='true'
-#DO_PUSH='true'
-##[ -z "${DO_PUSH+set}" ] && NO_PUSH='true'
-#NO_BUILD='true'
-
 DOCKER_REPO="${DOCKER_REPO:-moonbuggy2000/alpine-s6-node}"
 
-all_tags='10 12 14 16 18'
+# all_tags='10 12 14 16 18 20 22'
 default_tag='latest'
+
+TARGET_VERSION_TYPE='major'
+
+custom_source_versions () {
+  echo "${1}" | xargs -n1 | grep -oP '[0-9.]+\-alpine[0-9.]+$' | xargs
+}
+
+custom_source_major_versions () {
+  # odd numbered releases have no long term support, so build only even versions
+  for ver in $(parse_version_major "${1}"); do
+    (( ${ver} % 2 == 0 )) && printf "${ver} "
+  done
+  echo
+}
 
 . "hooks/.build.sh"

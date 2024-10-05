@@ -12,6 +12,7 @@
 *   `NGINX_INDEX`   - index files (default: `index.html index.htm`)
 *   `NGINX_PORT`    - default: `8080`
 *   `WEB_ROOT`      - default: `/var/www/html`
+*   `FIX_PERMISSIONS` - run _chown_ on `WEB_ROOT` during init (accepts: `true`, `false` default: `false`)
 *   `TZ`            - set timezone in OS
 
 ## Links

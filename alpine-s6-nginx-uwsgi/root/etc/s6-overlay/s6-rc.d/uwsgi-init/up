@@ -2,7 +2,7 @@ with-contenv
 
 importas -D "" UWSGI_LOG UWSGI_LOG
 
-ifelse -Xn { test -n "${UWSGI_LOG}" } { exit }
+ifelse -Xn { eltest -n "${UWSGI_LOG}" } { exit }
 
 case ${UWSGI_LOG} {
 	"yes|true|on" {
