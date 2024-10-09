@@ -7,6 +7,6 @@ SOURCE_REPO='moonbuggy2000/debian-slim-s6-lighttpd'
 all_tags='7.3 7.4 8.2'
 default_tag='latest'
 
-TARGET_VERSION_TYPE='minor'
+# TARGET_VERSION_TYPE='minor'
 
 . "hooks/.build.sh"

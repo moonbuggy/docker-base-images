@@ -13,6 +13,7 @@
 *   `LIGHTTPD_INDEX`      - index files (default: `index.php index.html index.htm`)
 *   `LIGHTTPD_PORT`       - default: `8080`
 *   `WEB_ROOT`            - default: `/var/www/html`
+*   `FIX_PERMISSIONS`     - run _chown_ on `WEB_ROOT` during init (accepts: `true`, `false` default: `false`)
 *   `MAKE_PHPINFO`        - make `phpinfo.php` in `WEB_ROOT` (accepts: `true`, `false` default: `false`)
 *   `TZ`                  - set `date.timezone` in OS and `php.ini`
 

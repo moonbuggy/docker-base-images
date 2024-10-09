@@ -11,7 +11,7 @@ foreground { groupmod -o -g "${PGID}" www-data }
 foreground { usermod -o -u "${PUID}" -g "${PGID}" www-data }
 
 
-## fix owndership
+## fix permissions
 #
 importas -D "/var/www/html" WEB_ROOT WEB_ROOT
 
