@@ -1,19 +1,21 @@
 # syntax = docker/dockerfile:1.4.0
 
 ARG ALPINE_VERSION="3.16.1"
+ARG S6_VERSION="latest"
+ARG S6_ARCH="amd64"
 
 ARG FROM_IMAGE="alpine:${ALPINE_VERSION}"
 ARG BUILDPLATFORM="linux/amd64"
 
-## get s6-add-contenv
+## get s6 overlay
 #
-FROM --platform="${BUILDPLATFORM}" moonbuggy2000/s6-add-contenv:s6-overlay-v3 AS add-contenv
+FROM --platform="${BUILDPLATFORM}" "moonbuggy2000/s6-overlay:${S6_VERSION}-${S6_ARCH}" AS s6-overlay
 
 ## build the image
 #
 FROM "${FROM_IMAGE}"
 
-# install s6-overlay and enable use of TZ enviornment variable
+# enable use of TZ enviornment variable# install s6-overlay and enable use of TZ enviornment variable
 # use a local APK caching proxy, if one is provided
 ARG APK_PROXY=""
 
@@ -25,12 +27,11 @@ RUN if [ ! -z "${APK_PROXY}" ]; then \
     echo "${APK_PROXY}/alpine/v${alpine_minor_ver}/community" >>/etc/apk/repositories; \
 	fi \
   && apk -U add --no-cache \
-    s6-overlay \
     tzdata \
   && (mv -f /etc/apk/repositories.bak /etc/apk/repositories >/dev/null 2>&1 || true) \
   && echo "ALPINE_VERSION=${ALPINE_VERSION}" >> /etc/contenv_extra
 
-COPY --from=add-contenv / /
+COPY --from=s6-overlay / /
 COPY root/ /
 
 ENTRYPOINT ["/init"]

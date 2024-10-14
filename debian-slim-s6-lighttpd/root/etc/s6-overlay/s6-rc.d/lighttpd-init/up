@@ -13,12 +13,30 @@ background { echo "lighttpd-init: info: uid: ${PUID}, gid: ${PGID}" }
 foreground { groupmod -o -g "${PGID}" www-data }
 foreground { usermod -o -u "${PUID}" -g "${PGID}" www-data }
 
-## fix permissions and ownership
+## fix permissions
 #
 importas -D "/var/www/html" WEB_ROOT WEB_ROOT
+
 foreground { if -nX { eltest -d "${WEB_ROOT}" } mkdir -p "${WEB_ROOT}" }
-foreground { chown -R ${PUID}:${PGID} ${WEB_ROOT} }
-foreground { chown -R ${PUID}:${PGID} /var/cache/lighttpd }
+foreground { if -nX { eltest -d "/var/lib/nginx" } mkdir -p /var/lib/nginx }
+
+# this is really slow for large sites, so it's probably best not to do it by
+# default and let the downstream images deal with it if it's necessary
+importas -D "" FIX_PERMISSIONS FIX_PERMISSIONS
+if -Xt { eltest -n "${FIX_PERMISSIONS}" }
+	foreground {
+		backtick perms_setting { pipeline { echo "${FIX_PERMISSIONS}" } tr '[A-Z]' '[a-z]' }
+		importas perms_setting perms_setting
+		case ${perms_setting} {
+			"yes|true|on" {
+				foreground { echo "nginx-init: info: fixing permissions: ${WEB_ROOT}" }
+				foreground { chown -R ${PUID}:${PGID} ${WEB_ROOT} }
+				foreground { echo "nginx-init: info: fixing permissions: /var/cache/lighttpd" }
+				chown -R ${PUID}:${PGID} /var/cache/lighttpd
+			}
+		}
+		echo "nginx-init: info: FIX_PERMISSIONS disabled"
+	}
 foreground { chmod 0777 /dev/stderr }
 
 ## server configuration

@@ -9,7 +9,7 @@ background { echo "nginx-init: info: uid: ${PUID}, gid: ${PGID}" }
 foreground { groupmod -o -g "${PGID}" www-data }
 foreground { usermod -o -u "${PUID}" -g "${PGID}" www-data }
 
-## fix owndership
+## fix permissions
 #
 ifelse -nX { eltest -d "/var/lib/nginx" }
 	{ mkdir -p /var/lib/nginx }

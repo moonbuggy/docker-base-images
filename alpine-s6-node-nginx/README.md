@@ -1,5 +1,4 @@
 # alpine-s6-node-nginx
-
 Nginx is configured as reverse proxy, proxying to a Node.js app running on
 `NODE_PORT`.
 
@@ -13,6 +12,8 @@ Nginx is configured as reverse proxy, proxying to a Node.js app running on
 *   `NGINX_LOG_ALL` - enable logging of HTTP 200 and 300 responses (accepts: `true`, `false` default: `false`)
 *   `NGINX_PORT`    - outward facing Nginx port (default: `8080`)
 *   `NODE_PORT`     - Node app port for Nginx to proxy to (default: `3000`)
+*   `WEB_ROOT`      - default: `/var/www/html`
+*   `FIX_PERMISSIONS` - run _chown_ on `WEB_ROOT` during init (accepts: `true`, `false` default: `false`)
 *   `TZ`            - set timezone
 
 ## Links
