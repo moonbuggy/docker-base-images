@@ -3,7 +3,7 @@
 
 DOCKER_REPO="${DOCKER_REPO:-moonbuggy2000/alpine-python-builder}"
 
-all_tags='3.8 3.9 3.10 3.11 3.12'
+all_tags='3.8 3.9 3.10 3.11 3.12 3.13'
 default_tag="${all_tags}"
 
 TARGET_VERSION_TYPE='minor'

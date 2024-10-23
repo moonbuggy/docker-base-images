@@ -394,7 +394,7 @@ docker_api_get_repo () {
   local repo && repo="${1}"
   [[ "${repo}" != *"/"* ]] && repo="library/${repo}"
 
-  URL="https://registry.hub.docker.com/v2/repositories/${repo}/tags?page_size=1000"
+  URL="https://registry.hub.docker.com/v2/repositories/${repo}/tags?page_size=100"
   while [ -n "${URL}" ]; do
 #    >&2 echo "Getting: ${URL}"
     page="$(get_url "${URL}")"
@@ -422,13 +422,13 @@ search_repo_tags () {
   echo "${repo_tags}" | xargs -n1 | sed -En 's/^('"${pattern}"'[0-9.]*).*/\1/p' | sort -uV | tail -n1
 }
 
-# docker_container_contents <repo:tag> <outpud folder> <tar args>
+# docker_container_contents <repo:tag> <outpud folder> <platform>
 docker_container_contents () {
   [ -z "${1}" ] && return
 
   local import_image && import_image="${1}"
-  local output_dir &&  output_dir="${2:-./}"
-  local tar_args && tar_args="${3}"
+  local output_dir && output_dir="${2:-./}"
+  local platform && platform="${3:-linux/amd64}"
 
   echo "Importing files from ${import_image} to ${output_dir}"
 
@@ -438,16 +438,17 @@ docker_container_contents () {
     echo "Status: Using existing local image."
   elif ! docker pull "${import_image}" 2>/dev/null | grep Status; then
     echo "Status: Image not found."
-    return
+    return 1
   fi
 
   # this maybe stopped working in a Docker version released 2023/2024
   # docker save "${import_image}" | tar --wildcards -xf - -O -- */layer.tar | tar "${tar_args}" -ixf - -C "${output_dir}"
 
   # this is slower but will work instead
-  echo "FROM ${import_image}" >_tempDockerfile
-  docker build -q -o _tempContents -f _tempDockerfile . >/dev/null
-  cp _tempContents/* "${output_dir}"
+  echo "FROM --platform=${platform} ${import_image}" >_tempDockerfile
+  docker build -q -o _tempContents -f _tempDockerfile . >/dev/null 2>&1 \
+    && cp _tempContents/* "${output_dir}" \
+    || echo "ERROR: Cannot get image contents."
   rm -rf _tempContents _tempDockerfile >/dev/null 2>&1
 }
 
@@ -503,6 +504,7 @@ get_this_arch() {
     arm64|aarch64) echo 'arm64' ;;
     mips) echo 'mips64le' ;;
     powerpc|ppc64*) echo 'ppc64le' ;;
+    risc*) echo 'riscv64' ;;
     s390x*) echo 's390x' ;;
   esac
 }
