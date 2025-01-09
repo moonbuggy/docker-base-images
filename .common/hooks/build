@@ -98,11 +98,12 @@ for arch in ${build_arches:-}; do
     build_cmd=(docker buildx build --progress="${BUILD_PROGRESS:-auto}" --load --rm --platform="${PLATFORM}")
   fi
 
+  [ ! -z "${BUILD_SHM_SIZE+set}" ] && build_cmd+=("--shm-size=${BUILD_SHM_SIZE}")
   [ ! -z "${BUILD_NO_CACHE+set}" ] && build_cmd+=('--no-cache')
   [ -n "${BUILD_SQUASH}" ] && [ -z "${NO_BUILD_SQUASH+set}" ] \
     && build_cmd+=('--squash')
 
-  [ -n "${BUILD_TARGET_STAGE}" ] && build_cmd+=(--target "${BUILD_TARGET_STAGE}")
+  [ -n "${BUILD_TARGET_STAGE}" ] && build_cmd+=("--target=${BUILD_TARGET_STAGE}")
 
   build_cmd+=(--file "${DOCKER_FILE}")
 

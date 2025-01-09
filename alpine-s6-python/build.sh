@@ -4,8 +4,11 @@
 DOCKER_REPO="${DOCKER_REPO:-moonbuggy2000/alpine-s6-python}"
 SOURCE_REPO='python'
 
+# we can take care of "all_tags" by using check/update arguments instead
 # all_tags='2.7 3.3 3.4 3.5 3.6 3.7 3.8 3.9 3.10 3.8-alpine3.14 3.9-alpine3.14 3.9-alpine3.15 3.10-alpine3.14'
-default_tag='latest 3.10.3-alpine3.14'
+
+# medusa uses 3.10-alpine3.14
+default_tag='latest 3.10-alpine3.14'
 
 # TARGET_VERSION_TYPE='custom'
 TARGET_VERSION_TYPE='minor'

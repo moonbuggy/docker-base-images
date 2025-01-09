@@ -4,6 +4,7 @@
 *.md
 Dockerfile*
 hooks
-arch.yaml
+arch*.yaml
 build.sh
 build.conf
+__pycache__

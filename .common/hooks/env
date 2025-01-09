@@ -10,7 +10,7 @@ QEMU_DIR='.qemu_static'
 IMPORTS_DIR='.imports'
 
 ARCH_YAML='arch.yaml'
-CONFIG_YAML="${CONFIG_YAML_OVERRIDE:-${DATA_DIR}/config.${DOCKER_TAG}${CONFIG_SUFFIX}.yaml}"
+CONFIG_YAML="${DATA_DIR}/${CONFIG_YAML_OVERRIDE:-config.${DOCKER_TAG}${CONFIG_SUFFIX}.yaml}"
 
 # names of debian releases
 debian_names=('null' 'buzz' 'hamm' 'woody' 'etch' 'lenny' 'squeeze' 'wheezy' 'jessie' 'stretch' 'buster' 'bullseye' 'bookworm' 'trixie')
@@ -422,6 +422,33 @@ search_repo_tags () {
   echo "${repo_tags}" | xargs -n1 | sed -En 's/^('"${pattern}"'[0-9.]*).*/\1/p' | sort -uV | tail -n1
 }
 
+docker_image_pull () {
+  [ -z "${1}" ] && return 1
+
+  # always pull if forced
+  [ ! -z "${WHEELS_FORCE_PULL+set}" ] \
+    && docker pull "${1}" 2>/dev/null | grep Status \
+    && return
+
+  # try for a local image first
+  docker inspect "${import_image}" >/dev/null 2>&1 \
+    && echo "Status: Using existing local image." \
+    && return
+
+  # return an error if we have a cached failure
+  [ x"${IMAGES_NOT_FOUND#*"${import_image}"}" != x"${IMAGES_NOT_FOUND}" ] \
+    && echo "Status: Image not found (cached)." \
+    && add_param "${IMAGES_NOT_FOUND} ${import_image}" 'IMAGES_NOT_FOUND' \
+    && return 1
+
+  # pull the image
+  if ! docker pull "${import_image}" 2>/dev/null | grep Status; then
+    echo "Status: Image not found."
+    add_param "${IMAGES_NOT_FOUND} ${import_image}" 'IMAGES_NOT_FOUND'
+    return 1
+  fi
+}
+
 # docker_container_contents <repo:tag> <outpud folder> <platform>
 docker_container_contents () {
   [ -z "${1}" ] && return
@@ -432,14 +459,10 @@ docker_container_contents () {
 
   echo "Importing files from ${import_image} to ${output_dir}"
 
-  [ -n "${NOOP+set}" ] && [ -z "${WHEELS_FORCE_PULL+set}" ] && echo 'Status: [NOOP]' && return
+  [ -n "${NOOP+set}" ] && [ -z "${WHEELS_FORCE_PULL+set}" ] \
+    && echo 'Status: [NOOP]' && return
 
-  if [ -z "${WHEELS_FORCE_PULL+set}" ] && docker inspect "${import_image}" >/dev/null 2>&1; then
-    echo "Status: Using existing local image."
-  elif ! docker pull "${import_image}" 2>/dev/null | grep Status; then
-    echo "Status: Image not found."
-    return 1
-  fi
+  docker_image_pull "${import_image}" || return 1
 
   # this maybe stopped working in a Docker version released 2023/2024
   # docker save "${import_image}" | tar --wildcards -xf - -O -- */layer.tar | tar "${tar_args}" -ixf - -C "${output_dir}"

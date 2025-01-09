@@ -1,7 +1,7 @@
 #! /bin/bash
 # shellcheck shell=bash disable=SC2153
 
-unset
+unset IMAGES_NOT_FOUND
 
 log_debug () { [ ! -z "${DEBUG}" ] && >&2 printf "$*\n"; }
 
@@ -156,6 +156,7 @@ case "${first_arg}" in
       # we can use the string parsing and data collection from the Docker build hooks
       # DOCKER_TAG here just sets the filename for the config.yaml
       DOCKER_TAG='update'
+
       . "hooks/env"
 
       set_repo_data
@@ -293,7 +294,9 @@ if [ -f "./README.md" ]; then
     echo '[NOOP]'
   else
     echo 'Pushing README.md..'
-    docker pushrm "${DOCKER_REPO}" -f ./README.md
+    [ -f README.docker.md ] \
+      && docker pushrm "${DOCKER_REPO}" -f ./README.docker.md \
+      || docker pushrm "${DOCKER_REPO}" -f ./README.md
   fi
 else
   echo "No README.md to push."

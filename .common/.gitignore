@@ -2,4 +2,6 @@
 *.bak
 _dummyfile
 .qemu_static
+.include
 .imports
+__pycache__

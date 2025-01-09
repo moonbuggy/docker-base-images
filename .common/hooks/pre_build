@@ -37,13 +37,17 @@ for arch in ${build_arches}; do
     # We were using PYTHON_VERSION but this can cause conflicts with container
     # ENV during the build, so now we're using BUILD_PYTHON_VERSION in build.conf
     # Let one default to the other here, until all build.conf files are updated
+    BUILD_PYTHON_VERSION="${BUILD_PYTHON_VERSION:-${PYTHON_VERSION}}"
 
     # try for a multiarch image first
-    import_image="${WHEEL_REPO}:${wheel_tag}-py${BUILD_PYTHON_VERSION:-${PYTHON_VERSION}}"
-    if ! docker_container_contents "${import_image}" "${IMPORTS_DIR}/${!this_target_arch_tag}/" "${!this_platform}"; then
+    import_image="${WHEEL_REPO}:${wheel_tag}-py${BUILD_PYTHON_VERSION}"
+    if ! docker_container_contents "${import_image}" \
+      "${IMPORTS_DIR}/${!this_target_arch_tag}/" "${!this_platform}"; then
+
       # otherwise try for the older style with the architecture in the image name
-      import_image="${WHEEL_REPO}:${wheel_tag}-py${BUILD_PYTHON_VERSION:-${PYTHON_VERSION}}-${!this_target_arch_tag}"
-      docker_container_contents "${import_image}" "${IMPORTS_DIR}/${!this_target_arch_tag}/"
+      import_image="${WHEEL_REPO}:${wheel_tag}-py${BUILD_PYTHON_VERSION}-${!this_target_arch_tag}"
+      docker_container_contents "${import_image}" \
+        "${IMPORTS_DIR}/${!this_target_arch_tag}/"
     fi
   done
 done

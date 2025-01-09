@@ -1,5 +1,12 @@
 # alpine-s6-python
 
+## Tags
+
+*   `3.3`, `3.3.z`
+*   `3.4`, `3.4.z`
+*   `3.5`, `3.5.z`
+*   `etc..`
+
 ## Environment
 *   `TZ`          - timezone
 
