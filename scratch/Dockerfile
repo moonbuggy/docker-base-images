@@ -11,7 +11,7 @@ ARG BUILDER_FROM="${QEMU_PREFIX}/${BUILDER_REPO}:${BUILDER_TAG}"
 FROM "${BUILDER_FROM}" AS builder
 
 # QEMU static binaries from pre_build
-ARG QEMU_DIR
+ARG QEMU_DIR=""
 ARG QEMU_ARCH=""
 COPY _dummyfile "${QEMU_DIR}/qemu-${QEMU_ARCH}-static*" /usr/bin/
 

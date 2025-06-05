@@ -9,12 +9,12 @@ default_tag='latest'
 TARGET_VERSION_TYPE='major'
 
 custom_source_versions () {
-  echo "${1}" | xargs -n1 | grep -oP '[0-9.]+\-alpine[0-9.]+$' | xargs
+  echo "${@}" | xargs -n1 | grep -oP '[0-9.]+\-alpine[0-9.]+$' | xargs
 }
 
 custom_source_major_versions () {
   # odd numbered releases have no long term support, so build only even versions
-  for ver in $(parse_version_major "${1}"); do
+  for ver in $(parse_version_major "${@}"); do
     (( ${ver} % 2 == 0 )) && printf "${ver} "
   done
   echo

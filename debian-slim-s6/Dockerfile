@@ -9,6 +9,7 @@ ARG FROM_IMAGE="debian:${DEBIAN_VERSION}-slim"
 
 ## get s6 overlay
 #
+ARG BUILDPLATFORM="linux/amd64"
 FROM --platform="${BUILDPLATFORM}" "moonbuggy2000/s6-overlay:${S6_VERSION}-${S6_ARCH}" AS s6-overlay
 
 ## build the image

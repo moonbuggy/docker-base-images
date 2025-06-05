@@ -15,20 +15,22 @@ default_tag='latest'
 TARGET_VERSION_TYPE='minor'
 
 custom_source_versions () {
-   nginx_versions="$(echo "${@}" | xargs -n1 | grep -Eo "^[0-9]+(\.[0-9]+){2}\-[0-9]+[^\.\-]?" | grep -v "\-386$" | sort -uV | xargs)"
-   for n_ver in ${nginx_versions}; do
-     case "${n_ver}" in
-       1.14*) printf '7.3 ' ;;
-       1.18*) printf '7.4 ' ;;
-       1.22*) printf '8.2 ' ;;
-     esac
-   done
-   log_debug "package release: $(debian_package_release nginx 1.18)"
-   log_debug "package version: $(debian_package_version nginx bookworm)"
+  nginx_versions="$(echo "${@}" | xargs -n1 | \
+    grep -Eo "^[0-9]+(\.[0-9]+){2}\-[0-9]+[^\.\-]?" | grep -v "\-386$" | sort -uV | xargs)"
+  for n_ver in ${nginx_versions}; do
+    debian_release="$(debian_package_release nginx ${n_ver})"
+
+    # We can't use debian_package_version() because php-fpm doesn't seem to be
+    # in the API. Pull the HTML web page for php-fpm instead
+    php_version="$(get_url "https://packages.debian.org/${debian_release}/php-fpm" \
+         | grep -oP '<h1>Package: php-fpm \(.*:\K[0-9\.]*')"
+    log_debug "ver: ${n_ver}, debian release: ${debian_release}, php version: ${php_version}"
+    printf '%s ' "${php_version}"
+  done
 }
 
-custom_versions () {
-  echo "${SOURCE_VERSIONS}"
+custom_target_versions () {
+  echo ${REPO_TAGS} | xargs -n1 | grep -oE "^[0-9]*\.[0-9]*" | sort -uV
 }
 
 . "hooks/.build.sh"

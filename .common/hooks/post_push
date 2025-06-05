@@ -51,6 +51,11 @@ push_platforms () {
         POST_PUSH_SKIPPED="${DOCKER_TAG}"
         return
         ;;
+      *"not found\"")
+        printf 'platform image not found: %s\n' \
+          "$(echo $error | sed -nE "s|(.*error:\s?docker\.io\/)([^\s]*)||gp" | cut -d':' -f1,2)"
+        return
+        ;;
       *)
         printf 'unknown error:\n%s\n' "${error}"
         exit 1

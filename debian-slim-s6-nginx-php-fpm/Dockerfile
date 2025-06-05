@@ -45,9 +45,8 @@ ARG PHP_VERSION
 
 # use a local APT caching proxy, if one is provided
 ARG APT_CACHE=""
-
-RUN export DEBIAN_FRONTEND="noninteractive" \
-  && ([ ! -z "${APT_CACHE}" ] \
+ARG DEBIAN_FRONTEND=noninteractive
+RUN ([ ! -z "${APT_CACHE}" ] \
     && echo "Acquire::http { Proxy \"${APT_CACHE}\"; }" >/etc/apt/apt.conf.d/proxy) \
   && apt update \
   && apt-get install -qy --no-install-recommends \

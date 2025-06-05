@@ -120,10 +120,10 @@ check_updates () {
     log_debug "source latest: ${source_latest}"
 
     if [ "$(printf '%s\n' "${source_latest}" "${repo_latest}" | sort -V | tail -n1)" != "${repo_latest}" ]; then
-      >&2 printf "%-10s %10s -> %s\n" "${ver}" "${repo_latest}" "${source_latest}"
+      >&2 printf "%-15s %-15s -> %s\n" "${ver}" "${repo_latest}" "${source_latest}"
       updateable="${ver} $updateable"
     else
-      >&2 printf "%-10s %10s matched\n" "${ver}" "${repo_latest}"
+      >&2 printf "%-15s %-15s matched\n" "${ver}" "${repo_latest}"
     fi
 
   done
