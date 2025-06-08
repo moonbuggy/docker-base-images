@@ -6,7 +6,8 @@ ARG FROM_IMAGE="python:${BUILD_PYTHON_VERSION}-alpine${ALPINE_VERSION}"
 
 ## build the image
 #
-FROM --platform="${TARGETPLATFORM}" "${FROM_IMAGE}"
+# FROM --platform="${TARGETPLATFORM}" "${FROM_IMAGE}"
+FROM "${FROM_IMAGE}"
 
 ARG BUILD_PYTHON_VERSION
 
